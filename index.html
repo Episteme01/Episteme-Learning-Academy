@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Episteme Learning Academy</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+<script>
+    (function() {
+        emailjs.init("HRzpdij9ek-FzGhux");
+    })();
+</script>
+</head>
+<!-- WHATSAPP FLOATING BUTTON -->
+<a href="https://wa.me/2349131331867" target="_blank" class="whatsapp-float">
+    <img src="/assets/images/whatsapp-logo-png-icon_16716480.png" alt="WhatsApp Chat">
+</a>
+
+<script>
+
+  function openPopup() {
+    document.getElementById("admissionPopup").style.display = "flex";
+  }
+
+  function closePopup() {
+    document.getElementById("admissionPopup").style.display = "none";
+  }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        
+        const slides = document.querySelectorAll(".slide");
+        let currentIndex = 0;
+        
+        function showSlide(index) {
+            slides.forEach(slide => slide.classList.remove("active"));
+            slides[index].classList.add("active");
+        }
+        
+        function nextSlide() {
+            currentIndex = (currentIndex + 1) % slides.length;
+            showSlide(currentIndex);
+        }
+        
+        // Auto slide every 4 seconds
+        setInterval(nextSlide, 4000);
+        
+        // Swipe support
+        let startX = 0;
+        const slider = document.getElementById("slider");
+        
+        slider.addEventListener("touchstart", e => {
+            startX = e.touches[0].clientX;
+        });
+        
+        slider.addEventListener("touchend", e => {
+            let endX = e.changedTouches[0].clientX;
+            if (startX - endX > 50) nextSlide();
+            if (endX - startX > 50) {
+                currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+                showSlide(currentIndex);
+            }
+        });
+        
+    });
+    
+</script>
+
+<body>
+
+    <!-- HEADER -->
+   <header class="header">
+    <div class="container header-flex">
+        <img src="/assets/images/logo. png/episteme logo. png" alt="Episteme Learning Academy Logo" class="logo-img">
+        <div>
+            <h1 class="academy-name">
+    <span class="episteme">EPISTEME</span>
+    <span class="learning">LEARNING</span>
+    <span class="academy">ACADEMY</span>
+</h1>
+            <p class="tagline">Learning, Understanding and Application...</p>
+        </div>
+    </div>
+</header>
+<!-- IMAGE SLIDER -->
+<section class="slider-section">
+    <div class="slider-container" id="slider">
+        
+        <div class="slide active">
+            <img src="assets/images/classroom.jpg" alt="Classroom Learning">
+        </div>
+        
+        <div class="slide">
+            <img src="assets/images/islamic-study.jpg" alt="Islamic Education">
+        </div>
+        
+        <div class="slide">
+            <img src="assets/images/skills.jpg" alt="Skills Development">
+        </div>
+        
+    </div>
+</section>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="container nav-flex">
+            <ul class="nav-links">
+                <li><a href="#about">About</a></li>
+                <li><a href="#programs">Programs</a></li>
+                <li><a href="#philosophy">Philosophy</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <button class="menu-btn" id="menuBtn">☰</button>
+        </div>
+    </nav>
+<section class="hero">
+    <div class="hero-overlay">
+        <h2>Building Minds, Shaping Character</h2>
+        <p>Quality education rooted in knowledge, values, and purpose.</p>
+    </div>
+</section>
+
+    <!-- ABOUT -->
+    <section id="about" class="section">
+        <div class="container">
+            <h2>Who We Are</h2>
+            <p>
+                Episteme Learning Academy is a learning community built on the belief
+                that true education goes beyond textbooks. We exist to nurture the mind,
+                refine character, and guide learners toward purposeful living.
+            </p>
+            <p>
+                Blending academic excellence with moral and spiritual development,
+                we provide a balanced educational experience for children, teenagers,
+                and adults, within a supportive, learner-centered environment.
+            </p>
+        </div>
+    </section>
+
+    <!-- VISION & MISSION -->
+    <section class="section light">
+        <div class="container grid-2">
+            <div>
+                <h3>Our Vision</h3>
+                <p>
+                    To raise confident, morally grounded, and intellectually curious learners
+                    who are equipped to thrive academically, think critically,
+                    and contribute positively to society.
+                </p>
+            </div>
+            <div>
+                <h3>Our Mission</h3>
+                <ul>
+                    <li>Deliver quality, flexible, and engaging education</li>
+                    <li>Integrate academic learning with values and character development</li>
+                    <li>Support learners at their own pace</li>
+                    <li>Make education accessible, practical, and meaningful</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- PHILOSOPHY -->
+    <section id="philosophy" class="section">
+        <div class="container">
+            <h2>Our Educational Philosophy</h2>
+            <p>
+                At Episteme, learning is holistic. Education should develop the mind,
+                shape character, and prepare learners for real-life challenges—not just exams.
+            </p>
+            <p>
+                We teach with patience, clarity, and intention—meeting learners where they are
+                and guiding them toward growth.
+            </p>
+        </div>
+    </section>
+
+    <!-- PROGRAMS -->
+    <section id="programs" class="section light">
+        <div class="container">
+            <h2>Our Programs & Services</h2>
+    
+    <div class="program-card">
+        <img src="/assets/images/consultation.jpg" alt="Educational Consultation">
+        <h3>Educational Consultation</h3>
+        <p>Professional guidance for parents, learners, and institutions.</p>
+        <ul>
+            <li>Academic planning and guidance</li>
+            <li>Learning challenges assessment</li>
+            <li>Study structure and improvement strategies</li>
+        </ul>
+    </div>
+    
+    <div class="program-card">
+        <img src="/assets/images/mentorship.png" alt="Mentorship & Counseling">
+        <h3>Mentorship & Counseling (Ages 7–15)</h3>
+        <p>Holistic mentorship focused on emotional, moral, and academic growth.</p>
+        <ul>
+            <li>Character and value development</li>
+            <li>Confidence and self-discipline building</li>
+            <li>Academic motivation and guidance</li>
+        </ul>
+    </div>
+    
+    <div class="program-card">
+     <img src="assets/images/classroom.jpg" alt="Academic Programs">
+        <h3>Academic Programs</h3>
+        <p>Structured academic learning tailored to each educational level.</p>
+        <ul>
+            <li>Early Childhood Education</li>
+            <li>Primary School Education</li>
+            <li>Junior Secondary School Education</li>
+        </ul>
+    </div>
+    
+    <div class="program-card">
+        <img src="assets/images/islamic-study.jpg" alt="Islamic Education">
+        <h3>Islamic Studies</h3>
+        <p>Comprehensive Islamic education that nurtures knowledge and character.</p>
+        <ul>
+            <li>Qur’an Memorization and Recitation with Tajweed</li>
+            <li>Tawheed</li>
+            <li>Hadith</li>
+            <li>Fiqh</li>
+            <li>Arabic Language</li>
+            <li>Seerah</li>
+            <li>Tafseer</li>
+            <li>Adab and Islamic manners</li>
+        </ul>
+    </div>
+    
+    <div class="program-card">
+        <img src="assets/images/skills.jpg" alt="Skills Training">
+        <h3>Coding & Programming (Beginner Level)</h3>
+        <p>An introduction to modern coding and logical thinking.</p>
+        <ul>
+            <li>HTML (Web Structure)</li>
+            <li>CSS (Web Styling)</li>
+            <li>JavaScript (Interactivity)</li>
+            <li>Python (Beginner Programming)</li>
+        </ul>
+    </div>
+    
+    <div class="program-card">
+        <img src="/assets/images/ielts.jpg" alt="Skills & Capacity Development">
+        
+        <h3>Skills & Capacity Development</h3>
+        <p>Practical training to improve communication and academic skills.</p>
+        <ul>
+            <li>IELTS Preparation</li>
+            <li>English Proficiency Training</li>
+            <li>Nelson Handwriting Training</li>
+        </ul>
+    </div>
+    
+    <div class="program-card">
+<img src="/assets/images/graphics.png" alt="Graphics Design & Computer Appreciation">
+        <h3>Graphics Design & Computer Appreciation</h3>
+        <p>Hands-on digital skills for modern learning and creativity.</p>
+        <ul>
+            <li>Computer Basics and Operations</li>
+            <li>Introduction to Graphic Design</li>
+            <li>Practical digital creativity</li>
+        </ul>
+    </div>
+    
+    <div class="program-card">
+<img src="/assets/images/curriculum.jpg" alt="Curriculum Development">
+        <h3>Curriculum Development</h3>
+        <p>Structured curriculum design for effective teaching and learning.</p>
+        <ul>
+            <li>Lesson planning support</li>
+            <li>Curriculum structuring</li>
+            <li>Educational content development</li>
+        </ul>
+    </div>
+    
+    <div class="program-card">
+<img src="/assets/images/learning.jpg" alt="Learning Materials & Worksheets">
+        <h3>Learning Materials & Worksheets</h3>
+        <p>Supportive resources for classroom and home learning.</p>
+        <ul>
+            <li>Printed learning materials</li>
+            <li>Practice worksheets</li>
+            <li>Student support resources</li>
+        </ul>
+    </div>
+
+<section id="admission-cta">
+  <h2>Admissions Now Open</h2>
+
+  <p>
+    Give your child a balanced education that nurtures knowledge,
+    character, and confidence. Enroll today and become part of a
+    learning community where every learner matters.
+  </p>
+
+<div>
+    <a href="#" class="cta-btn primary" onclick="openPopup()">Apply Now</a>
+</div>
+</section>
+<!-- Admission Popup -->
+<!-- Admission Popup -->
+<div id="admissionPopup" class="popup-overlay">
+    <div class="popup-box">
+        <span class="close-btn" onclick="closePopup()">×</span>
+        
+        <h2>Admission Inquiry</h2>
+        <p>Please fill the form below and we’ll get back to you shortly.</p>
+        
+        <form id="admissionForm">
+            <input type="text" name="parent_name" placeholder="Parent's Full Name" required>
+            <input type="email" name="email" placeholder="Parent's Email Address" required>
+            <input type="text" name="child_name" placeholder="Child's Full Name" required>
+            
+            <select id="program" name="program" required>
+                <option value="">Select Program</option>
+                <option>Islamiyyah Academic Program</option>
+                <option>Conventional Academic Program</option>
+                <option>Conventional and Islamiyyah Academic Programs</option>
+                <option>Coding & Programming</option>
+                <option>IELTS and English Proficiency</option>
+                <option>Graphics Design</option>
+                <option>Computer Appreciation</option>
+                <option>Graphics Design and Computer Appreciation</option>
+                <option>Nelson Handwriting Training</option>
+            </select>
+            
+            <input type="tel" name="phone" placeholder="Phone Number" required>
+            <input type="number" name="child_age" placeholder="Child's Age" required>
+            
+            <button type="submit">Submit Inquiry</button>
+            
+            <p id="successMsg" style="display:none; color:green; margin-top:10px;">
+                Thank you! Your admission inquiry has been received.
+            </p>
+        </form>
+    </div>
+</div>
+    <!-- FLEXIBLE LEARNING -->
+    <section class="section">
+        <div class="container">
+            <h2>Flexible Learning Options</h2>
+            <p>
+                We offer physical (in-person), online, and hybrid learning models,
+                allowing learners to choose what works best for them without compromising quality.
+            </p>
+        </div>
+    </section>
+
+    <!-- CONSULTANCY -->
+    <section class="section light">
+        <div class="container">
+            <h2>Educational Consultancy</h2>
+            <p>
+                We provide guidance for parents, schools, educators, and individuals
+                seeking academic or skill-based direction—focused on clarity,
+                structure, and sustainable improvement.
+            </p>
+        </div>
+    </section>
+
+    <!-- CONTACT -->
+  <section id="contact">
+  <h3>Contact Us</h3>
+
+  <p>
+   
+    <a href="mailto:epistemelearninghub@gmail.com?subject=Inquiry%20from%20Episteme%20Learning%20Academy"
+       class="email-link">
+      epistemelearninghub@gmail.com
+    </a>
+  </p>
+
+  <p>
+    📞 
+    <a href="tel:+2349131331867" class="phone-link">+234 913 133 1867</a> |
+    <a href="tel:+2349128732396" class="phone-link">+234 912 873 2396</a>
+  </p>
+</section>
+            <p>Location: Ilorin, Kwara State, Nigeria</p>
+            <p>Working Hours: Flexible (Determined by Time Zone</p>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <p>
+                At Episteme Learning Academy, every learner matters.
+                Knowledge combined with character transforms lives.
+<br><i><u><b>This is Where Learning Meets Morality...</b></u></i>
+            </p>
+            <p>&copy; 2023 Episteme Learning Academy</p>
+        </div>
+    </footer>
+
+    <!-- JS -->
+   <script src="script.js"></script>
+
+<script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+<script>
+    // Initialize EmailJS
+    (function() {
+        emailjs.init("HRzpdij9ek-FzGhux"); // Your public key
+    })();
+    
+    // Popup controls
+    function openPopup() {
+        document.getElementById("admissionPopup").style.display = "flex";
+    }
+    
+    function closePopup() {
+        document.getElementById("admissionPopup").style.display = "none";
+    }
+    
+    // Form submission
+    const form = document.getElementById("admissionForm");
+    const successMsg = document.getElementById("successMsg");
+    
+    form.addEventListener("submit", function(e) {
+    e.preventDefault();
+    
+    emailjs.sendForm(
+        "service_q5c4ig3", // Your EmailJS service ID
+        "template_ob4ht5e", // Your EmailJS template ID
+        this,
+        "HRzpdij9ek-FzGhux" // Your public key
+    ).then(
+        function() {
+            form.reset();
+            successMsg.style.display = "block";
+            
+            // ✅ WhatsApp follow-up with child details
+            const whatsappNumber = "2349131331867";
+            
+            // Get child info from form
+            const childName = form.querySelector('input[name="child_name"]').value || "N/A";
+            const childAge = form.querySelector('input[name="child_age"]').value || "N/A";
+            const program = form.querySelector('select[name="program"]').value || "N/A";
+            
+            const whatsappMessage = encodeURIComponent(
+                `Hello Episteme Learning Academy 👋\n` +
+                `I just submitted a new admission form via your website.\n` +
+                `Child’s Name: ${childName}\n` +
+                `Child’s Age: ${childAge}\n` +
+                `Program: ${program}\n` +
+                `Please confirm receipt and advise on next steps. Thank you.`
+            );
+            
+            // Open WhatsApp after short delay
+            setTimeout(() => {
+                window.open(
+                    `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`,
+                    "_blank"
+                );
+            }, 1500);
+            
+            // Hide success message & close popup
+            setTimeout(() => {
+                successMsg.style.display = "none";
+                closePopup();
+            }, 4000);
+        },
+        function(error) {
+            console.error("EmailJS Error:", error);
+            alert("Submission failed. Please try again.");
+        }
+    );
+});
+</script>
+
+</body>
+</html>
