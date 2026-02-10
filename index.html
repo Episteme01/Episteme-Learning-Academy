@@ -404,14 +404,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     emailjs.init("HRzpdij9ek-FzGhux");
 
-    window.openPopup = function () {
-        document.getElementById("admissionPopup").style.display = "flex";
-    };
-
-    window.closePopup = function () {
-        document.getElementById("admissionPopup").style.display = "none";
-    };
-
     const form = document.getElementById("admissionForm");
     const successMsg = document.getElementById("successMsg");
 
@@ -422,17 +414,49 @@ document.addEventListener("DOMContentLoaded", function () {
             "service_q5c4ig3",
             "template_ob4ht5e",
             this
-        ).then(() => {
+        ).then(function () {
+
+            // ✅ Show success feedback
             successMsg.style.display = "block";
+
+            // ✅ Capture values BEFORE reset
+            const childName = form.child_name.value;
+            const childAge = form.child_age.value;
+            const program = form.program.value;
+
+            // ✅ Reset form safely
             form.reset();
 
+            // ✅ WhatsApp message (AFTER submission)
+            const whatsappNumber = "2349131331867";
+            const message = encodeURIComponent(
+                `Hello Episteme Learning Academy 👋\n\n` +
+                `A new admission inquiry has just been submitted.\n\n` +
+                `👧 Child Name: ${childName}\n` +
+                `🎂 Age: ${childAge}\n` +
+                `📚 Program: ${program}\n\n` +
+                `Please confirm receipt. Thank you.`
+            );
+
+            // ⏱ Delay WhatsApp so EmailJS completes fully
             setTimeout(() => {
-                closePopup();
+                window.open(
+                    `https://wa.me/${whatsappNumber}?text=${message}`,
+                    "_blank"
+                );
+            }, 1500);
+
+            // Auto close popup
+            setTimeout(() => {
                 successMsg.style.display = "none";
-            }, 3000);
+                closePopup();
+            }, 4000);
+
+        }, function (error) {
+            alert("Submission failed. Please try again.");
+            console.error(error);
         });
     });
-
 });
 </script>
 
