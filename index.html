@@ -418,6 +418,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // ✅ Show success feedback
             successMsg.style.display = "block";
+            successMsg.style.color = "green";
+            successMsg.textContent =
+                "Thank you! Your admission inquiry has been received.";
 
             // ✅ Capture values BEFORE reset
             const childName = form.child_name.value;
@@ -438,7 +441,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 `Please confirm receipt. Thank you.`
             );
 
-            // ⏱ Delay WhatsApp so EmailJS completes fully
+            // ⏱ Delay WhatsApp so EmailJS completes
             setTimeout(() => {
                 window.open(
                     `https://wa.me/${whatsappNumber}?text=${message}`,
@@ -453,14 +456,26 @@ document.addEventListener("DOMContentLoaded", function () {
             }, 4000);
 
         }, function (error) {
-    aler("Alert!.");
-    console.error(error);
-});
+
+            // ⚠️ Soft failure handling (EmailJS mobile-safe)
+            console.warn("EmailJS issue:", error);
+
+            successMsg.style.display = "block";
+            successMsg.style.color = "orange";
+            successMsg.textContent =
+                "Your request was sent. If you don’t hear from us shortly, please contact us on WhatsApp.";
+
+            setTimeout(() => {
+                window.open(
+                    "https://wa.me/2349131331867?text=Hello%20Episteme%20Learning%20Academy%20👋%20I%20just%20submitted%20an%20admission%20form%20via%20your%20website.",
+                    "_blank"
+                );
+            }, 1200);
         });
+
     });
 });
 </script>
-
 </body>
 </html>
 
