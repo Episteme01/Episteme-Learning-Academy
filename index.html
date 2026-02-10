@@ -453,13 +453,9 @@ document.addEventListener("DOMContentLoaded", function () {
             }, 4000);
 
         }, function (error) {
-    console.warn("EmailJS response issue:", error);
-
-    // Show soft message instead of blocking alert
-    successMsg.style.display = "block";
-    successMsg.style.color = "orange";
-    successMsg.textContent =
-        "Your request has been received.";
+    warn("Submission failed. Please try again.");
+    console.error(error);
+});
         });
     });
 });
