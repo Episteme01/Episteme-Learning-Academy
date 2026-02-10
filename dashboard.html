@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Parent Portal Login</title>
+</head>
+<body>
+
+<h2>Parent Portal Login</h2>
+
+<input type="text" id="studentId" placeholder="Student ID"><br><br>
+<input type="text" id="studentName" placeholder="Student Name"><br><br>
+
+<button onclick="login()">Login</button>
+
+<p id="error" style="color:red;"></p>
+
+<script src="data.js"></script>
+<script>
+function login() {
+  const id = document.getElementById("studentId").value.trim();
+  const name = document.getElementById("studentName").value.trim().toLowerCase();
+
+  const student = students.find(
+    s => s.id === id && s.name.toLowerCase() === name
+  );
+
+  if (student) {
+    localStorage.setItem("student", JSON.stringify(student));
+    window.location.href = "dashboard.html";
+  } else {
+    document.getElementById("error").textContent = "Input the correct details";
+  }
+}
+</script>
+
+</body>
+</html>
