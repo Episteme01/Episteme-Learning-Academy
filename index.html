@@ -69,7 +69,7 @@
     <!-- HEADER -->
    <header class="header">
     <div class="container header-flex">
-        <img src="images/logo. png/episteme logo. png" alt="Episteme Learning Academy Logo" class="logo-img">
+        <img src="images/episteme logo. png" alt="Episteme Learning Academy Logo" class="logo-img">
         <div>
             <h1 class="academy-name">
     <span class="episteme">EPISTEME</span>
@@ -110,7 +110,6 @@
                 <li><a href="parent-portal.html">Parent Portal</a> </li>
             </ul>
             <button class="menu-btn" id="menuBtn">☰</button>
-<a href="" class="cta-btn primary">Parent Portal</a>
         </div>
     </nav>
 <section class="hero">
@@ -399,74 +398,41 @@
    <script src="script.js"></script>
 
 <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+
 <script>
-    // Initialize EmailJS
-    (function() {
-        emailjs.init("HRzpdij9ek-FzGhux"); // Your public key
-    })();
-    
-    // Popup controls
-    function openPopup() {
+document.addEventListener("DOMContentLoaded", function () {
+
+    emailjs.init("HRzpdij9ek-FzGhux");
+
+    window.openPopup = function () {
         document.getElementById("admissionPopup").style.display = "flex";
-    }
-    
-    function closePopup() {
+    };
+
+    window.closePopup = function () {
         document.getElementById("admissionPopup").style.display = "none";
-    }
-    
-    // Form submission
+    };
+
     const form = document.getElementById("admissionForm");
     const successMsg = document.getElementById("successMsg");
-    
-    form.addEventListener("submit", function(e) {
-    e.preventDefault();
-    
-    emailjs.sendForm(
-        "service_q5c4ig3", // Your EmailJS service ID
-        "template_ob4ht5e", // Your EmailJS template ID
-        this,
-        "HRzpdij9ek-FzGhux" // Your public key
-    ).then(
-        function() {
-            form.reset();
+
+    form.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        emailjs.sendForm(
+            "service_q5c4ig3",
+            "template_ob4ht5e",
+            this
+        ).then(() => {
             successMsg.style.display = "block";
-            
-            // ✅ WhatsApp follow-up with child details
-            const whatsappNumber = "2349131331867";
-            
-            // Get child info from form
-            const childName = form.querySelector('input[name="child_name"]').value || "N/A";
-            const childAge = form.querySelector('input[name="child_age"]').value || "N/A";
-            const program = form.querySelector('select[name="program"]').value || "N/A";
-            
-            const whatsappMessage = encodeURIComponent(
-                `Hello Episteme Learning Academy 👋\n` +
-                `I just submitted a new admission form via your website.\n` +
-                `Child’s Name: ${childName}\n` +
-                `Child’s Age: ${childAge}\n` +
-                `Program: ${program}\n` +
-                `Please confirm receipt and advise on next steps. Thank you.`
-            );
-            
-            // Open WhatsApp after short delay
+            form.reset();
+
             setTimeout(() => {
-                window.open(
-                    `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`,
-                    "_blank"
-                );
-            }, 1500);
-            
-            // Hide success message & close popup
-            setTimeout(() => {
-                successMsg.style.display = "none";
                 closePopup();
-            }, 4000);
-        },
-        function(error) {
-            console.error("EmailJS Error:", error);
-            alert("Submission failed. Please try again.");
-        }
-    );
+                successMsg.style.display = "none";
+            }, 3000);
+        });
+    });
+
 });
 </script>
 
