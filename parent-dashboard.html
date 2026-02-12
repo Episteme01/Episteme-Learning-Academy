@@ -112,17 +112,17 @@
         <div class="results-grid">
             <div class="subject-card">
                 Math <br>
-                <span id="mathScore"></span>
+                <span id="math"></span>
             </div>
 
             <div class="subject-card">
                 English <br>
-                <span id="englishScore"></span>
+                <span id="english"></span>
             </div>
 
             <div class="subject-card">
                 Science <br>
-                <span id="scienceScore"></span>
+                <span id="science"></span>
             </div>
         </div>
     </div>
@@ -143,7 +143,7 @@
     <p><strong>Attendance:</strong> <span id="attendance"></span>%</p>
     <p><strong>Fee Status:</strong> <span id="feeStatus"></span></p>
 </div>
-<p id="teacherComment"></p>
+<p id="comment"></p>
 </div>
 
 <div class="footer">
@@ -217,10 +217,10 @@ function updateTermData(term) {
     
     const termData = currentStudent.results[term];
     
-    document.getElementById("mathScore").textContent = termData.math;
-    document.getElementById("englishScore").textContent = termData.english;
-    document.getElementById("scienceScore").textContent = termData.science;
-    document.getElementById("teacherComment").textContent = termData.comment;
+    document.getElementById("math").textContent = termData.math;
+    document.getElementById("english").textContent = termData.english;
+    document.getElementById("science").textContent = termData.science;
+    document.getElementById("comment").textContent = termData.comment;
     
     document.getElementById("attendance").textContent = currentStudent.attendance;
     document.getElementById("feeStatus").textContent = currentStudent.feeStatus;
