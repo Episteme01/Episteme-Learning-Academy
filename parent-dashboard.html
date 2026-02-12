@@ -217,12 +217,12 @@ function updateTermData(term) {
     
     const termData = currentStudent.results[term];
     
-    document.getElementById("math").textContent = termData.math;
-    document.getElementById("english").textContent = termData.english;
-    document.getElementById("science").textContent = termData.science;
+    document.getElementById("math").textContent = (Number(termData.math) + ...);
+    document.getElementById("english").textContent = (Number(termData.english) + ...)
+    document.getElementById("science").textContent = (Number(termData.science) + ...)
     document.getElementById("comment").textContent = termData.comment;
     
-    document.getElementById("attendance").textContent = currentStudent.attendance;
+    document.getElementById("attendance").textContent = (Number(termData.attendance) + ...)
     document.getElementById("feeStatus").textContent = currentStudent.feeStatus;
     
     const avg = termData.average;
