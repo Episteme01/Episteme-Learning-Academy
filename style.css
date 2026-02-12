@@ -484,3 +484,10 @@ p, li {
   cursor: pointer;
   color: #333;
 }
+.social-links {
+  display: flex;             /* Arrange children in a row */
+  gap: 20px;                 /* Space between icons */
+  justify-content: center;   /* Center them horizontally */
+  align-items: center;       /* Align vertically if icons are different heights */
+  margin-top: 15px;
+}
