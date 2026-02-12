@@ -190,7 +190,7 @@ onAuthStateChanged(auth, async (user) => {
     }
     
     const q = query(
-        collection(db, "students"),
+        collection(db, "Students"),
         where("parentEmail", "==", user.email)
     );
     
