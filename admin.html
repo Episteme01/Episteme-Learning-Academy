@@ -73,6 +73,10 @@ import {
     doc 
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
 const firebaseConfig = {
   apiKey: "AIzaSyC4psvU8WSR1QQQsRlZ8HkHO57Dznbb9TA",
   authDomain: "episteme-learning-academy.firebaseapp.com",
@@ -82,9 +86,6 @@ const firebaseConfig = {
   appId: "1:476274489231:web:fb67e5fde8a5d26328bdfa"
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
 
 // Protect page
 onAuthStateChanged(auth, (user) => {
@@ -104,16 +105,17 @@ window.logout = function() {
 // Submit Form
 document.getElementById("studentForm").addEventListener("submit", async function(e) {
     e.preventDefault();
+const studentData = { ... };
+await addDoc(collection(db, "students"), studentData);
+}
+    const studentID = document.getElementById("studentID").value;
+const parentPassword = document.getElementById("parentPassword").value;
+const parentEmail = document.getElementById("parentEmail").value;
 
-    const studentID = studentID.value;
-    const parentPassword = parentPassword.value;
-    const parentEmail = parentEmail.value;
-
-    const studentName = studentName.value;
-    const studentClass = studentClass.value;
-    const studentAge = studentAge.value;
-    const studentProgram = studentProgram.value;
-
+const studentName = document.getElementById("studentName").value;
+const studentClass = document.getElementById("studentClass").value;
+const studentAge = document.getElementById("studentAge").value;
+const studentProgram = document.getElementById("studentProgram").value;
     // Term 1
 const t1math = Number(document.getElementById("t1math").value);
 const t1english = Number(document.getElementById("t1english").value);
