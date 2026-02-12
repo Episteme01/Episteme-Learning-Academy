@@ -106,7 +106,7 @@ window.logout = function() {
 document.getElementById("studentForm").addEventListener("submit", async function(e) {
     e.preventDefault();
 const studentData = { ... };
-await addDoc(collection(db, "students"), studentData);
+await addDoc(collection(db, "Students"), studentData);
 }
     const studentID = document.getElementById("studentID").value;
 const parentPassword = document.getElementById("parentPassword").value;
@@ -177,7 +177,7 @@ const studentData = {
     };
 
     try {
-    await setDoc(doc(db, "students", studentID), studentData);
+    await setDoc(doc(db, "Students", studentID), studentData);
     alert("Student added successfully!");
     document.getElementById("studentForm").reset();
     loadStudents();
@@ -189,7 +189,7 @@ const studentData = {
 
 // Load Students
 async function loadStudents() {
-    const querySnapshot = await getDocs(collection(db, "students"));
+    const querySnapshot = await getDocs(collection(db, "Students"));
     const list = document.getElementById("studentList");
     list.innerHTML = "";
 
@@ -212,7 +212,7 @@ async function loadStudents() {
 
 // Delete Student
 window.deleteStudent = async function(id) {
-    await deleteDoc(doc(db, "students", id));
+    await deleteDoc(doc(db, "Students", id));
     loadStudents();
 };
 
