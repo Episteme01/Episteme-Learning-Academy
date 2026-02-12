@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Panel - Episteme Learning Academy</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<button onclick="logout()">Logout</button>
+
+
+    <h1>Admin Panel</h1>
+   
+<h2>Add New Student</h2>
+
+<form id="studentForm">
+    <input type="text" id="studentID" placeholder="Student ID (e.g ELA001)" required><br><br>
+<input type="password" id="parentPassword" placeholder="Parent Login Password" required><br><br>
+    <input type="text" id="studentName" placeholder="Student Name" required><br><br>
+    <input type="text" id="studentClass" placeholder="Class" required><br><br>
+    <input type="number" id="studentAge" placeholder="Age" required><br><br>
+    <input type="text" id="studentProgram" placeholder="Program" required><br><br>
+    <h3>Scores</h3>
+    <input type="number" id="math" placeholder="Math Score" required><br><br>
+    <input type="number" id="english" placeholder="English Score" required><br><br>
+    <input type="number" id="science" placeholder="Science Score" required><br><br>
+    <button type="submit">Add Student</button>
+</form>
+
+
+<hr>
+<input type="text" id="searchInput" placeholder="Search student by name...">
+<br><br>
+
+<h2>Student List</h2>
+<div id="studentList"></div>
+
+<!-- Firebase SDK -->
+
+<script>// Import the functions you need from the SDKs you need
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+apiKey: "AIzaSyC4psvU8WSR1QQQsRlZ8HkHO57Dznbb9TA",
+authDomain: "episteme-learning-academy.firebaseapp.com",
+projectId: "episteme-learning-academy",
+storageBucket: "episteme-learning-academy.firebasestorage.app",
+messagingSenderId: "476274489231",
+appId: "1:476274489231:web:fb67e5fde8a5d26328bdfa",
+measurementId: "G-PKPLKXMWSX"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app); </script>
+<script>
+async function hashPassword(password) {
+    if (password.length < 8) {
+        alert("Password must be at least 8 characters long.");
+        return;
+    }
+    
+    const encoder = new TextEncoder();
+    const data = encoder.encode(password);
+    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
+    
+    return hashHex;
+}
+
+const passwordInput = document.getElementById("parentPassword");
+const strengthText = document.getElementById("passwordStrength");
+
+        document.getElementById("studentForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+    
+    const newStudent = {
+        name: studentName.value,
+        class: studentClass.value,
+        age: studentAge.value,
+        program: studentProgram.value
+    };
+    
+    try {
+        await addDoc(collection(db, "students"), newStudent);
+        alert("Student added to cloud successfully!");
+        this.reset();
+        loadStudents();
+    } catch (error) {
+        console.error(error);
+        alert("Error saving student.");
+    }
+});
+    });
+    
+    async function loadStudents() {
+    const querySnapshot = await getDocs(collection(db, "students"));
+    const list = document.getElementById("studentList");
+    list.innerHTML = "";
+    
+    querySnapshot.forEach((docSnap) => {
+        const student = docSnap.data();
+        const id = docSnap.id;
+        
+        list.innerHTML += `
+            <div>
+                <p><strong>Name:</strong> ${student.name}</p>
+                <p><strong>Class:</strong> ${student.class}</p>
+                <p><strong>Age:</strong> ${student.age}</p>
+                <p><strong>Program:</strong> ${student.program}</p>
+                <button onclick="deleteStudent('${id}')">Delete</button>
+                <hr>
+            </div>
+        `;
+    });
+}
+    async function deleteStudent(id) {
+    await deleteDoc(doc(db, "students", id));
+    loadStudents();
+}
+    
+    
+</script>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "...",
+  authDomain: "...",
+  projectId: "...",
+  storageBucket: "...",
+  messagingSenderId: "...",
+  appId: "..."
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+document.getElementById("studentForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const math = Number(document.getElementById("math").value);
+    const english = Number(document.getElementById("english").value);
+    const science = Number(document.getElementById("science").value);
+
+    const average = ((math + english + science) / 3).toFixed(1);
+
+    const studentData = {
+        studentID: studentID.value,
+        parentPassword: parentPassword.value,
+        name: studentName.value,
+        class: studentClass.value,
+        age: studentAge.value,
+        program: studentProgram.value,
+        math,
+        english,
+        science,
+        average
+    };
+
+    try {
+        await addDoc(collection(db, "students"), studentData);
+        alert("Student added successfully!");
+        studentForm.reset();
+        loadStudents();
+    } catch (error) {
+        alert("Error saving student");
+        console.error(error);
+    }
+});
+
+async function loadStudents() {
+    const querySnapshot = await getDocs(collection(db, "students"));
+    const list = document.getElementById("studentList");
+    list.innerHTML = "";
+
+    querySnapshot.forEach((docSnap) => {
+        const student = docSnap.data();
+        const id = docSnap.id;
+
+        list.innerHTML += `
+            <div>
+                <p><strong>Name:</strong> ${student.name}</p>
+                <p><strong>Average:</strong> ${student.average}</p>
+                <button onclick="deleteStudent('${id}')">Delete</button>
+                <hr>
+            </div>
+        `;
+    });
+}
+
+window.deleteStudent = async function(id) {
+    await deleteDoc(doc(db, "students", id));
+    loadStudents();
+};
+
+loadStudents();
+
+</script>
+
+</body>
+</html>

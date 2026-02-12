@@ -1,0 +1,90 @@
+<!DOCTYPE html>  <html>  
+<head>  
+    <title>Admin Login - Episteme Learning Academy</title>  
+</head>  
+<body>  <h1>Admin Login</h1>  
+
+<form id="adminLoginForm">
+    <input type="email" id="adminEmail" placeholder="Admin Email" required><br><br>
+    <input type="password" id="adminPassword" placeholder="Password" required><br><br>
+    <button type="submit">Login</button>
+</form>
+
+
+<script>  
+async function hashPassword(password) {  
+const encoder = new TextEncoder();  
+const data = encoder.encode(password);  
+const hashBuffer = await crypto.subtle.digest("SHA-256", data);  
+const hashArray = Array.from(new Uint8Array(hashBuffer));  
+const hashHex = hashArray.map(b => b.toString(16).padStart(2, "0")).join("");  
+return hashHex;
+
+}
+
+    function showReset() {  
+document.getElementById("resetSection").style.display = "block";
+
+}
+
+async function resetPassword() {
+const id = document.getElementById("resetID").value;
+const newPassword = document.getElementById("newPassword").value;
+
+if (newPassword.length < 5) {  
+    document.getElementById("resetMessage").textContent = "Password must be at least 5 characters.";  
+    return;  
+}  
+  
+const hashedPassword = await hashPassword(newPassword);  
+  
+let students = JSON.parse(localStorage.getItem("students")) || [];  
+  
+const studentIndex = students.findIndex(s => s.studentID === id);  
+  
+if (studentIndex !== -1) {  
+    students[studentIndex].parentPassword = hashedPassword;  
+    localStorage.setItem("students", JSON.stringify(students));  
+    document.getElementById("resetMessage").textContent = "Password reset successful!";  
+} else {  
+    document.getElementById("resetMessage").textContent = "Student ID not found.";  
+}
+
+}
+</script>
+<script type="module">
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC4psvU8WSR1QQQsRlZ8HkHO57Dznbb9TA",
+    authDomain: "episteme-learning-academy.firebaseapp.com",
+    projectId: "episteme-learning-academy",
+    storageBucket: "episteme-learning-academy.firebasestorage.app",
+    messagingSenderId: "476274489231",
+    appId: "1:476274489231:web:fb67e5fde8a5d26328bdfa",
+    measurementId: "G-PKPLKXMWSX"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+// 🔐 Protect Page
+onAuthStateChanged(auth, (user) => {
+    if (!user) {
+        // If not logged in, send to login page
+        window.location.href = "admin-login.html";
+    }
+});
+
+// 🚪 Logout Function
+window.logout = function() {
+    signOut(auth).then(() => {
+        alert("Logged out successfully");
+        window.location.href = "admin-login.html";
+    });
+};
+
+</script>
+</body>  
+</html>
