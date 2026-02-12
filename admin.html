@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Panel - Episteme Learning Academy</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+
+<body>
+
+<button onclick="logout()">Logout</button>
+
+
+    <h1>Admin Panel</h1>
+   
+<h2>Add New Student</h2>
+
+<form id="studentForm">
+    <input type="text" id="studentID" placeholder="Student ID (e.g ELA001)" required><br><br>
+<input type="password" id="parentPassword" placeholder="Parent Login Password" required><br><br>
+<input type="email" id="parentEmail" placeholder="Parent Email" required><br><br>
+    <input type="text" id="studentName" placeholder="Student Name" required><br><br>
+    <input type="text" id="studentClass" placeholder="Class" required><br><br>
+    <input type="number" id="studentAge" placeholder="Age" required><br><br>
+    <input type="text" id="studentProgram" placeholder="Program" required><br><br>
+    <h3>Scores</h3>
+   <h3>Term 1 Results</h3>
+<input type="number" id="t1math" placeholder="Math Score (Term 1)" required><br><br>
+<input type="number" id="t1english" placeholder="English Score (Term 1)" required><br><br>
+<input type="number" id="t1science" placeholder="Science Score (Term 1)" required><br><br>
+<input type="text" id="t1comment" placeholder="Teacher Comment (Term 1)" required><br><br>
+
+<h3>Term 2 Results</h3>
+<input type="number" id="t2math" placeholder="Math Score (Term 2)"><br><br>
+<input type="number" id="t2english" placeholder="English Score (Term 2)"><br><br>
+<input type="number" id="t2science" placeholder="Science Score (Term 2)"><br><br>
+<input type="text" id="t2comment" placeholder="Teacher Comment (Term 2)"><br><br>
+
+<h3>Term 3 Results</h3>
+<input type="number" id="t3math" placeholder="Math Score (Term 3)"><br><br>
+<input type="number" id="t3english" placeholder="English Score (Term 3)"><br><br>
+<input type="number" id="t3science" placeholder="Science Score (Term 3)"><br><br>
+<input type="text" id="t3comment" placeholder="Teacher Comment (Term 3)"><br><br>
+
+<h3>Attendance & Fees</h3>
+<input type="number" id="attendance" placeholder="Attendance Percentage" required><br><br>
+<input type="text" id="feeStatus" placeholder="Fee Status (Paid / Not Paid)" required><br><br><br><br>
+    <button type="submit">Add Student</button>
+</form>
+
+
+<hr>
+<input type="text" id="searchInput" placeholder="Search student by name...">
+<br><br>
+
+<h2>Student List</h2>
+<div id="studentList"></div>
+
+<!-- Firebase SDK -->
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { 
+    getFirestore, 
+    collection, 
+    addDoc, 
+    getDocs, 
+    deleteDoc, 
+    doc 
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const firebaseConfig = {
+apiKey: "AIzaSyC4psvU8WSR1QQQsRlZ8HkHO57Dznbb9TA",
+authDomain: "episteme-learning-academy.firebaseapp.com",
+projectId: "episteme-learning-academy",
+storageBucket: "episteme-learning-academy.firebasestorage.app",
+messagingSenderId: "476274489231",
+appId: "1:476274489231:web:fb67e5fde8a5d26328bdfa",
+measurementId: "G-PKPLKXMWSX"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+
+// Submit Form
+document.getElementById("studentForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const studentID = document.getElementById("studentID").value;
+    const parentPassword = document.getElementById("parentPassword").value;
+    const parentEmail = document.getElementById("parentEmail").value;
+
+    const studentName = document.getElementById("studentName").value;
+    const studentClass = document.getElementById("studentClass").value;
+    const studentAge = document.getElementById("studentAge").value;
+    const studentProgram = document.getElementById("studentProgram").value;
+
+    // Term 1
+const t1math = Number(document.getElementById("t1math").value);
+const t1english = Number(document.getElementById("t1english").value);
+const t1science = Number(document.getElementById("t1science").value);
+const t1comment = document.getElementById("t1comment").value;
+
+// Term 2
+const t2math = Number(document.getElementById("t2math").value || 0);
+const t2english = Number(document.getElementById("t2english").value || 0);
+const t2science = Number(document.getElementById("t2science").value || 0);
+const t2comment = document.getElementById("t2comment").value || "";
+
+// Term 3
+const t3math = Number(document.getElementById("t3math").value || 0);
+const t3english = Number(document.getElementById("t3english").value || 0);
+const t3science = Number(document.getElementById("t3science").value || 0);
+const t3comment = document.getElementById("t3comment").value || "";
+
+// Attendance & Fees
+const attendance = Number(document.getElementById("attendance").value);
+const feeStatus = document.getElementById("feeStatus").value;
+
+    const average = (
+        (t1math + t1english + t1science) / 3
+    ).toFixed(1);
+    
+    const studentData = {
+    studentID,
+    parentPassword,
+    parentEmail,
+    studentName,
+    studentClass,
+    studentAge,
+    studentProgram,
+    
+    results: {
+        term1: {
+            math: t1math,
+            english: t1english,
+            science: t1science,
+            comment: t1comment
+        },
+        term2: {
+            math: t2math,
+            english: t2english,
+            science: t2science,
+            comment: t2comment
+        },
+        term3: {
+            math: t3math,
+            english: t3english,
+            science: t3science,
+            comment: t3comment
+        }
+    },
+    
+    attendance,
+    feeStatus
+};
+
+    try {
+        await addDoc(collection(db, "students"), studentData);
+        alert("Student added successfully!");
+        document.getElementById("studentForm").reset();
+        loadStudents();
+    } catch (error) {
+        alert("Error saving student");
+        console.error(error);
+    }
+});
+
+// Load Students
+async function loadStudents() {
+    const querySnapshot = await getDocs(collection(db, "students"));
+    const list = document.getElementById("studentList");
+    list.innerHTML = "";
+
+    querySnapshot.forEach((docSnap) => {
+        const student = docSnap.data();
+        const id = docSnap.id;
+
+        list.innerHTML += `
+            <div>
+                <p><strong>Name:</strong> ${student.studentName}</p>
+                <p><strong>Average:</strong> ${student.average}</p>
+                <button onclick="deleteStudent('${id}')">Delete</button>
+                <hr>
+            </div>
+        `;
+    });
+}
+
+// Delete Student
+window.deleteStudent = async function(id) {
+    await deleteDoc(doc(db, "students", id));
+    loadStudents();
+};
+
+loadStudents();
+
+</script>
+
+</body>
+</html>
