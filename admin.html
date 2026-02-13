@@ -73,9 +73,6 @@ import {
     doc 
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
 
 const firebaseConfig = {
   apiKey: "AIzaSyC4psvU8WSR1QQQsRlZ8HkHO57Dznbb9TA",
@@ -85,7 +82,9 @@ const firebaseConfig = {
   messagingSenderId: "476274489231",
   appId: "1:476274489231:web:fb67e5fde8a5d26328bdfa"
 };
-
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
 // Protect page
 onAuthStateChanged(auth, (user) => {
@@ -177,7 +176,7 @@ const studentData = {
     };
 
     try {
-    await setDoc(doc(db, "Students", studentID), studentData);
+    await setDoc(collection(db, "Students", studentID), studentData);
     alert("Student added successfully!");
     document.getElementById("studentForm").reset();
     loadStudents();
@@ -212,7 +211,7 @@ async function loadStudents() {
 
 // Delete Student
 window.deleteStudent = async function(id) {
-    await deleteDoc(doc(db, "Students", id));
+    await deleteDoc(collection(db, "Students", id));
     loadStudents();
 };
 
