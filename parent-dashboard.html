@@ -78,6 +78,14 @@
             font-size: 13px;
             opacity: 0.7;
         }
+.comment {
+    background: #f9f9ff;
+    padding: 12px;
+    border-left: 4px solid #4b3cf0;
+    border-radius: 6px;
+    margin-top: 8px;
+    font-style: italic;
+}
     </style>
 </head>
 
@@ -137,13 +145,17 @@
     </button>
 </div>
     
-<p><strong>Teacher Comment:</strong></p>
 <div class="card">
+      <p><strong>Teacher Comment:</strong></p>
+  <div id="comment" class="comment"></div
+  
     <h3>Attendance & Fees</h3>
+    
     <p><strong>Attendance:</strong> <span id="attendance"></span>%</p>
     <p><strong>Fee Status:</strong> <span id="feeStatus"></span></p>
-</div>
-<p id="comment"></p>
+    
+    <hr>
+    
 </div>
 
 <div class="footer">
@@ -276,6 +288,7 @@ window.logout = function() {
         
         doc.save("result-slip.pdf");
     } 
+   
     </script>
 
 </body>
