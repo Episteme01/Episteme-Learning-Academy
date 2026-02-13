@@ -107,8 +107,7 @@
                 <li><a href="#programs">Programs</a></li>
                 <li><a href="#philosophy">Philosophy</a></li>
                 <li><a href="#contact">Contact</a></li>
-                <li><a href="parent-login.html">Parent Portal</a> </li>
-                <li><a href="admin-panel.html">Admin Portal</a> </li>
+                <li><a href="parent-portal.html">Parent Portal</a> </li>
             </ul>
             <button class="menu-btn" id="menuBtn">☰</button>
         </div>
@@ -286,18 +285,41 @@
         </ul>
     </div>
 
-<section id="admission-cta">
-  <h2>Admissions Now Open</h2>
+<section id="admission-cta" class="dual-cta-section">
+  <div class="cta-container">
 
-  <p>
-    Give your child a balanced education that nurtures knowledge,
-    character, and confidence. Enroll today and become part of a
-    learning community where every learner matters.
-  </p>
+    <!-- Admission Card -->
+    <div class="cta-card primary-card">
+      <h2>Admissions Now Open</h2>
+      <p>
+        Give your child a balanced education that nurtures knowledge,
+        character, and confidence. Enroll today and become part of a
+        learning community where every learner matters.
+      </p>
 
-<div>
-    <a href="#" class="cta-btn primary" onclick="openPopup()">Apply Now</a>
-</div>
+    <a href="#" class="cta-btn light-btn" onclick="openPopup()">
+    Apply Now
+</a>
+    </div>
+
+    <!-- Selar Courses Card -->
+    <div class="cta-card selar-card">
+      <h2>Explore Our Courses</h2>
+      <p>
+        Visit our Selar store to view detailed course descriptions,
+        pricing, and enrollment options. Whether you're a parent
+        enrolling a child or an adult seeking personal development,
+        our courses are structured for flexible learning.
+      </p>
+
+      <a href="https://selar.com/m/epistemelearningacademy1?page=2"
+         target="_blank"
+         class="cta-btn dark-btn">
+         View Courses on Selar
+      </a>
+    </div>
+
+  </div>
 </section>
 
 <!-- Admission Popup -->
@@ -360,7 +382,7 @@
         </div>
     </section>
 
-        <!-- CONTACT -->
+    <!-- CONTACT -->
  <section id="contact">
   <center><h3>Contact Us</h3></center>
 
@@ -380,20 +402,19 @@
   <!-- Social media links in horizontal row -->
   <div class="social-links">
     <a href="https://youtube.com/@epistemelearningacademy?si=0qJWMJ1FO4sBANBG" target="_blank">
-      <img src="images/youtube-icon.png" alt="YouTube" width="80" height="80">
+      <img src="/assets/images/youtube-icon.png" alt="YouTube" width="80" height="80">
     </a>
     <a href="https://www.facebook.com/epistemelearningacademy01" target="_blank">
-      <img src="images/facebook-icon.png" alt="Facebook" width="60" height="60">
+      <img src="/assets/images/facebook-icon.png" alt="Facebook" width="60" height="60">
     </a>
     <a href="https://www.instagram.com/episteme_la?igsh=MW9sb2lqNjdleWx1MQ==" target="_blank">
-      <img src="images/instagram-icon.png" alt="Instagram" width="60" height="60">
+      <img src="/assets/images/instagram-icon.png" alt="Instagram" width="60" height="60">
     </a>
     <a href="https://www.tiktok.com/@episteme_learning_acad?_r=1&_t=ZS-93qwdgUHLzW" target="_blank">
-      <img src="images/tikok-app-logo.png" alt="TikTok" width="60" height="60">
+      <img src="/assets/images/tikok-app-logo.png" alt="TikTok" width="60" height="60">
     </a>
   </div>
 </section>
-         
             <p>Location: Ilorin, Kwara State, Nigeria</p>
             <p>Working Hours: Flexible (Determined by Time Zone</p>
         </div>
@@ -412,7 +433,7 @@
     </footer>
 
     <!-- JS -->
-   <script src="script.js"></script>
+   <script src="main.js"></script>
 
 <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
 
@@ -420,6 +441,14 @@
 document.addEventListener("DOMContentLoaded", function () {
 
     emailjs.init("HRzpdij9ek-FzGhux");
+
+    window.openPopup = function () {
+        document.getElementById("admissionPopup").style.display = "flex";
+    };
+
+    window.closePopup = function () {
+        document.getElementById("admissionPopup").style.display = "none";
+    };
 
     const form = document.getElementById("admissionForm");
     const successMsg = document.getElementById("successMsg");
@@ -431,69 +460,19 @@ document.addEventListener("DOMContentLoaded", function () {
             "service_q5c4ig3",
             "template_ob4ht5e",
             this
-        ).then(function () {
-
-            // ✅ Show success feedback
+        ).then(() => {
             successMsg.style.display = "block";
-            successMsg.style.color = "green";
-            successMsg.textContent =
-                "Thank you! Your admission inquiry has been received.";
-
-            // ✅ Capture values BEFORE reset
-            const childName = form.child_name.value;
-            const childAge = form.child_age.value;
-            const program = form.program.value;
-
-            // ✅ Reset form safely
             form.reset();
 
-            // ✅ WhatsApp message (AFTER submission)
-            const whatsappNumber = "2349131331867";
-            const message = encodeURIComponent(
-                `Hello Episteme Learning Academy 👋\n\n` +
-                `A new admission inquiry has just been submitted.\n\n` +
-                `👧 Child Name: ${childName}\n` +
-                `🎂 Age: ${childAge}\n` +
-                `📚 Program: ${program}\n\n` +
-                `Please confirm receipt. Thank you.`
-            );
-
-            // ⏱ Delay WhatsApp so EmailJS completes
             setTimeout(() => {
-                window.open(
-                    `https://wa.me/${whatsappNumber}?text=${message}`,
-                    "_blank"
-                );
-            }, 1500);
-
-            // Auto close popup
-            setTimeout(() => {
-                successMsg.style.display = "none";
                 closePopup();
-            }, 4000);
-
-        }, function (error) {
-
-            // ⚠️ Soft failure handling (EmailJS mobile-safe)
-            console.warn("EmailJS issue:", error);
-
-            successMsg.style.display = "block";
-            successMsg.style.color = "orange";
-            successMsg.textContent =
-                "Your request was sent.";
-
-            setTimeout(() => {
-                window.open(
-                    "https://wa.me/2349131331867?text=Hello%20Episteme%20Learning%20Academy%20👋%20I%20just%20submitted%20an%20admission%20form%20via%20your%20website.",
-                    "_blank"
-                );
-            }, 1200);
+                successMsg.style.display = "none";
+            }, 3000);
         });
-
     });
+
 });
 </script>
+
 </body>
 </html>
-
-
