@@ -350,62 +350,116 @@ p, li {
 .phone-link:hover {
     text-decoration: underline;
 }
-#admission-cta {
-  background: linear-gradient(135deg, #0a2a66, #7a0019);
-  color: #ffffff;
-  text-align: center;
-  padding: 60px 20px;
-  margin: 60px 0;
-  border-radius: 12px;
+/* ===== CTA SECTION ===== */
+
+.dual-cta-section {
+    padding: 80px 20px;
+    background: linear-gradient(180deg, #f4f8fc, #ffffff);
 }
 
-#admission-cta h2 {
-  font-size: 2rem;
-  margin-bottom: 15px;
+.cta-container {
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+    align-items: flex-start; 
+    flex-wrap: wrap;
 }
 
-#admission-cta p {
-  max-width: 700px;
-  margin: 0 auto 30px;
-  font-size: 1.05rem;
-  line-height: 1.6;
+/* Base Card Style */
+.cta-card {
+    flex: 1;
+    max-width: 520px;
+    padding: 45px 35px;
+    border-radius: 22px;
+    color: #ffffff;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+    transition: all 0.4s ease;
 }
 
-.cta-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  flex-wrap: wrap;
+.cta-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 25px 45px rgba(0, 0, 0, 0.18);
 }
+
+/* 🎓 Admission Card - Elegant Wine */
+.primary-card {
+    background: linear-gradient(135deg, #7a0019, #b3002d);
+}
+
+/* 📚 Selar Card - Deep Purple Luxury */
+.selar-card {
+    background: linear-gradient(135deg, #4b0082, #7b1fa2);
+}
+
+/* Headings */
+.cta-card h2 {
+    font-size: 1.9rem;
+    margin-bottom: 20px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+/* Paragraph */
+.cta-card p {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    margin-bottom: 30px;
+    opacity: 0.95;
+}
+
+/* ===== BUTTON DESIGN ===== */
 
 .cta-btn {
-  padding: 14px 28px;
-  border-radius: 30px;
-  text-decoration: none;
-  font-weight: 600;
-  transition: transform 0.3s ease, background 0.3s ease;
+    display: inline-block;
+    padding: 14px 36px;
+    border-radius: 50px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    letter-spacing: 0.6px;
+    font-size: 0.95rem;
 }
 
-.cta-btn.primary {
-  background-color: #25d366; /* WhatsApp green */
-  color: #ffffff;
+/* Light Button (Admission) */
+.light-btn {
+    background: #ffffff;
+    color: #7a0019;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
 }
 
-.cta-btn.secondary {
-  background-color: #ffffff;
-  color: #7a0019;
+.light-btn:hover {
+    background: #f5e6ea;
+    transform: scale(1.08);
 }
 
-.cta-btn:hover {
-  transform: translateY(-3px);
+/* Dark Button (Selar) */
+.dark-btn {
+    background: #ffffff;
+    color: #4b0082;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
 }
+
+.dark-btn:hover {
+    background: #ede4ff;
+    transform: scale(1.08);
+}
+
+/* Mobile */
 @media (max-width: 768px) {
-    #admission-cta h2 {
-        font-size: 1.6rem;
+    .cta-card {
+        padding: 35px 25px;
     }
     
-    #admission-cta p {
-        font-size: 1rem;
+    .cta-card h2 {
+        font-size: 1.6rem;
+    }
+
+    .cta-container {
+        flex-direction: column;
+        align-items: center;
     }
 }
 .popup-overlay {
