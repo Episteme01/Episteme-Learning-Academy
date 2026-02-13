@@ -1,109 +1,792 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Parent Dashboard - Episteme Learning Academy</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+    <meta charset="UTF-8">  
+    <title>Parent Dashboard - Episteme Learning Academy</title>  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+      
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>  
 
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
-            color: white;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 25px;
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-        }
-
-        .header h2 {
-            margin: 0;
-        }
-
-        .logout-btn {
-            padding: 8px 15px;
-            border: none;
-            border-radius: 8px;
-            background: white;
-            color: #2a5298;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .container {
-            padding: 20px;
-        }
-
-        .card {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(12px);
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-        }
-
-        .card h3 {
-            margin-top: 0;
-        }
-
-        .results-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 15px;
-        }
-
-        .subject-card {
-            background: white;
-            color: #2a5298;
-            padding: 15px;
-            border-radius: 12px;
-            text-align: center;
-            font-weight: bold;
-        }
-
-        .average-box {
-            text-align: center;
-            font-size: 20px;
-            font-weight: bold;
-        }
-        .footer {
-            text-align: center;
-            padding: 15px;
-            font-size: 13px;
-            opacity: 0.7;
-        }
-.comment {
-    background: #f9f9ff; /* light background */
-    color: #001f5b;      /* deep blue text */
-    padding: 12px;
-    border-left: 4px solid #4b3cf0;
-    border-radius: 6px;
-    margin-top: 8px;
-    font-style: italic;
-}
-    </style>
-</head>
-
-<body>
-
-<div class="header">
-    <h2>Episteme Learning Academy</h2>
+    <style>  
+        /* ====== GLOBAL STYLES ====== */  
+        body {  
+            margin: 0;  
+            font-family: Arial, sans-serif;  
+            background: linear-gradient(135deg, #1e3c72, #2a5298);  
+            color: #fff;  
+        }  
+        h2, h3 {  
+            margin: 0;  
+        }  
+        button {  
+            cursor: pointer;  
+        }  
+  
+        /* ====== HEADER ====== */  
+        .header {  
+            display: flex;  
+            justify-content: space-between;  
+            align-items: center;  
+            padding: 15px 25px;  
+            background: rgba(255,255,255,0.1);  
+            backdrop-filter: blur(10px);  
+        }  
+        .logout-btn {  
+            padding: 8px 15px;  
+            border: none;  
+            border-radius: 8px;  
+            background: white;  
+            color: #2a5298;  
+            font-weight: bold;  
+        }  
+  
+        /* ====== LAYOUT ====== */  
+        .dashboard-wrapper {  
+            display: flex;  
+            min-height: 90vh;  
+        }  
+        .sidebar {  
+            width: 250px;  
+            background: rgba(255,255,255,0.1);  
+            backdrop-filter: blur(10px);  
+            padding: 20px;  
+            display: flex;  
+            flex-direction: column;  
+            gap: 10px;  
+        }  
+        .sidebar button {  
+            background: transparent;  
+            border: none;  
+            color: white;  
+            text-align: left;  
+            padding: 10px;  
+            border-radius: 8px;  
+            font-size: 15px;  
+        }  
+        .sidebar button.active, .sidebar button:hover {  
+            background: rgba(255,255,255,0.2);  
+        }  
+        .sidebar .submenu {  
+            padding-left: 15px;  
+            display: none;  
+            flex-direction: column;  
+            gap: 5px;  
+        }  
+        .sidebar .submenu button {  
+            font-size: 14px;  
+        }  
+  
+        .main-content {  
+            flex: 1;  
+            padding: 20px;  
+        }  
+  
+        .card {  
+            background: rgba(255,255,255,0.1);  
+            backdrop-filter: blur(12px);  
+            padding: 20px;  
+            border-radius: 15px;  
+            margin-bottom: 20px;  
+        }  
+        .results-grid {  
+            display: grid;  
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));  
+            gap: 15px;  
+        }  
+        .subject-card {  
+            background: white;  
+            color: #2a5298;  
+            padding: 15px;  
+            border-radius: 12px;  
+            text-align: center;  
+            font-weight: bold;  
+        }  
+        .average-box {  
+            text-align: center;  
+            font-size: 20px;  
+            font-weight: bold;  
+        }  
+        .comment {  
+            background: #f9f9ff;  
+            color: #001f5b;  
+            padding: 12px;  
+            border-left: 4px solid #4b3cf0;  
+            border-radius: 6px;  
+            margin-top: 8px;  
+            font-style: italic;  
+        }  
+  
+       /* ===== PROFESSIONAL TABLE DESIGN ===== */  
+  
+.table-card {  
+    background: white;  
+    border-radius: 15px;  
+    padding: 20px;  
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);  
+    color: #2a2a2a;  
+    margin-bottom: 20px;  
+}  
+  
+.table-title {  
+    font-size: 18px;  
+    font-weight: bold;  
+    margin-bottom: 15px;  
+    color: #2a5298;  
+}  
+  
+.assessment-table {  
+    width: 100%;  
+    border-collapse: collapse;  
+    font-size: 14px;  
+}  
+  
+.assessment-table thead {  
+    background: #2a5298;  
+    color: white;  
+}  
+  
+.assessment-table th {  
+    padding: 12px;  
+    text-align: left;  
+    cursor: pointer;  
+    position: relative;  
+}  
+  
+.assessment-table th:hover {  
+    background: #1e3c72;  
+}  
+  
+.assessment-table td {  
+    padding: 12px;  
+    border-bottom: 1px solid #e0e0e0;  
+}  
+  
+.assessment-table tbody tr:nth-child(even) {  
+    background: #f4f7ff;  
+}  
+  
+.assessment-table tbody tr:hover {  
+    background: #e8efff;  
+    transition: 0.2s ease;  
+}  
+  
+.score-badge {  
+    background: #4b3cf0;  
+    color: white;  
+    padding: 4px 10px;  
+    border-radius: 20px;  
+    font-size: 12px;  
+    font-weight: bold;  
+}  
+  
+.download-btn {  
+    margin-top: 15px;  
+    background: linear-gradient(135deg, #4b3cf0, #2a5298);  
+    color: white;  
+    padding: 8px 14px;  
+    border-radius: 8px;  
+    border: none;  
+    font-weight: bold;  
+    transition: 0.2s ease;  
+}  
+  
+.download-btn:hover {  
+    transform: translateY(-2px);  
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);  
+}  
+        /* ====== FOOTER ====== */  
+        .footer {  
+            text-align: center;  
+            padding: 15px;  
+            font-size: 13px;  
+            opacity: 0.7;  
+        }  
+.schedule-grid {  
+    width: 100%;  
+    border-collapse: collapse;  
+    margin-top: 15px;  
+}  
+  
+.schedule-grid th {  
+    background: #2a5298;  
+    color: white;  
+    padding: 10px;  
+}  
+  
+.schedule-grid td {  
+    padding: 12px;  
+    text-align: center;  
+    border: 1px solid #e0e0e0;  
+}  
+  
+.schedule-grid tbody tr:nth-child(even) {  
+    background: #f4f7ff;  
+}  
+  
+.schedule-subject {  
+    background: #4b3cf0;  
+    color: white;  
+    padding: 6px;  
+    border-radius: 8px;  
+    font-size: 13px;  
+}  
+.schedule-grid {  
+    width: 100%;  
+    border-collapse: collapse;  
+    background: white;  
+    border-radius: 8px;  
+    overflow: hidden;  
+}  
+  
+.schedule-grid th,  
+.schedule-grid td {  
+    padding: 12px;  
+    border-bottom: 1px solid #e5e7eb;  
+    text-align: center;  
+}  
+  
+.schedule-grid th {  
+    background: #1e3a8a;  
+    color: white;  
+}  
+  
+.subject-badge {  
+    padding: 6px 12px;  
+    border-radius: 20px;  
+    color: white;  
+    font-weight: 600;  
+    display: inline-block;  
+}  
+    </style>  
+</head>  
+<body>  
+  
+<div class="header">  
+    <h2>Episteme Learning Academy</h2>  
     <button class="logout-btn" onclick="logout()">Logout</button>
+</div>  
+  
+<div class="dashboard-wrapper">  
+    <!-- SIDEBAR -->  
+    <div class="sidebar">  
+        <button id="btn-dashboard" onclick="showSection('dashboard', this)">Dashboard</button>  
+        <button onclick="showSection('performance', this)">Performance & Attendance</button>  
+        <button onclick="showSection('historical', this)">Historical Grades</button>  
+  
+        <button onclick="toggleSubmenu('assessmentSubmenu')">Assessment Portfolio ▾</button>  
+        <div id="assessmentSubmenu" class="submenu">  
+            <button onclick="showClasswork(this)">Classwork</button>  
+            <button onclick="showAssignments(this)">Assignments</button>  
+            <button onclick="showExams(this)">Exam Results</button>  
+        </div>  
+  
+<button onclick="showSchedule(this)">My Schedule</button>  
+        <button onclick="showSection('account', this)">Account Preferences</button>  
+    </div>  
+  
+    <!-- MAIN CONTENT -->  
+    <div class="main-content">  
+  
+        <!-- DASHBOARD SECTION -->  
+        <div id="dashboard" class="section">  
+            <div class="card">  
+                <h3>Student Info</h3>  
+                <p><strong>ID:</strong> <span id="studentID"></span></p>  
+                <p><strong>Name:</strong> <span id="studentName"></span></p>  
+                <p><strong>Class:</strong> <span id="studentClass"></span></p>  
+                <p><strong>Age:</strong> <span id="studentAge"></span></p>  
+                <p><strong>Date of Birth:</strong> <span id="studentDOB"></span></p>  
+                <p><strong>Program:</strong> <span id="studentProgram"></span></p>  
+                <p><strong>Additional Info:</strong> <span id="studentInfo"></span></p>  
+            </div>  
+        </div>  
+  
+        <!-- PERFORMANCE SECTION -->  
+        <div id="performance" class="section" style="display:none;">  
+            <div class="card">  
+                <label><strong>Select Term:</strong></label>  
+                <select id="termSelector" onchange="changeTerm()">  
+                    <option value="term1">1st Term</option>  
+                    <option value="term2">2nd Term</option>  
+                    <option value="term3">3rd Term</option>  
+                </select>  
+            </div>  
+  
+            <div class="card">  
+                <h3>Academic Results</h3>  
+                <div class="results-grid">  
+                    <div class="subject-card">Math <br><span id="math"></span></div>  
+                    <div class="subject-card">English <br><span id="english"></span></div>  
+                    <div class="subject-card">Science <br><span id="science"></span></div>  
+                </div>  
+            </div>  
+  
+            <div class="card average-box">  
+                Overall Average: <span id="averageScore"></span>  
+            </div>  
+  
+            <div class="card">  
+                <p><strong>Teacher Comment:</strong></p>  
+                <div id="comment" class="comment"></div>  
+                <h3>Attendance & Fees</h3>  
+                <p><strong>Attendance:</strong> <span id="attendance"></span>%</p>  
+                <p><strong>Fee Status:</strong> <span id="feeStatus"></span></p>  
+            </div>  
+        </div>  
+  
+        <!-- HISTORICAL GRADES SECTION -->  
+        <div id="historical" class="section" style="display:none;">  
+    <div class="card">  
+        <h3>Historical Academic Performance</h3>  
+        <div id="historicalTable"></div>  
+    </div>  
+      
+    <div class="card">  
+        <h3>Performance Trend</h3>  
+        <canvas id="performanceChart" height="100"></canvas>  
+    </div>  
+</div>  
+  
+        <!-- CLASSWORK TABLE -->  
+        <div id="classwork" class="section" style="display:none;"></div>  
+  
+        <!-- ASSIGNMENTS TABLE -->  
+        <div id="assignments" class="section" style="display:none;"></div>  
+  
+        <!-- EXAMS TABLE -->  
+        <div id="exams" class="section" style="display:none;"></div>  
+  
+        <!-- SCHEDULE SECTION -->  
+        <div id="schedule" class="section" style="display:none;">  
+    <div class="card">  
+        <h2>My Weekly Schedule</h2>  
+        <div id="scheduleTable"></div>  
+    </div>  
+</div>  
+  
+        <!-- ACCOUNT SECTION -->  
+        <div id="account" class="section" style="display:none;">  
+            <div class="card">  
+                <p>Account preferences placeholder</p>  
+            </div>  
+        </div>  
+  
+    </div>  
+</div>  
+  
+<div class="footer">  
+    © 2026 Episteme Learning Academy | Parent Portal  
 </div>
+  
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+    getFirestore,
+    collection,
+    query,
+    where,
+    getDocs,
+    doc,
+    getDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-<div class="container">
+const firebaseConfig = {
+apiKey: "AIzaSyC4psvU8WSR1QQQsRlZ8HkHO57Dznbb9TA",
+authDomain: "episteme-learning-academy.firebaseapp.com",
+projectId: "episteme-learning-academy",
+storageBucket: "episteme-learning-academy.firebasestorage.app",
+messagingSenderId: "476274489231",
+appId: "1:476274489231:web:fb67e5fde8a5d26328bdfa",
+measurementId: "G-PKPLKXMWSX"
+};
 
-    <div class="card">
-        <h3>Welcome Parent 👋</h3>
-        <p><strong>Student Name:</strong> <span id="studentName"></span></p>
-        <p><strong>Class:</strong> <span id="studentClass"></span></p>
-        <p><strong>Age:</strong> <span id="studentAge"></span></p>
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+        // If not logged in → send back to login
+        window.location.href = "parent-login.html";
+    } else {
+        console.log("Logged in as:", user.email);
+        // You can later load Firestore student data here
+    }
+});
+
+// Toggle submenu  
+window.toggleSubmenu = function(id){  
+    const submenu = document.getElementById(id);  
+    submenu.style.display = submenu.style.display === "flex" ? "none" : "flex";  
+}  
+  
+// ========== MOCK DATA FOR TESTING ==========
+let currentStudent = {
+    studentID: "S12345",
+    studentName: "John Doe",
+    studentClass: "6B",
+    studentAge: 12,
+    studentDOB: "2014-05-12",
+    studentProgram: "STEM",
+    studentInformation: "Excellent student with great participation.",
+    attendance: 95,
+    feeStatus: "Paid",
+    results: {
+        term1: { math: 88, english: 92, science: 85, comment: "Great progress!" },
+        term2: { math: 90, english: 89, science: 87, comment: "Keep up the good work." },
+        term3: { math: 93, english: 91, science: 90, comment: "Outstanding performance!" }
+    },
+    classwork: [
+        { title: "Math Worksheet 1", score: 80 },
+        { title: "Science Exercise 2", score: 90 },
+        { title: "Math Worksheet 2", score: 95 },
+    ],
+    assignments: [
+        { title: "English Essay", score: 88 },
+        { title: "History Assignment", score: 92 }
+    ],
+    exams: [
+        { title: "Term 1 Exam", score: 88 },
+        { title: "Term 2 Exam", score: 90 }
+    ]
+};
+
+let weeklySchedule = [];
+  
+// ========== INITIALIZE DASHBOARD ==========  
+
+window.onload = function(){  
+    document.getElementById("studentID").textContent = currentStudent.studentID;  
+    document.getElementById("studentName").textContent = currentStudent.studentName;  
+    document.getElementById("studentClass").textContent = currentStudent.studentClass;  
+    document.getElementById("studentAge").textContent = currentStudent.studentAge;  
+    document.getElementById("studentDOB").textContent = currentStudent.studentDOB;  
+    document.getElementById("studentProgram").textContent = currentStudent.studentProgram;  
+    document.getElementById("studentInfo").textContent = currentStudent.studentInformation;  
+  
+    showSection('dashboard', document.getElementById('btn-dashboard'));  
+    updateTermData("term1");  
+};  
+  
+// ========== SECTION NAVIGATION ==========  
+window.showSection = function(sectionId, btn) {
+    const sections = document.querySelectorAll(".section");
+    sections.forEach(sec => sec.style.display = "none");
+    
+    document.getElementById(sectionId).style.display = "block";
+    
+    const buttons = document.querySelectorAll(".sidebar button");
+    buttons.forEach(b => b.classList.remove("active"));
+    
+    if (btn) btn.classList.add("active");
+};
+  
+// ========== RESULTS ==========  
+function updateTermData(term){  
+    const termData = currentStudent.results[term];  
+    document.getElementById("math").textContent = termData.math;  
+    document.getElementById("english").textContent = termData.english;  
+    document.getElementById("science").textContent = termData.science;  
+    document.getElementById("comment").textContent = termData.comment;  
+    document.getElementById("attendance").textContent = currentStudent.attendance;  
+    document.getElementById("feeStatus").textContent = currentStudent.feeStatus;  
+  
+    const avg = (termData.math + termData.english + termData.science)/3;  
+    document.getElementById("averageScore").textContent = avg.toFixed(1) + "% (" + getGrade(avg) + ")";  
+}  
+window.changeTerm = function(){  
+    const selectedTerm = document.getElementById("termSelector").value;  
+    updateTermData(selectedTerm);  
+};  
+function getGrade(avg){  
+    avg = Number(avg);  
+    if(avg >= 70) return "A";  
+    if(avg >= 60) return "B";  
+    if(avg >= 50) return "C";  
+    if(avg >= 45) return "D";  
+    return "F";  
+}  
+  
+// ========== PROFESSIONAL TABLES ==========  
+function renderTable(sectionId, dataArray, title = "Assessment Records") {  
+    const container = document.getElementById(sectionId);  
+    container.innerHTML = "";  
+      
+    if (dataArray.length === 0) {  
+        container.innerHTML = "<p>No records available.</p>";  
+        return;  
+    }  
+      
+    const card = document.createElement("div");  
+    card.className = "table-card";  
+      
+    const heading = document.createElement("div");  
+    heading.className = "table-title";  
+    heading.textContent = title;  
+    card.appendChild(heading);  
+      
+    const table = document.createElement('table');  
+    table.className = "assessment-table";  
+      
+    const thead = document.createElement('thead');  
+    thead.innerHTML = `  
+        <tr>  
+            <th onclick="sortTable('${sectionId}',0)">Title ▲▼</th>  
+            <th onclick="sortTable('${sectionId}',1)">Score ▲▼</th>  
+        </tr>`;  
+    table.appendChild(thead);  
+      
+    const tbody = document.createElement('tbody');  
+      
+    dataArray.forEach(item => {  
+        const tr = document.createElement('tr');  
+        tr.innerHTML = `  
+            <td>${item.title}</td>  
+            <td><span class="score-badge">${item.score}%</span></td>  
+        `;  
+        tbody.appendChild(tr);  
+    });  
+      
+    table.appendChild(tbody);  
+    card.appendChild(table);  
+      
+    const btn = document.createElement('button');  
+    btn.textContent = "Download CSV";  
+    btn.className = "download-btn";  
+    btn.onclick = () => downloadTableCSV(dataArray, sectionId);  
+    card.appendChild(btn);  
+      
+    container.appendChild(card);  
+}  
+function downloadTableCSV(dataArray, filename){  
+    let csv = "Title,Score\n";  
+    dataArray.forEach(item => csv += `"${item.title}",${item.score}\n`);  
+  
+    const blob = new Blob([csv], {type:"text/csv"});  
+    const url = URL.createObjectURL(blob);  
+    const a = document.createElement("a");  
+    a.href = url;  
+    a.download = `${filename}.csv`;  
+    a.click();  
+    URL.revokeObjectURL(url);  
+}  
+  
+// SHOW TABLES  
+window.showClasswork = function(btn) {  
+    renderTable('classwork', currentStudent.classwork, "Classwork Records");  
+    showSection('classwork', btn);  
+};  
+  
+window.showAssignments = function(btn) {  
+    renderTable('assignments', currentStudent.assignments, "Assignment Records");  
+    showSection('assignments', btn);  
+};  
+  
+window.showExams = function(btn) {  
+    renderTable('exams', currentStudent.exams, "Exam Results");  
+    showSection('exams', btn);  
+};  
+  
+// SORT TABLE  
+function sortTable(sectionId, colIndex){  
+    const table = document.querySelector(`#${sectionId} table`);  
+    const tbody = table.querySelector('tbody');  
+    const rows = Array.from(tbody.querySelectorAll('tr'));  
+    let asc = table.asc;  
+  
+    rows.sort((a,b)=>{  
+        const aText = a.cells[colIndex].textContent.trim();  
+        const bText = b.cells[colIndex].textContent.trim();  
+        if(colIndex===1){ return asc ? aText - bText : bText - aText; }  
+        return asc ? aText.localeCompare(bText) : bText.localeCompare(aText);  
+    });  
+  
+    rows.forEach(r=>tbody.appendChild(r));  
+    table.asc = !asc;  
+}  
+
+    // ===========================  
+    // DOWNLOAD RESULTS  
+    // ===========================  
+    function downloadJSON() {  
+        try {  
+            const dataStr = JSON.stringify(currentStudent, null, 2);  
+            const blob = new Blob([dataStr], { type: "application/json" });  
+            const url = URL.createObjectURL(blob);  
+              
+            const a = document.createElement("a");  
+            a.href = url;  
+            a.download = `${currentStudent.studentName}_results.json`;  
+            a.click();  
+            URL.revokeObjectURL(url);  
+        } catch (error) {  
+            console.error(error);  
+            alert("Error downloading JSON file");  
+        }  
+    }  
+      
+    async function downloadPDF() {  
+        const { jsPDF } = window.jspdf;  
+        const doc = new jsPDF();  
+          
+        doc.text("Episteme Learning Academy", 20, 20);  
+        doc.text("Student Result Slip", 20, 30);  
+        doc.text("Name: " + currentStudent.studentName, 20, 40);  
+        doc.text("Age: " + currentStudent.studentAge, 20, 50);  
+        doc.text("Class: " + currentStudent.studentClass, 20, 60);  
+          
+        const term = document.getElementById("termSelector").value;  
+        const data = currentStudent.results[term];  
+          
+        doc.text("Math: " + data.math, 20, 80);  
+        doc.text("English: " + data.english, 20, 90);  
+        doc.text("Science: " + data.science, 20, 100);  
+        doc.text("Comment: " + data.comment, 20, 110);  
+          
+        doc.save("result-slip.pdf");  
+    }  
+      
+    // ===========================  
+    // LOGOUT (dummy for now)  
+    // ===========================  
+    window.logout = async function() {
+    try {
+        await signOut(auth);
+        window.location.href = "parent-login.html";
+    } catch (error) {
+        console.error("Logout error:", error);
+    }
+};
+
+    function showHistorical(btn) {  
+    showSection('historical', btn);  
+    renderHistoricalGrades();  
+}  
+      
+function renderChart(averages) {  
+    const ctx = document.getElementById("performanceChart").getContext("2d");  
+      
+    new Chart(ctx, {  
+        type: "line",  
+        data: {  
+            labels: ["Term 1", "Term 2", "Term 3"],  
+            datasets: [{  
+                label: "Average Performance (%)",  
+                data: averages,  
+                borderColor: "#4b3cf0",  
+                backgroundColor: "rgba(75,60,240,0.2)",  
+                tension: 0.3,  
+                fill: true,  
+            }]  
+        },  
+        options: {  
+            responsive: true,  
+            plugins: {  
+                legend: { display: true }  
+            },  
+            scales: {  
+                y: {  
+                    beginAtZero: true,  
+                    max: 100  
+                }  
+            }  
+        }  
+    });  
+}  
+
+// ===============================
+// WEEKLY SCHEDULE
+// ===============================
+
+window.showSchedule = async function(btn) {
+    showSection('schedule', btn);
+    await loadSchedule(currentStudent.studentClass);
+};
+
+async function loadSchedule(studentClass) {
+    console.log("Loading schedule for class:", studentClass);
+    
+    const docRef = doc(db, "Schedule", studentClass);
+    const docSnap = await getDoc(docRef);
+    
+    if (docSnap.exists()) {
+        console.log("Schedule document found:", docSnap.data());
+        
+        weeklySchedule = docSnap.data().days || [];
+        
+        console.log("Weekly schedule array:", weeklySchedule);
+        
+        renderSchedule();
+    } else {
+        console.log("No schedule document found in Firestore.");
+        document.getElementById("scheduleTable").innerHTML =
+            "<p>No schedule found for this class.</p>";
+    }
+}
+
+function renderSchedule() {
+    const container = document.getElementById("scheduleTable");
+    container.innerHTML = "";
+    
+    if (!weeklySchedule.length) {
+        container.innerHTML = "<p>No schedule available.</p>";
+        return;
+    }
+    
+    const table = document.createElement("table");
+    table.className = "schedule-grid";
+    
+    table.innerHTML = `
+        <thead>
+            <tr>
+                <th>Day</th>
+                <th>Time</th>
+                <th>Subject</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    `;
+    
+    const tbody = table.querySelector("tbody");
+    
+    weeklySchedule.forEach(dayObj => {
+        dayObj.periods.forEach((period, index) => {
+            const tr = document.createElement("tr");
+            
+            tr.innerHTML = `
+                ${index === 0 ? `<td rowspan="${dayObj.periods.length}"><strong>${dayObj.day}</strong></td>` : ""}
+                <td>${period.time}</td>
+                <td>
+                    <span class="subject-badge" 
+                    style="background:${getSubjectColor(period.subject)}">
+                    ${period.subject}
+                    </span>
+                </td>
+            `;
+            
+            tbody.appendChild(tr);
+        });
+    });
+    
+    container.appendChild(table);
+}
+
+function getSubjectColor(subject) {
+    const colors = {
+        Math: "#4b3cf0",
+        English: "#f39c12",
+        Science: "#27ae60",
+        History: "#e74c3c",
+        "Physical Education": "#16a085"
+    };
+    return colors[subject] || "#bdc3c7";
+}
+</script>
+    
+    </body>  
+</html>  
+  
         <p><strong>Program:</strong> <span id="studentProgram"></span></p>
     </div>
 
