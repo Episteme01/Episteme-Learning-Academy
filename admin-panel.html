@@ -55,42 +55,96 @@ if (studentIndex !== -1) {
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
     
     const firebaseConfig = {
         apiKey: "AIzaSyC4psvU8WSR1QQQsRlZ8HkHO57Dznbb9TA",
-        authDomain: "episteme-learning-academy.firebaseapp.com",
-        projectId: "episteme-learning-academy",
-        storageBucket: "episteme-learning-academy.firebasestorage.app",
-        messagingSenderId: "476274489231",
-        appId: "1:476274489231:web:fb67e5fde8a5d26328bdfa"
-    };
+    authDomain: "episteme-learning-academy.firebaseapp.com",
+    projectId: "episteme-learning-academy",
+    storageBucket: "episteme-learning-academy.firebasestorage.app",
+    messagingSenderId: "476274489231",
+    appId: "1:476274489231:web:fb67e5fde8a5d26328bdfa"
+};
     
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    const db = getFirestore(app);
     
-    // If already logged in → go to admin.html
-    onAuthStateChanged(auth, (user) => {
+    // If already logged in → verify admin
+    onAuthStateChanged(auth, async (user) => {
         if (user) {
-            window.location.href = "admin.html";
+            try {
+                const adminRef = doc(db, "Admin", user.email);
+                const adminSnap = await getDoc(adminRef);
+                
+                if (adminSnap.exists()) {
+                    window.location.href = "./admin.html";
+                } else {
+                    alert("Access denied. You are not an admin.");
+                    await signOut(auth);
+                }
+            } catch (error) {
+                console.error("Error checking admin:", error);
+            }
         }
     });
     
-    // Handle login
+    // Handle Login
     document.getElementById("adminLoginForm").addEventListener("submit", async (e) => {
         e.preventDefault();
         
-        const email = document.getElementById("adminEmail").value;
+        const email = document.getElementById("adminEmail").value.trim();
         const password = document.getElementById("adminPassword").value;
         
         try {
-            await signInWithEmailAndPassword(auth, email, password);
-            alert("Login successful!");
-            window.location.href = "admin.html";
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+            
+            // Check if user exists in Admin collection
+            const adminRef = doc(db, "Admin", user.email);
+            const adminSnap = await getDoc(adminRef);
+            
+            if (adminSnap.exists()) {
+                alert("Login successful!");
+                window.location.href = "./admin.html";
+            } else {
+                alert("Access denied. You are not registered as an admin.");
+                await signOut(auth);
+            }
+            
         } catch (error) {
             alert("Login failed: " + error.message);
         }
     });
+    import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const auth = getAuth();
+const db = getFirestore();
+
+// 🔐 Protect admin page from direct access
+onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+        window.location.href = "./admin-panel.html";
+        return;
+    }
+    
+    // Verify admin role again
+    const adminRef = doc(db, "Admin", user.email);
+    const adminSnap = await getDoc(adminRef);
+    
+    if (!adminSnap.exists()) {
+        await signOut(auth);
+        window.location.href = "./admin-panel.html";
+    }
+});
+
+// 🚪 Logout function
+document.getElementById("logoutBtn").addEventListener("click", async () => {
+    await signOut(auth);
+    window.location.href = "./admin-panel.html";
+});
 </script>
 </body>  
 </html>
