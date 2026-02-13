@@ -117,11 +117,12 @@ if (studentIndex !== -1) {
             alert("Login failed: " + error.message);
         }
     });
-           return;
-    }
-    
-  });
-
+            // Logout
+document.getElementById("logoutBtn").addEventListener("click", async () => {
+    await signOut(auth);
+    window.location.href = "admin.html";
+});
+  
 </script>
 </body>  
 </html>
