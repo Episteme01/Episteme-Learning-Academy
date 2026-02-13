@@ -101,37 +101,54 @@ window.logout = function() {
 };
 
 
-// Submit Form
+import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
 document.getElementById("studentForm").addEventListener("submit", async function(e) {
     e.preventDefault();
-const studentData = { ... };
-await addDoc(collection(db, "Students"), studentData);
-}
+    
     const studentID = document.getElementById("studentID").value;
-const parentPassword = document.getElementById("parentPassword").value;
-const parentEmail = document.getElementById("parentEmail").value;
-
-const studentName = document.getElementById("studentName").value;
-const studentClass = document.getElementById("studentClass").value;
-const studentAge = document.getElementById("studentAge").value;
-const studentProgram = document.getElementById("studentProgram").value;
-    // Term 1
-const t1math = Number(document.getElementById("t1math").value);
-const t1english = Number(document.getElementById("t1english").value);
-const t1science = Number(document.getElementById("t1science").value);
-const t1comment = document.getElementById("t1comment").value;
-
-// Term 2
-const t2math = Number(document.getElementById("t2math").value || 0);
-const t2english = Number(document.getElementById("t2english").value || 0);
-const t2science = Number(document.getElementById("t2science").value || 0);
-const t2comment = document.getElementById("t2comment").value || "";
-
-// Term 3
-const t3math = Number(document.getElementById("t3math").value || 0);
-const t3english = Number(document.getElementById("t3english").value || 0);
-const t3science = Number(document.getElementById("t3science").value || 0);
-const t3comment = document.getElementById("t3comment").value || "";
+    
+    const studentData = {
+        studentID: studentID,
+        parentEmail: document.getElementById("parentEmail").value,
+        parentPassword: document.getElementById("parentPassword").value,
+        studentName: document.getElementById("studentName").value,
+        studentClass: document.getElementById("studentClass").value,
+        studentAge: Number(document.getElementById("studentAge").value),
+        studentProgram: document.getElementById("studentProgram").value,
+        attendance: Number(document.getElementById("attendance").value),
+        feeStatus: document.getElementById("feeStatus").value,
+        results: {
+            term1: {
+                math: Number(document.getElementById("t1math").value),
+                english: Number(document.getElementById("t1english").value),
+                science: Number(document.getElementById("t1science").value),
+                comment: document.getElementById("t1comment").value
+            },
+            term2: {
+                math: Number(document.getElementById("t2math").value || 0),
+                english: Number(document.getElementById("t2english").value || 0),
+                science: Number(document.getElementById("t2science").value || 0),
+                comment: document.getElementById("t2comment").value || ""
+            },
+            term3: {
+                math: Number(document.getElementById("t3math").value || 0),
+                english: Number(document.getElementById("t3english").value || 0),
+                science: Number(document.getElementById("t3science").value || 0),
+                comment: document.getElementById("t3comment").value || ""
+            }
+        }
+    };
+    
+    try {
+        await setDoc(doc(db, "Students", studentID), studentData);
+        alert("Student added successfully!");
+        document.getElementById("studentForm").reset();
+    } catch (error) {
+        console.error(error);
+        alert("Error saving student");
+    }
+});
 
 // Calculate averages for each term
 const t1average = ((t1math + t1english + t1science) / 3).toFixed(1);
