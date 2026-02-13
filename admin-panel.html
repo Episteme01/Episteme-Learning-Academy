@@ -1,150 +1,237 @@
-<!DOCTYPE html>  <html>  
-<head>  
-    <title>Admin Login - Episteme Learning Academy</title> 
-<link rel="stylesheet" href="admin.css">
-</head>  
-<body>  <h1>Admin Login</h1>  
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Panel - Episteme Learning Academy</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
 
-<form id="adminLoginForm">
-    <input type="email" id="adminEmail" placeholder="Admin Email" required><br><br>
-    <input type="password" id="adminPassword" placeholder="Password" required><br><br>
-    <button type="submit">Login</button>
+<body>
+
+<button onclick="logout()">Logout</button>
+
+
+    <h1>Admin Panel</h1>
+   
+<h2>Add New Student</h2>
+
+<form id="studentForm">
+    <input type="text" id="studentID" placeholder="Student ID (e.g ELA001)" required><br><br>
+<input type="password" id="parentPassword" placeholder="Parent Login Password" required><br><br>
+<input type="email" id="parentEmail" placeholder="Parent Email" required><br><br>
+    <input type="text" id="studentName" placeholder="Student Name" required><br><br>
+    <input type="text" id="studentClass" placeholder="Class" required><br><br>
+    <input type="number" id="studentAge" placeholder="Age" required><br><br>
+    <input type="text" id="studentProgram" placeholder="Program" required><br><br>
+    <h3>Scores</h3>
+   <h3>Term 1 Results</h3>
+<input type="number" id="t1math" placeholder="Math Score (Term 1)" required><br><br>
+<input type="number" id="t1english" placeholder="English Score (Term 1)" required><br><br>
+<input type="number" id="t1science" placeholder="Science Score (Term 1)" required><br><br>
+<input type="text" id="t1comment" placeholder="Teacher Comment (Term 1)" required><br><br>
+
+<h3>Term 2 Results</h3>
+<input type="number" id="t2math" placeholder="Math Score (Term 2)"><br><br>
+<input type="number" id="t2english" placeholder="English Score (Term 2)"><br><br>
+<input type="number" id="t2science" placeholder="Science Score (Term 2)"><br><br>
+<input type="text" id="t2comment" placeholder="Teacher Comment (Term 2)"><br><br>
+
+<h3>Term 3 Results</h3>
+<input type="number" id="t3math" placeholder="Math Score (Term 3)"><br><br>
+<input type="number" id="t3english" placeholder="English Score (Term 3)"><br><br>
+<input type="number" id="t3science" placeholder="Science Score (Term 3)"><br><br>
+<input type="text" id="t3comment" placeholder="Teacher Comment (Term 3)"><br><br>
+
+<h3>Attendance & Fees</h3>
+<input type="number" id="attendance" placeholder="Attendance Percentage" required><br><br>
+<input type="text" id="feeStatus" placeholder="Fee Status (Paid / Not Paid)" required><br><br><br><br>
+    <button type="submit">Add Student</button>
 </form>
 
 
-<script>  
-async function hashPassword(password) {  
-const encoder = new TextEncoder();  
-const data = encoder.encode(password);  
-const hashBuffer = await crypto.subtle.digest("SHA-256", data);  
-const hashArray = Array.from(new Uint8Array(hashBuffer));  
-const hashHex = hashArray.map(b => b.toString(16).padStart(2, "0")).join("");  
-return hashHex;
+<hr>
+<input type="text" id="searchInput" placeholder="Search student by name...">
+<br><br>
 
-}
+<h2>Student List</h2>
+<div id="studentList"></div>
 
-    function showReset() {  
-document.getElementById("resetSection").style.display = "block";
-
-}
-
-async function resetPassword() {
-const id = document.getElementById("resetID").value;
-const newPassword = document.getElementById("newPassword").value;
-
-if (newPassword.length < 5) {  
-    document.getElementById("resetMessage").textContent = "Password must be at least 5 characters.";  
-    return;  
-}  
-  
-const hashedPassword = await hashPassword(newPassword);  
-  
-let students = JSON.parse(localStorage.getItem("students")) || [];  
-  
-const studentIndex = students.findIndex(s => s.studentID === id);  
-  
-if (studentIndex !== -1) {  
-    students[studentIndex].parentPassword = hashedPassword;  
-    localStorage.setItem("students", JSON.stringify(students));  
-    document.getElementById("resetMessage").textContent = "Password reset successful!";  
-    document.getElementById("resetMessage").textContent = "Student ID not found.";  
-}
-
-}
-</script>
-
+<!-- Firebase SDK -->
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-    
-    const firebaseConfig = {
-        apiKey: "AIzaSyC4psvU8WSR1QQQsRlZ8HkHO57Dznbb9TA",
-    authDomain: "episteme-learning-academy.firebaseapp.com",
-    projectId: "episteme-learning-academy",
-    storageBucket: "episteme-learning-academy.firebasestorage.app",
-    messagingSenderId: "476274489231",
-    appId: "1:476274489231:web:fb67e5fde8a5d26328bdfa"
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { 
+    getAuth,
+    onAuthStateChanged,
+    signOut
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import { 
+    getFirestore, 
+    collection, 
+    setDoc, 
+    getDocs, 
+    deleteDoc, 
+    doc 
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC4psvU8WSR1QQQsRlZ8HkHO57Dznbb9TA",
+  authDomain: "episteme-learning-academy.firebaseapp.com",
+  projectId: "episteme-learning-academy",
+  storageBucket: "episteme-learning-academy.firebasestorage.app",
+  messagingSenderId: "476274489231",
+  appId: "1:476274489231:web:fb67e5fde8a5d26328bdfa"
 };
-    
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    
-    // If already logged in → verify admin
-    onAuthStateChanged(auth, async (user) => {
-        if (user) {
-            try {
-                const adminRef = doc(db, "Admin", user.email);
-                const adminSnap = await getDoc(adminRef);
-                
-                if (adminSnap.exists()) {
-                    window.location.href = "./admin.html";
-                } else {
-                    alert("Access denied. You are not an admin.");
-                    await signOut(auth);
-                }
-            } catch (error) {
-                console.error("Error checking admin:", error);
-            }
-        }
-    });
-    
-    // Handle Login
-    document.getElementById("adminLoginForm").addEventListener("submit", async (e) => {
-        e.preventDefault();
-        
-        const email = document.getElementById("adminEmail").value.trim();
-        const password = document.getElementById("adminPassword").value;
-        
-        try {
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
-            
-            // Check if user exists in Admin collection
-            const adminRef = doc(db, "Admin", user.email);
-            const adminSnap = await getDoc(adminRef);
-            
-            if (adminSnap.exists()) {
-                alert("Login successful!");
-                window.location.href = "./admin.html";
-            } else {
-                alert("Access denied. You are not registered as an admin.");
-                await signOut(auth);
-            }
-            
-        } catch (error) {
-            alert("Login failed: " + error.message);
-        }
-    });
-    import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-const auth = getAuth();
-const db = getFirestore();
-
-// 🔐 Protect admin page from direct access
-onAuthStateChanged(auth, async (user) => {
+// Protect page
+onAuthStateChanged(auth, (user) => {
     if (!user) {
-        window.location.href = "./admin-panel.html";
-        return;
-    }
-    
-    // Verify admin role again
-    const adminRef = doc(db, "Admin", user.email);
-    const adminSnap = await getDoc(adminRef);
-    
-    if (!adminSnap.exists()) {
-        await signOut(auth);
-        window.location.href = "./admin-panel.html";
+        window.location.href = "admin-panel.html";
     }
 });
 
-// 🚪 Logout function
-document.getElementById("logoutBtn").addEventListener("click", async () => {
-    await signOut(auth);
-    window.location.href = "./admin-panel.html";
+// Logout
+window.logout = function() {
+    signOut(auth).then(() => {
+        window.location.href = "admin-panel.html";
+    });
+};
+
+
+import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+document.getElementById("studentForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+    
+    const studentID = document.getElementById("studentID").value;
+    
+    const studentData = {
+        studentID: studentID,
+        parentEmail: document.getElementById("parentEmail").value,
+        parentPassword: document.getElementById("parentPassword").value,
+        studentName: document.getElementById("studentName").value,
+        studentClass: document.getElementById("studentClass").value,
+        studentAge: Number(document.getElementById("studentAge").value),
+        studentProgram: document.getElementById("studentProgram").value,
+        attendance: Number(document.getElementById("attendance").value),
+        feeStatus: document.getElementById("feeStatus").value,
+        results: {
+            term1: {
+                math: Number(document.getElementById("t1math").value),
+                english: Number(document.getElementById("t1english").value),
+                science: Number(document.getElementById("t1science").value),
+                comment: document.getElementById("t1comment").value
+            },
+            term2: {
+                math: Number(document.getElementById("t2math").value || 0),
+                english: Number(document.getElementById("t2english").value || 0),
+                science: Number(document.getElementById("t2science").value || 0),
+                comment: document.getElementById("t2comment").value || ""
+            },
+            term3: {
+                math: Number(document.getElementById("t3math").value || 0),
+                english: Number(document.getElementById("t3english").value || 0),
+                science: Number(document.getElementById("t3science").value || 0),
+                comment: document.getElementById("t3comment").value || ""
+            }
+        }
+    };
+    
+    try {
+        await setDoc(doc(db, "Students", studentID), studentData);
+        alert("Student added successfully!");
+        document.getElementById("studentForm").reset();
+    } catch (error) {
+        console.error(error);
+        alert("Error saving student");
+    }
 });
+
+// Calculate averages for each term
+const t1average = ((t1math + t1english + t1science) / 3).toFixed(1);
+const t2average = ((t2math + t2english + t2science) / 3).toFixed(1);
+const t3average = ((t3math + t3english + t3science) / 3).toFixed(1);
+
+const studentData = {
+        studentID,
+        parentEmail,
+        parentPassword,
+        studentName,
+        studentClass,
+        studentAge,
+        studentProgram,
+
+        results: {
+            term1: {
+                math: t1math,
+                english: t1english,
+                science: t1science,
+                average: t1average,
+                comment: t1comment
+            },
+            term2: {
+                math: t2math,
+                english: t2english,
+                science: t2science,
+                average: t2average,
+                comment: t2comment
+            },
+            term3: {
+                math: t3math,
+                english: t3english,
+                science: t3science,
+                average: t3average,
+                comment: t3comment
+            }
+        },
+
+        attendance: Number(document.getElementById("attendance").value),
+        feeStatus: document.getElementById("feeStatus").value
+    };
+
+    try {
+    await setDoc(collection(db, "Students", studentID), studentData);
+    alert("Student added successfully!");
+    document.getElementById("studentForm").reset();
+    loadStudents();
+} catch (error) {
+    console.error(error);
+    alert("Error saving student");
+}
+});
+
+// Load Students
+async function loadStudents() {
+    const querySnapshot = await getDocs(collection(db, "Students"));
+    const list = document.getElementById("studentList");
+    list.innerHTML = "";
+    
+    querySnapshot.forEach((docSnap) => {
+        const student = docSnap.data();
+        const id = docSnap.id;
+        
+        list.innerHTML += `
+        <div>
+            <p><strong>Name:</strong> ${student.studentName}</p>
+            <p><strong>Class:</strong> ${student.studentClass}</p>
+            <button onclick="deleteStudent('${id}')">Delete</button>
+            <hr>
+        </div>
+        `;
+    });
+}
+// Delete Student
+window.deleteStudent = async function(id) {
+    await deleteDoc(doc(db, "Students", id));
+    loadStudents();
+};
+
+loadStudents();
+
 </script>
-</body>  
+
+</body>
 </html>
