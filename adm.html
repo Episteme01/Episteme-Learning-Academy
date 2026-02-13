@@ -8,7 +8,36 @@
 <body>
 
 <button onclick="logout()">Logout</button>
-
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    
+    const firebaseConfig = { /* same as above */ };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    
+    // Protect admin page
+    onAuthStateChanged(auth, async (user) => {
+        if (!user) {
+            window.location.href = "./admin-panel.html";
+            return;
+        }
+        const adminRef = doc(db, "Admin", user.email);
+        const adminSnap = await getDoc(adminRef);
+        if (!adminSnap.exists()) {
+            await signOut(auth);
+            window.location.href = "./admin-panel.html";
+        }
+    });
+    
+    // Logout
+    document.getElementById("logout()").addEventListener("click", async () => {
+        await signOut(auth);
+        window.location.href = "./admin-panel.html";
+    });
+</script>
 
     <h1>Admin Panel</h1>
    
@@ -230,6 +259,7 @@ window.deleteStudent = async function(id) {
 };
 
 loadStudents();
+
 
 </script>
 
