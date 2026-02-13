@@ -79,7 +79,8 @@
             opacity: 0.7;
         }
 .comment {
-    background: #f9f9ff;
+    background: #f9f9ff; /* light background */
+    color: #001f5b;      /* deep blue text */
     padding: 12px;
     border-left: 4px solid #4b3cf0;
     border-radius: 6px;
@@ -110,9 +111,9 @@
         
     <label><strong>Select Term:</strong></label>
     <select id="termSelector" onchange="changeTerm()">
-        <option value="term1">1st Term</option>
-        <option value="term2">2nd Term</option>
-        <option value="term3">3rd Term</option>
+        <option value="term1"><b>1st Term</b></option>
+        <option value="term2"><b>2nd Term</b></option>
+        <option value="term3"><b>3rd Term</b></option>
     </select>
 </div>
         <h3>Academic Results</h3>
@@ -140,9 +141,8 @@
 </div>
 
 <div style="text-align:center; margin-bottom:20px;">
-    <button onclick="downloadPDF()" class="logout-btn">
-        Download Result Slip
-    </button>
+    <button onclick="downloadPDF()" class="logout-btn">Download Result Slip (PDF)</button>
+    <button onclick="downloadJSON()" class="logout-btn">Download Result Slip (JSON)</button>
 </div>
     
 <div class="card">
@@ -264,7 +264,28 @@ window.logout = function() {
         window.location.href = "parent-login.html";
     });
 };
-
+function downloadJSON() {
+    if (!currentStudent) {
+        alert("Student data not loaded yet!");
+        return;
+    }
+    
+    try {
+        const dataStr = JSON.stringify(currentStudent, null, 2);
+        const blob = new Blob([dataStr], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `${currentStudent.studentName}_results.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        
+    } catch (error) {
+        console.error(error);
+        alert("Error downloading JSON file");
+    }
+}
     async function downloadPDF() {
         
         const { jsPDF } = window.jspdf;
