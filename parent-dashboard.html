@@ -5,7 +5,66 @@
     <title>Parent Dashboard - Episteme Learning Academy</title>  
     <meta name="viewport" content="width=device-width, initial-scale=1.0">  
       
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>  
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
+
+<script>// ========== SECTION NAVIGATION ==========
+window.showSection = function(sectionId, btn) {
+const sections = document.querySelectorAll(".section");
+sections.forEach(sec => sec.style.display = "none");
+
+const target = document.getElementById(sectionId);
+if(target) target.style.display = "block";
+
+const buttons = document.querySelectorAll(".sidebar button");
+buttons.forEach(b => b.classList.remove("active"));
+
+if (btn) btn.classList.add("active");
+};
+
+// Toggle submenu
+window.toggleSubmenu = function(id) {
+const submenu = document.getElementById(id);
+if(submenu) submenu.style.display = submenu.style.display === "flex" ? "none" : "flex";
+};</script>
+
+<<script>        // 1️⃣ Get parent document
+        window.updateProfile = async function() {
+    const user = auth.currentUser;
+    const newName = document.getElementById("parentDisplayName").value.trim();
+    
+    if (!newName) {
+        alert("Name cannot be empty.");
+        return;
+    }
+    
+    try {
+        await updateProfile(user, {
+            displayName: newName
+        });
+        
+        alert("Profile updated successfully.");
+    } catch (error) {
+        alert(error.message);
+    }
+};
+
+window.changePassword = async function() {
+    const user = auth.currentUser;
+    const newPassword = document.getElementById("newParentPassword").value;
+    
+    if (newPassword.length < 6) {
+        alert("Password must be at least 6 characters.");
+        return;
+    }
+    
+    try {
+        await updatePassword(user, newPassword);
+        alert("Password updated successfully.");
+    } catch (error) {
+        alert("You may need to re-login before changing password.");
+    }
+};</script>
+
 
     <style>  
         /* ====== GLOBAL STYLES ====== */  
@@ -281,7 +340,7 @@
         </div>  
   
 <button onclick="showSchedule(this)">My Schedule</button>  
-        <button onclick="showSection('account', this)">Account Preferences</button>  
+       <button onclick="showSection('accountPreferences', this)">Account Preferences</button>
     </div>  
   
     <!-- MAIN CONTENT -->  
@@ -364,12 +423,29 @@
     </div>  
 </div>  
   
-        <!-- ACCOUNT SECTION -->  
-        <div id="account" class="section" style="display:none;">  
-            <div class="card">  
-                <p>Account preferences placeholder</p>  
-            </div>  
-        </div>  
+<!-- ACCOUNT PREFERENCES -->
+<div id="accountPreferences" class="section" style="display:none;">
+    <div class="card">
+        <h3>Account Preferences</h3>
+        
+        <label>Email</label>
+        <input type="email" id="parentEmailDisplay" disabled>
+        
+        <label>Display Name</label>
+        <input type="text" id="parentDisplayName">
+        <button class="primary-btn" onclick="updateProfile()">Update Name</button>
+        
+        <hr style="margin:20px 0;">
+        
+        <h4>Change Password</h4>
+        <input type="password" id="newParentPassword" placeholder="New Password">
+        <button class="primary-btn" onclick="changePassword()">Change Password</button>
+        
+        <hr style="margin:20px 0;">
+        
+        <button class="primary-btn" onclick="logout()">Logout</button>
+    </div>
+</div>
   
     </div>  
 </div>  
@@ -380,7 +456,17 @@
   
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+// Auth imports
+import {
+    getAuth,
+    onAuthStateChanged,
+    signOut,
+    updateProfile,
+    updatePassword
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+// Firestore imports
 import {
     getFirestore,
     collection,
@@ -414,44 +500,33 @@ onAuthStateChanged(auth, async (user) => {
         window.location.href = "parent-login.html";
         return;
     }
+    // Populate account info
+    document.getElementById("parentEmailDisplay").value = user.email;
+    document.getElementById("parentDisplayName").value = user.displayName || "";
     
     try {
-        // 1️⃣ Get parent document
         const parentDocRef = doc(db, "Parents", user.uid);
         const parentSnap = await getDoc(parentDocRef);
-        
         if (!parentSnap.exists()) {
             alert("Parent record not found.");
             return;
         }
         
         const studentID = parentSnap.data().studentID;
-        
-        // 2️⃣ Get student document
         const studentDocRef = doc(db, "Students", studentID);
         const studentSnap = await getDoc(studentDocRef);
-        
         if (!studentSnap.exists()) {
             alert("Student record not found.");
             return;
         }
         
-        const studentData = studentSnap.data();
-        
-        initializeDashboard(studentData);
-        
+        initializeDashboard(studentSnap.data());
     } catch (error) {
-        console.error("Error loading data:", error);
+        console.error(error);
     }
 });
-
-// Toggle submenu  
-window.toggleSubmenu = function(id){  
-    const submenu = document.getElementById(id);  
-    submenu.style.display = submenu.style.display === "flex" ? "none" : "flex";  
-}  
   
-  
+ 
 // ========== INITIALIZE DASHBOARD ==========  
 
 function initializeDashboard(studentData) {
@@ -467,19 +542,6 @@ function initializeDashboard(studentData) {
     
     updateTermData("term1");
 }
-  
-// ========== SECTION NAVIGATION ==========  
-window.showSection = function(sectionId, btn) {
-    const sections = document.querySelectorAll(".section");
-    sections.forEach(sec => sec.style.display = "none");
-    
-    document.getElementById(sectionId).style.display = "block";
-    
-    const buttons = document.querySelectorAll(".sidebar button");
-    buttons.forEach(b => b.classList.remove("active"));
-    
-    if (btn) btn.classList.add("active");
-};
   
 // ========== RESULTS ==========  
 function updateTermData(term){  
@@ -649,12 +711,13 @@ function sortTable(sectionId, colIndex){
     // ===========================  
     // LOGOUT  
     // ===========================  
-    window.logout = async function() {
+   window.logout = async function() {
     try {
         await signOut(auth);
         window.location.href = "parent-login.html";
     } catch (error) {
         console.error("Logout error:", error);
+        alert("Logout failed. Please try again.");
     }
 };
 
@@ -705,7 +768,7 @@ window.showSchedule = function(btn) {
     
     if (!currentStudent.Schedule) {
         document.getElementById("scheduleTable").innerHTML =
-            "<p>No schedule found.</p>";
+            "<p>No Schedule found.</p>";
         return;
     }
     
