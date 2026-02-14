@@ -423,12 +423,12 @@ window.toggleSubmenu = function(id){
   
 // ========== MOCK DATA FOR TESTING ==========
 let currentStudent = {
-    studentID: "S12345",
-    studentName: "John Doe",
-    studentClass: "6B",
-    studentAge: 12,
-    studentDOB: "2014-05-12",
-    studentProgram: "STEM",
+    studentID: "ELA/25/SMM/001",
+    studentName: "Salman Muhammad Mustopha",
+    studentClass: "Preschool",
+    studentAge: 3,
+    studentDOB: "2023-05-12",
+    studentProgram: "Islamiyyah and Conventional Programs",
     studentInformation: "Excellent student with great participation.",
     attendance: 95,
     feeStatus: "Paid",
@@ -701,13 +701,13 @@ function renderChart(averages) {
 
 window.showSchedule = async function(btn) {
     showSection('schedule', btn);
-    await loadSchedule(currentStudent.studentClass);
+    await loadSchedule(currentStudent.studentName);
 };
 
-async function loadSchedule(studentClass) {
-    console.log("Loading schedule for class:", studentClass);
+async function loadSchedule(studentName) {
+    console.log("Loading schedule for class:", studentName);
     
-    const docRef = doc(db, "Schedule", studentClass);
+    const docRef = doc(db, "Schedule", studentName);
     const docSnap = await getDoc(docRef);
     
     if (docSnap.exists()) {
@@ -787,213 +787,3 @@ function getSubjectColor(subject) {
     </body>  
 </html>  
   
-        <p><strong>Program:</strong> <span id="studentProgram"></span></p>
-    </div>
-
-    <div class="card">
-        
-    <label><strong>Select Term:</strong></label>
-    <select id="termSelector" onchange="changeTerm()">
-        <option value="term1"><b>1st Term</b></option>
-        <option value="term2"><b>2nd Term</b></option>
-        <option value="term3"><b>3rd Term</b></option>
-    </select>
-</div>
-        <h3>Academic Results</h3>
-
-        <div class="results-grid">
-            <div class="subject-card">
-                Math <br>
-                <span id="math"></span>
-            </div>
-
-            <div class="subject-card">
-                English <br>
-                <span id="english"></span>
-            </div>
-
-            <div class="subject-card">
-                Science <br>
-                <span id="science"></span>
-            </div>
-        </div>
-    </div>
-
-   <div class="card average-box">
-    Overall Average: <span id="averageScore"></span>
-</div>
-
-<div style="text-align:center; margin-bottom:20px;">
-    <button onclick="downloadPDF()" class="logout-btn">Download Result Slip (PDF)</button>
-    <button onclick="downloadJSON()" class="logout-btn">Download Result Slip (JSON)</button>
-</div>
-    
-<div class="card">
-      <p><strong>Teacher Comment:</strong></p>
-  <div id="comment" class="comment"></div
-  
-    <h3>Attendance & Fees</h3>
-    
-    <p><strong>Attendance:</strong> <span id="attendance"></span>%</p>
-    <p><strong>Fee Status:</strong> <span id="feeStatus"></span></p>
-    
-    <hr>
-    
-</div>
-
-<div class="footer">
-    © 2026 Episteme Learning Academy | Parent Portal
-</div>
- 
- <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-<script type="module">
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { 
-    getFirestore, 
-    collection, 
-    query, 
-    where, 
-    getDocs 
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyC4psvU8WSR1QQQsRlZ8HkHO57Dznbb9TA",
-    authDomain: "episteme-learning-academy.firebaseapp.com",
-    projectId: "episteme-learning-academy",
-    storageBucket: "episteme-learning-academy.firebasestorage.app",
-    messagingSenderId: "476274489231",
-    appId: "1:476274489231:web:fb67e5fde8a5d26328bdfa",
-    measurementId: "G-PKPLKXMWSX"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-
-
-let currentStudent = null;
-
-onAuthStateChanged(auth, async (user) => {
-    
-    if (!user) {
-        window.location.href = "parent-login.html";
-        return;
-    }
-    
-    const q = query(
-        collection(db, "Students"),
-        where("parentEmail", "==", user.email)
-    );
-    
-    const querySnapshot = await getDocs(q);
-    
-    if (querySnapshot.empty) {
-        alert("No student linked to this parent.");
-        return;
-    }
-    
-    const studentDoc = querySnapshot.docs[0];
-    currentStudent = studentDoc.data();
-    
-    document.getElementById("studentName").textContent = currentStudent.studentName;
-    document.getElementById("studentClass").textContent = currentStudent.studentClass;
-    document.getElementById("studentAge").textContent = currentStudent.studentAge;
-    document.getElementById("studentProgram").textContent = currentStudent.studentProgram;
-    
-    updateTermData("term1");
-    
-});
-
-function updateTermData(term) {
-    
-    const termData = currentStudent.results[term];
-    
-    document.getElementById("math").textContent = termData.math;
-    document.getElementById("english").textContent = termData.english;
-    document.getElementById("science").textContent = termData.science;
-    document.getElementById("comment").textContent = termData.comment;
-    
-    document.getElementById("attendance").textContent = currentStudent.attendance;
-    document.getElementById("feeStatus").textContent = currentStudent.feeStatus;
-    
-    const avg =
-        (termData.math + termData.english + termData.science) / 3;
-    
-    document.getElementById("averageScore").textContent =
-        avg.toFixed(1) + "% (" + getGrade(avg) + ")";
-}
-window.changeTerm = function() {
-    const selectedTerm = document.getElementById("termSelector").value;
-    updateTermData(selectedTerm);
-};
-
-// Grade Logic
-function getGrade(avg) {
-    avg = Number(avg);
-    if (avg >= 70) return "A";
-    if (avg >= 60) return "B";
-    if (avg >= 50) return "C";
-    if (avg >= 45) return "D";
-    return "F";
-}
-
-// Logout
-window.logout = function() {
-    signOut(auth).then(() => {
-        window.location.href = "parent-login.html";
-    });
-};
-function downloadJSON() {
-    if (!currentStudent) {
-        alert("Student data not loaded yet!");
-        return;
-    }
-    
-    try {
-        const dataStr = JSON.stringify(currentStudent, null, 2);
-        const blob = new Blob([dataStr], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
-        
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `${currentStudent.studentName}_results.json`;
-        a.click();
-        URL.revokeObjectURL(url);
-        
-    } catch (error) {
-        console.error(error);
-        alert("Error downloading JSON file");
-    }
-}
-    async function downloadPDF() {
-        
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        
-        doc.text("Episteme Learning Academy", 20, 20);
-        doc.text("Student Result Slip", 20, 30);
-        
-        doc.text("Name: " + currentStudent.name, 20, 40);
-        doc.text("Age: " + currentStudent.age, 20, 50);
-        doc.text("Class: " + currentStudent.class, 20, 60);
-        
-        const term = document.getElementById("termSelector").value;
-        const data = currentStudent.results[term];
-        
-        doc.text("Math: " + data.math, 20, 80);
-        doc.text("English: " + data.english, 20, 90);
-        doc.text("Science: " + data.science, 20, 100);
-        
-        doc.text("Comment: " + data.comment, 20, 110);
-        
-        doc.save("result-slip.pdf");
-    } 
-   
-    </script>
-
-</body>
-</html>
