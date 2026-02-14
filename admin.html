@@ -1,267 +1,276 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <title>Admin Panel - Episteme Learning Academy</title>
-    <link rel="stylesheet" href="admin.css">
+    <meta charset="UTF-8">
+    <title>Admin Dashboard - Episteme Learning Academy</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        /* ====== SAME GLOBAL DESIGN AS PARENT DASHBOARD ====== */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: #fff;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 25px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .logout-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 8px;
+            background: white;
+            color: #2a5298;
+            font-weight: bold;
+        }
+        
+        .dashboard-wrapper {
+            display: flex;
+            min-height: 90vh;
+        }
+        
+        .sidebar {
+            width: 250px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .sidebar button {
+            background: transparent;
+            border: none;
+            color: white;
+            text-align: left;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+        
+        .sidebar button.active,
+        .sidebar button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 20px;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            margin-bottom: 10px;
+        }
+        
+        button.primary-btn {
+            background: white;
+            color: #2a5298;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: bold;
+            border: none;
+        }
+    </style>
 </head>
 
 <body>
-
-<button onclick="logout()">Logout</button>
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
     
-    const firebaseConfig = { /* same as above */ };
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+    <div class="header">
+        <h2>Episteme Learning Academy - Admin</h2>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
     
-    // Protect admin page
-    onAuthStateChanged(auth, async (user) => {
-        if (!user) {
-            window.location.href = "./admin-panel.html";
-            return;
-        }
-        const adminRef = doc(db, "Admin", user.email);
-        const adminSnap = await getDoc(adminRef);
-        if (!adminSnap.exists()) {
-            await signOut(auth);
-            window.location.href = "./admin-panel.html";
-        }
-    });
-    
-    // Logout
-    document.getElementById("logout()").addEventListener("click", async () => {
-        await signOut(auth);
-        window.location.href = "./admin-panel.html";
-    });
-</script>
-
-    <h1>Admin Panel</h1>
-   
-<h2>Add New Student</h2>
-
-<form id="studentForm">
-    <input type="text" id="studentID" placeholder="Student ID (e.g ELA001)" required><br><br>
-<input type="password" id="parentPassword" placeholder="Parent Login Password" required><br><br>
-<input type="email" id="parentEmail" placeholder="Parent Email" required><br><br>
-    <input type="text" id="studentName" placeholder="Student Name" required><br><br>
-    <input type="text" id="studentClass" placeholder="Class" required><br><br>
-    <input type="number" id="studentAge" placeholder="Age" required><br><br>
-    <input type="text" id="studentProgram" placeholder="Program" required><br><br>
-    <h3>Scores</h3>
-   <h3>Term 1 Results</h3>
-<input type="number" id="t1math" placeholder="Math Score (Term 1)" required><br><br>
-<input type="number" id="t1english" placeholder="English Score (Term 1)" required><br><br>
-<input type="number" id="t1science" placeholder="Science Score (Term 1)" required><br><br>
-<input type="text" id="t1comment" placeholder="Teacher Comment (Term 1)" required><br><br>
-
-<h3>Term 2 Results</h3>
-<input type="number" id="t2math" placeholder="Math Score (Term 2)"><br><br>
-<input type="number" id="t2english" placeholder="English Score (Term 2)"><br><br>
-<input type="number" id="t2science" placeholder="Science Score (Term 2)"><br><br>
-<input type="text" id="t2comment" placeholder="Teacher Comment (Term 2)"><br><br>
-
-<h3>Term 3 Results</h3>
-<input type="number" id="t3math" placeholder="Math Score (Term 3)"><br><br>
-<input type="number" id="t3english" placeholder="English Score (Term 3)"><br><br>
-<input type="number" id="t3science" placeholder="Science Score (Term 3)"><br><br>
-<input type="text" id="t3comment" placeholder="Teacher Comment (Term 3)"><br><br>
-
-<h3>Attendance & Fees</h3>
-<input type="number" id="attendance" placeholder="Attendance Percentage" required><br><br>
-<input type="text" id="feeStatus" placeholder="Fee Status (Paid / Not Paid)" required><br><br><br><br>
-    <button type="submit">Add Student</button>
-</form>
-
-
-<hr>
-<input type="text" id="searchInput" placeholder="Search student by name...">
-<br><br>
-
-<h2>Student List</h2>
-<div id="studentList"></div>
-
-<!-- Firebase SDK -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { 
-    getAuth,
-    onAuthStateChanged,
-    signOut
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-import { 
-    getFirestore, 
-    collection, 
-    setDoc, 
-    getDocs, 
-    deleteDoc, 
-    doc 
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-
-const firebaseConfig = {
-  apiKey: "AIzaSyC4psvU8WSR1QQQsRlZ8HkHO57Dznbb9TA",
-  authDomain: "episteme-learning-academy.firebaseapp.com",
-  projectId: "episteme-learning-academy",
-  storageBucket: "episteme-learning-academy.firebasestorage.app",
-  messagingSenderId: "476274489231",
-  appId: "1:476274489231:web:fb67e5fde8a5d26328bdfa"
-};
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-// Protect page
-onAuthStateChanged(auth, (user) => {
-    if (!user) {
-        window.location.href = "admin-panel.html";
-    }
-});
-
-// Logout
-window.logout = function() {
-    signOut(auth).then(() => {
-        window.location.href = "admin-panel.html";
-    });
-};
-
-
-import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-document.getElementById("studentForm").addEventListener("submit", async function(e) {
-    e.preventDefault();
-    
-    const studentID = document.getElementById("studentID").value;
-    
-    const studentData = {
-        studentID: studentID,
-        parentEmail: document.getElementById("parentEmail").value,
-        parentPassword: document.getElementById("parentPassword").value,
-        studentName: document.getElementById("studentName").value,
-        studentClass: document.getElementById("studentClass").value,
-        studentAge: Number(document.getElementById("studentAge").value),
-        studentProgram: document.getElementById("studentProgram").value,
-        attendance: Number(document.getElementById("attendance").value),
-        feeStatus: document.getElementById("feeStatus").value,
-        results: {
-            term1: {
-                math: Number(document.getElementById("t1math").value),
-                english: Number(document.getElementById("t1english").value),
-                science: Number(document.getElementById("t1science").value),
-                comment: document.getElementById("t1comment").value
-            },
-            term2: {
-                math: Number(document.getElementById("t2math").value || 0),
-                english: Number(document.getElementById("t2english").value || 0),
-                science: Number(document.getElementById("t2science").value || 0),
-                comment: document.getElementById("t2comment").value || ""
-            },
-            term3: {
-                math: Number(document.getElementById("t3math").value || 0),
-                english: Number(document.getElementById("t3english").value || 0),
-                science: Number(document.getElementById("t3science").value || 0),
-                comment: document.getElementById("t3comment").value || ""
-            }
-        }
-    };
-    
-    try {
-        await setDoc(doc(db, "Students", studentID), studentData);
-        alert("Student added successfully!");
-        document.getElementById("studentForm").reset();
-    } catch (error) {
-        console.error(error);
-        alert("Error saving student");
-    }
-});
-
-// Calculate averages for each term
-const t1average = ((t1math + t1english + t1science) / 3).toFixed(1);
-const t2average = ((t2math + t2english + t2science) / 3).toFixed(1);
-const t3average = ((t3math + t3english + t3science) / 3).toFixed(1);
-
-const studentData = {
-        studentID,
-        parentEmail,
-        parentPassword,
-        studentName,
-        studentClass,
-        studentAge,
-        studentProgram,
-
-        results: {
-            term1: {
-                math: t1math,
-                english: t1english,
-                science: t1science,
-                average: t1average,
-                comment: t1comment
-            },
-            term2: {
-                math: t2math,
-                english: t2english,
-                science: t2science,
-                average: t2average,
-                comment: t2comment
-            },
-            term3: {
-                math: t3math,
-                english: t3english,
-                science: t3science,
-                average: t3average,
-                comment: t3comment
-            }
-        },
-
-        attendance: Number(document.getElementById("attendance").value),
-        feeStatus: document.getElementById("feeStatus").value
-    };
-
-    try {
-    await setDoc(collection(db, "Students", studentID), studentData);
-    alert("Student added successfully!");
-    document.getElementById("studentForm").reset();
-    loadStudents();
-} catch (error) {
-    console.error(error);
-    alert("Error saving student");
-}
-});
-
-// Load Students
-async function loadStudents() {
-    const querySnapshot = await getDocs(collection(db, "Students"));
-    const list = document.getElementById("studentList");
-    list.innerHTML = "";
-    
-    querySnapshot.forEach((docSnap) => {
-        const student = docSnap.data();
-        const id = docSnap.id;
+    <div class="dashboard-wrapper">
         
-        list.innerHTML += `
-        <div>
-            <p><strong>Name:</strong> ${student.studentName}</p>
-            <p><strong>Class:</strong> ${student.studentClass}</p>
-            <button onclick="deleteStudent('${id}')">Delete</button>
-            <hr>
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <button onclick="showSection('dashboard', this)">Dashboard</button>
+            <button onclick="showSection('addStudent', this)">Add Student</button>
+            <button onclick="showSection('studentListSection', this)">Manage Students</button>
+            <button onclick="showSection('scheduleManager', this)">Manage Schedule</button>
+        </div>
+        
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            
+            <!-- DASHBOARD -->
+            <div id="dashboard" class="section">
+                <div class="card">
+                    <h3>Admin Overview</h3>
+                    <p>Welcome to the Episteme Learning Academy Control Panel.</p>
+                    <p>Use the sidebar to manage students, results, and schedules.</p>
+                </div>
+            </div>
+            
+            <!-- ADD STUDENT -->
+            <div id="addStudent" class="section" style="display:none;">
+                <div class="card">
+                    <h3>Add New Student</h3>
+                    
+                    <input type="text" id="studentID" placeholder="Student ID (ELA001)">
+                    <input type="email" id="parentEmail" placeholder="Parent Email">
+                    <input type="password" id="parentPassword" placeholder="Parent Password">
+                    
+                    <input type="text" id="studentName" placeholder="Student Name">
+                    <input type="text" id="studentClass" placeholder="Class">
+                    <input type="number" id="studentAge" placeholder="Age">
+                    <input type="text" id="studentProgram" placeholder="Program">
+                    
+                    <h4>Term 1 Results</h4>
+                    <input type="number" id="t1math" placeholder="Math">
+                    <input type="number" id="t1english" placeholder="English">
+                    <input type="number" id="t1science" placeholder="Science">
+                    <textarea id="t1comment" placeholder="Teacher Comment"></textarea>
+                    
+                    <h4>Attendance & Fees</h4>
+                    <input type="number" id="attendance" placeholder="Attendance %">
+                    <input type="text" id="feeStatus" placeholder="Fee Status">
+                    
+                    <button class="primary-btn" onclick="addStudent()">Save Student</button>
+                </div>
+            </div>
+            
+            <!-- STUDENT LIST -->
+            <div id="studentListSection" class="section" style="display:none;">
+                <div class="card">
+                    <h3>All Students</h3>
+                    <div id="studentList"></div>
+                </div>
+            </div>
+            
+            <!-- SCHEDULE MANAGER -->
+            <div id="scheduleManager" class="section" style="display:none;">
+                <div class="card">
+                    <h3>Manage Weekly Schedule</h3>
+                    <input type="text" id="scheduleClass" placeholder="Class (e.g Grade1)">
+                    <textarea id="scheduleJSON" rows="6" placeholder="Paste Schedule JSON Here"></textarea>
+                    <button class="primary-btn" onclick="saveSchedule()">Save Schedule</button>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDocs, collection, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        
+        const firebaseConfig = {
+            apiKey: "AIza...",
+            authDomain: "episteme-learning-academy.firebaseapp.com",
+            projectId: "episteme-learning-academy"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        /* SECTION SWITCHING */
+        window.showSection = function(id, btn) {
+            document.querySelectorAll(".section").forEach(sec => sec.style.display = "none");
+            document.getElementById(id).style.display = "block";
+            
+            document.querySelectorAll(".sidebar button").forEach(b => b.classList.remove("active"));
+            if (btn) btn.classList.add("active");
+        };
+        
+        /* ADD STUDENT */
+        window.addStudent = async function() {
+            const studentID = document.getElementById("studentID").value;
+            
+            const data = {
+                studentID,
+                parentEmail: document.getElementById("parentEmail").value,
+                parentPassword: document.getElementById("parentPassword").value,
+                studentName: document.getElementById("studentName").value,
+                studentClass: document.getElementById("studentClass").value,
+                studentAge: Number(document.getElementById("studentAge").value),
+                studentProgram: document.getElementById("studentProgram").value,
+                attendance: Number(document.getElementById("attendance").value),
+                feeStatus: document.getElementById("feeStatus").value,
+                results: {
+                    term1: {
+                        math: Number(document.getElementById("t1math").value),
+                        english: Number(document.getElementById("t1english").value),
+                        science: Number(document.getElementById("t1science").value),
+                        comment: document.getElementById("t1comment").value
+                    }
+                }
+            };
+            
+            await setDoc(doc(db, "Students", studentID), data);
+            alert("Student Saved Successfully");
+            loadStudents();
+        };
+        
+        /* LOAD STUDENTS */
+        async function loadStudents() {
+            const snapshot = await getDocs(collection(db, "Students"));
+            const list = document.getElementById("studentList");
+            list.innerHTML = "";
+            
+            snapshot.forEach(docSnap => {
+                const student = docSnap.data();
+                list.innerHTML += `
+        <div class="card">
+            <p><strong>${student.studentName}</strong></p>
+            <p>${student.studentClass}</p>
+            <button onclick="deleteStudent('${docSnap.id}')">Delete</button>
         </div>
         `;
-    });
-}
-// Delete Student
-window.deleteStudent = async function(id) {
-    await deleteDoc(doc(db, "Students", id));
-    loadStudents();
-};
-
-loadStudents();
-
-
-</script>
-
+            });
+        }
+        
+        window.deleteStudent = async function(id) {
+            await deleteDoc(doc(db, "Students", id));
+            loadStudents();
+        };
+        
+        /* SAVE SCHEDULE */
+        window.saveSchedule = async function() {
+            const grade = document.getElementById("scheduleClass").value;
+            const scheduleData = JSON.parse(document.getElementById("scheduleJSON").value);
+            
+            await setDoc(doc(db, "Schedule", grade), { days: scheduleData });
+            alert("Schedule Updated");
+        };
+        
+        /* LOGOUT */
+        window.logout = async function() {
+            await signOut(auth);
+            window.location.href = "admin-login.html";
+        };
+        
+        loadStudents();
+    </script>
+    
 </body>
+
 </html>
