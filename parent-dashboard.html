@@ -648,7 +648,7 @@ function sortTable(sectionId, colIndex){
     }  
       
     // ===========================  
-    // LOGOUT (dummy for now)  
+    // LOGOUT  
     // ===========================  
     window.logout = async function() {
     try {
@@ -701,12 +701,13 @@ function renderChart(averages) {
 
 window.showSchedule = async function(btn) {
     showSection('schedule', btn);
-    await loadSchedule("Salman Muhammad Mustopha");
+    await loadSchedule(currentStudent.studentName);
+};
 
 async function loadSchedule(studentName) {
-    console.log("Loading schedule for Salman Muhammad Mustopha", studentName);
+    console.log("Loading schedule for Name:", studentName);
     
-    const docRef = doc(db, "Schedule", Salman Muhammad Mustopha);
+    const docRef = doc(db, "Schedule", studentName);
     const docSnap = await getDoc(docRef);
     
     if (docSnap.exists()) {
