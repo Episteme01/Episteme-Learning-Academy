@@ -701,13 +701,12 @@ function renderChart(averages) {
 
 window.showSchedule = async function(btn) {
     showSection('schedule', btn);
-    await loadSchedule(currentStudent.studentName);
-};
+    await loadSchedule("Salman Muhammad Mustopha");
 
 async function loadSchedule(studentName) {
-    console.log("Loading schedule for name:", studentName);
+    console.log("Loading schedule for Salman Muhammad Mustopha", studentName);
     
-    const docRef = doc(db, "Schedule", studentName);
+    const docRef = doc(db, "Schedule", Salman Muhammad Mustopha);
     const docSnap = await getDoc(docRef);
     
     if (docSnap.exists()) {
