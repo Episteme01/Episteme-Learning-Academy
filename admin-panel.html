@@ -54,42 +54,49 @@ if (studentIndex !== -1) {
 </script>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-    
-    const firebaseConfig = {
-        apiKey: "AIzaSyC4psvU8WSR1QQQsRlZ8HkHO57Dznbb9TA",
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyC4psvU8WSR1QQQsRlZ8HkHO57Dznbb9TA",
     authDomain: "episteme-learning-academy.firebaseapp.com",
     projectId: "episteme-learning-academy",
     storageBucket: "episteme-learning-academy.firebasestorage.app",
     messagingSenderId: "476274489231",
     appId: "1:476274489231:web:fb67e5fde8a5d26328bdfa"
 };
-    
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    
-    // If already logged in → verify admin
-    onAuthStateChanged(auth, async (user) => {
-        if (user) {
-            try {
-                const adminRef = doc(db, "Admin", user.email);
-                const adminSnap = await getDoc(adminRef);
-                
-                if (adminSnap.exists()) {
-                    window.location.href = "./admin.html";
-                } else {
-                    alert("Access denied. You are not an admin.");
-                    await signOut(auth);
-                }
-            } catch (error) {
-                console.error("Error checking admin:", error);
-            }
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+document.getElementById("adminLoginForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const email = document.getElementById("adminEmail").value.trim();
+    const password = document.getElementById("adminPassword").value;
+
+    try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        const adminRef = doc(db, "Admin", user.email);
+        const adminSnap = await getDoc(adminRef);
+
+        if (adminSnap.exists()) {
+            window.location.href = "admin.html";
+        } else {
+            alert("Access denied.");
         }
-    });
+
+    } catch (error) {
+        alert("Login failed: " + error.message);
+    }
+});
+
     
+  
     // Handle Login
     document.getElementById("adminLoginForm").addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -117,12 +124,11 @@ if (studentIndex !== -1) {
             alert("Login failed: " + error.message);
         }
     });
-            // Logout
+    // Logout
 document.getElementById("logoutBtn").addEventListener("click", async () => {
     await signOut(auth);
     window.location.href = "admin.html";
 });
-  
 </script>
 </body>  
 </html>
