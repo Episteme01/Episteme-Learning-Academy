@@ -705,7 +705,7 @@ window.showSchedule = async function(btn) {
 };
 
 async function loadSchedule(studentName) {
-    console.log("Loading schedule for Name:", studentName);
+    console.log("Loading schedule for name:", studentName);
     
     const docRef = doc(db, "Schedule", studentName);
     const docSnap = await getDoc(docRef);
