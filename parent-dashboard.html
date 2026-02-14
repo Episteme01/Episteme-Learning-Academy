@@ -290,14 +290,14 @@
         <!-- DASHBOARD SECTION -->  
         <div id="dashboard" class="section">  
             <div class="card">  
-                <h3>Student Info</h3>  
+                <h3>Student Information</h3>  
                 <p><strong>ID:</strong> <span id="studentID"></span></p>  
                 <p><strong>Name:</strong> <span id="studentName"></span></p>  
                 <p><strong>Class:</strong> <span id="studentClass"></span></p>  
                 <p><strong>Age:</strong> <span id="studentAge"></span></p>  
                 <p><strong>Date of Birth:</strong> <span id="studentDOB"></span></p>  
                 <p><strong>Program:</strong> <span id="studentProgram"></span></p>  
-                <p><strong>Additional Info:</strong> <span id="studentInfo"></span></p>  
+                <p><strong>Additional Info:</strong> <span id="studentInformation"></span></p>  
             </div>  
         </div>  
   
@@ -348,7 +348,7 @@
 </div>  
   
         <!-- CLASSWORK TABLE -->  
-        <div id="classwork" class="section" style="display:none;"></div>  
+        <div id="classworks" class="section" style="display:none;"></div>  
   
         <!-- ASSIGNMENTS TABLE -->  
         <div id="assignments" class="section" style="display:none;"></div>  
@@ -357,7 +357,7 @@
         <div id="exams" class="section" style="display:none;"></div>  
   
         <!-- SCHEDULE SECTION -->  
-        <div id="schedule" class="section" style="display:none;">  
+        <div id="Schedule" class="section" style="display:none;">  
     <div class="card">  
         <h2>My Weekly Schedule</h2>  
         <div id="scheduleTable"></div>  
@@ -405,13 +405,43 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+// ✅ GLOBAL STUDENT OBJECT
+let currentStudent = {};
+let weeklySchedule = [];
+
 onAuthStateChanged(auth, async (user) => {
     if (!user) {
-        // If not logged in → send back to login
         window.location.href = "parent-login.html";
-    } else {
-        console.log("Logged in as:", user.email);
-        // You can later load Firestore student data here
+        return;
+    }
+    
+    try {
+        // 1️⃣ Get parent document
+        const parentDocRef = doc(db, "Parents", user.uid);
+        const parentSnap = await getDoc(parentDocRef);
+        
+        if (!parentSnap.exists()) {
+            alert("Parent record not found.");
+            return;
+        }
+        
+        const studentID = parentSnap.data().studentID;
+        
+        // 2️⃣ Get student document
+        const studentDocRef = doc(db, "Students", studentID);
+        const studentSnap = await getDoc(studentDocRef);
+        
+        if (!studentSnap.exists()) {
+            alert("Student record not found.");
+            return;
+        }
+        
+        const studentData = studentSnap.data();
+        
+        initializeDashboard(studentData);
+        
+    } catch (error) {
+        console.error("Error loading data:", error);
     }
 });
 
@@ -421,53 +451,22 @@ window.toggleSubmenu = function(id){
     submenu.style.display = submenu.style.display === "flex" ? "none" : "flex";  
 }  
   
-// ========== MOCK DATA FOR TESTING ==========
-let currentStudent = {
-    studentID: "ELA/25/SMM/001",
-    studentName: "Salman Muhammad Mustopha",
-    studentClass: "Preschool",
-    studentAge: 3,
-    studentDOB: "2023-05-12",
-    studentProgram: "Islamiyyah and Conventional Programs",
-    studentInformation: "Excellent student with great participation.",
-    attendance: 95,
-    feeStatus: "Paid",
-    results: {
-        term1: { math: 88, english: 92, science: 85, comment: "Great progress!" },
-        term2: { math: 90, english: 89, science: 87, comment: "Keep up the good work." },
-        term3: { math: 93, english: 91, science: 90, comment: "Outstanding performance!" }
-    },
-    classwork: [
-        { title: "Math Worksheet 1", score: 80 },
-        { title: "Science Exercise 2", score: 90 },
-        { title: "Math Worksheet 2", score: 95 },
-    ],
-    assignments: [
-        { title: "English Essay", score: 88 },
-        { title: "History Assignment", score: 92 }
-    ],
-    exams: [
-        { title: "Term 1 Exam", score: 88 },
-        { title: "Term 2 Exam", score: 90 }
-    ]
-};
-
-let weeklySchedule = [];
   
 // ========== INITIALIZE DASHBOARD ==========  
 
-window.onload = function(){  
-    document.getElementById("studentID").textContent = currentStudent.studentID;  
-    document.getElementById("studentName").textContent = currentStudent.studentName;  
-    document.getElementById("studentClass").textContent = currentStudent.studentClass;  
-    document.getElementById("studentAge").textContent = currentStudent.studentAge;  
-    document.getElementById("studentDOB").textContent = currentStudent.studentDOB;  
-    document.getElementById("studentProgram").textContent = currentStudent.studentProgram;  
-    document.getElementById("studentInfo").textContent = currentStudent.studentInformation;  
-  
-    showSection('dashboard', document.getElementById('btn-dashboard'));  
-    updateTermData("term1");  
-};  
+function initializeDashboard(studentData) {
+    currentStudent = studentData;
+    
+    document.getElementById("studentID").textContent = studentData.studentID;
+    document.getElementById("studentName").textContent = studentData.studentName;
+    document.getElementById("studentClass").textContent = studentData.studentClass;
+    document.getElementById("studentAge").textContent = studentData.studentAge;
+    document.getElementById("studentDOB").textContent = studentData.studentDOB;
+    document.getElementById("studentProgram").textContent = studentData.studentProgram;
+    document.getElementById("studentInformation").textContent = studentData.studentInformation;
+    
+    updateTermData("term1");
+}
   
 // ========== SECTION NAVIGATION ==========  
 window.showSection = function(sectionId, btn) {
@@ -574,8 +573,8 @@ function downloadTableCSV(dataArray, filename){
   
 // SHOW TABLES  
 window.showClasswork = function(btn) {  
-    renderTable('classwork', currentStudent.classwork, "Classwork Records");  
-    showSection('classwork', btn);  
+    renderTable('classworks', currentStudent.classworks, "Classwork Records");  
+    showSection('classworks', btn);  
 };  
   
 window.showAssignments = function(btn) {  
@@ -699,40 +698,37 @@ function renderChart(averages) {
 // WEEKLY SCHEDULE
 // ===============================
 
-window.showSchedule = async function(btn) {
-    showSection('schedule', btn);
-    await loadSchedule(currentStudent.studentName);
+
+
+window.showSchedule = function(btn) {
+    showSection('Schedule', btn);
+    
+    if (!currentStudent.Schedule) {
+        document.getElementById("scheduleTable").innerHTML =
+            "<p>No schedule found.</p>";
+        return;
+    }
+    
+    renderSchedule(currentStudent.Schedule);
 };
 
-async function loadSchedule(studentName) {
-    console.log("Loading schedule for Name:", studentName);
+function renderSchedule(scheduleData) {
     
-    const docRef = doc(db, "Schedule", studentName);
-    const docSnap = await getDoc(docRef);
-    
-    if (docSnap.exists()) {
-        console.log("Schedule document found:", docSnap.data());
-        
-        weeklySchedule = docSnap.data().days || [];
-        
-        console.log("Weekly schedule array:", weeklySchedule);
-        
-        renderSchedule();
-    } else {
-        console.log("No schedule document found in Firestore.");
-        document.getElementById("scheduleTable").innerHTML =
-            "<p>No schedule found for this class.</p>";
-    }
-}
-
-function renderSchedule() {
     const container = document.getElementById("scheduleTable");
     container.innerHTML = "";
     
-    if (!weeklySchedule.length) {
-        container.innerHTML = "<p>No schedule available.</p>";
+    if (!scheduleData || !scheduleData.length) {
+        container.innerHTML = `
+            <div style="padding:20px;text-align:center;color:#555;">
+                <h4>No Schedule Available</h4>
+                <p>The weekly schedule has not been uploaded yet.</p>
+            </div>
+        `;
         return;
     }
+    
+    const dayOrder = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+    scheduleData.sort((a, b) => dayOrder.indexOf(a.day) - dayOrder.indexOf(b.day));
     
     const table = document.createElement("table");
     table.className = "schedule-grid";
@@ -740,9 +736,9 @@ function renderSchedule() {
     table.innerHTML = `
         <thead>
             <tr>
-                <th>Day</th>
-                <th>Time</th>
-                <th>Subject</th>
+                <th style="width:20%">Day</th>
+                <th style="width:30%">Time</th>
+                <th style="width:50%">Subject</th>
             </tr>
         </thead>
         <tbody></tbody>
@@ -750,17 +746,31 @@ function renderSchedule() {
     
     const tbody = table.querySelector("tbody");
     
-    weeklySchedule.forEach(dayObj => {
+    scheduleData.forEach(dayObj => {
+        
+        if (!dayObj.periods) return;
+        
+        dayObj.periods.sort((a, b) =>
+            convertToMinutes(a.time) - convertToMinutes(b.time)
+        );
+        
         dayObj.periods.forEach((period, index) => {
+            
             const tr = document.createElement("tr");
             
             tr.innerHTML = `
-                ${index === 0 ? `<td rowspan="${dayObj.periods.length}"><strong>${dayObj.day}</strong></td>` : ""}
-                <td>${period.time}</td>
+                ${index===0
+                    ? `<td rowspan="${dayObj.periods.length}">
+                         <strong>${dayObj.day}</strong>
+                       </td>`
+                    : ""}
+
+                <td>${period.time || "-"}</td>
+
                 <td>
-                    <span class="subject-badge" 
-                    style="background:${getSubjectColor(period.subject)}">
-                    ${period.subject}
+                    <span class="subject-badge"
+                        style="background:${getSubjectColor(period.subject)}">
+                        ${period.subject || "N/A"}
                     </span>
                 </td>
             `;
@@ -771,17 +781,47 @@ function renderSchedule() {
     
     container.appendChild(table);
 }
+        
+        // Sort periods by time (assumes format like "8:00 AM - 9:00 AM")
+        function convertToMinutes(timeRange) {
+    if (!timeRange) return 0;
+    
+    const startTime = timeRange.split("-")[0].trim();
+    const [time, modifier] = startTime.split(" ");
+    let [hours, minutes] = time.split(":").map(Number);
+    
+    if (modifier === "PM" && hours !== 12) hours += 12;
+    if (modifier === "AM" && hours === 12) hours = 0;
+    
+    return hours * 60 + minutes;
+}
 
 function getSubjectColor(subject) {
-    const colors = {
+    const colorMap = {
         Math: "#4b3cf0",
         English: "#f39c12",
         Science: "#27ae60",
         History: "#e74c3c",
-        "Physical Education": "#16a085"
+        "Physical Education": "#16a085",
+        Arabic: "#8e44ad",
+        ICT: "#2980b9",
+        Break: "#95a5a6"
     };
-    return colors[subject] || "#bdc3c7";
+    
+    return colorMap[subject] || generateColorFromText(subject);
 }
+
+function generateColorFromText(text) {
+    if (!text) return "#bdc3c7";
+    
+    let hash = 0;
+    for (let i = 0; i < text.length; i++) {
+        hash = text.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    
+    return "#" + ((hash & 0x00FFFFFF).toString(16).padStart(6, "0"));
+}
+    
 </script>
     
     </body>  
