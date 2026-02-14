@@ -7,8 +7,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     
     <style>
+    
         /* ====== SAME GLOBAL DESIGN AS PARENT DASHBOARD ====== */
         body {
             margin: 0;
@@ -122,6 +124,10 @@
             <!-- DASHBOARD -->
             <div id="dashboard" class="section">
                 <div class="card">
+                    <div class="card">
+    <h3>Statistics</h3>
+    <p id="totalStudents"></p>
+</div>
                     <h3>Admin Overview</h3>
                     <p>Welcome to the Episteme Learning Academy Control Panel.</p>
                     <p>Use the sidebar to manage students, results, and schedules.</p>
@@ -142,6 +148,7 @@
                     <input type="number" id="studentAge" placeholder="Age">
                     <input type="text" id="studentProgram" placeholder="Program">
                     
+                    <input type="password" id="adminPassword" placeholder="Confirm Admin Password">
                     <h4>Term 1 Results</h4>
                     <input type="number" id="t1math" placeholder="Math">
                     <input type="number" id="t1english" placeholder="English">
@@ -178,75 +185,114 @@
     </div>
     
     <script type="module">
+    
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import {
+    getAuth,
+    onAuthStateChanged,
+    signOut,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDocs, collection, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
         
         const firebaseConfig = {
-            apiKey: "AIza...",
-            authDomain: "episteme-learning-academy.firebaseapp.com",
-            projectId: "episteme-learning-academy"
-        };
+            apiKey: "AIzaSyC4psvU8WSR1QQQsRlZ8HkHO57Dznbb9TA",
+    authDomain: "episteme-learning-academy.firebaseapp.com",
+    projectId: "episteme-learning-academy",
+    storageBucket: "episteme-learning-academy.firebasestorage.app",
+    messagingSenderId: "476274489231",
+    appId: "1:476274489231:web:fb67e5fde8a5d26328bdfa"
+};
         
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
         
-        /* SECTION SWITCHING */
         window.showSection = function(id, btn) {
-            document.querySelectorAll(".section").forEach(sec => sec.style.display = "none");
-            document.getElementById(id).style.display = "block";
-            
-            document.querySelectorAll(".sidebar button").forEach(b => b.classList.remove("active"));
-            if (btn) btn.classList.add("active");
-        };
+    document.querySelectorAll(".section").forEach(sec => sec.style.display = "none");
+    document.getElementById(id).style.display = "block";
+    
+    document.querySelectorAll(".sidebar button").forEach(b => b.classList.remove("active"));
+    if (btn) btn.classList.add("active");
+};
+        
+        onAuthStateChanged(auth, (user) => {
+    if (!user) {
+        window.location.href = "admin-login.html";
+    }
+});
+        /* SECTION SWITCHING */
         
         /* ADD STUDENT */
-        window.addStudent = async function() {
-            const studentID = document.getElementById("studentID").value;
-            
-            const data = {
-                studentID,
-                parentEmail: document.getElementById("parentEmail").value,
-                parentPassword: document.getElementById("parentPassword").value,
-                studentName: document.getElementById("studentName").value,
-                studentClass: document.getElementById("studentClass").value,
-                studentAge: Number(document.getElementById("studentAge").value),
-                studentProgram: document.getElementById("studentProgram").value,
-                attendance: Number(document.getElementById("attendance").value),
-                feeStatus: document.getElementById("feeStatus").value,
-                results: {
-                    term1: {
-                        math: Number(document.getElementById("t1math").value),
-                        english: Number(document.getElementById("t1english").value),
-                        science: Number(document.getElementById("t1science").value),
-                        comment: document.getElementById("t1comment").value
-                    }
-                }
-            };
-            
-            await setDoc(doc(db, "Students", studentID), data);
-            alert("Student Saved Successfully");
-            loadStudents();
-        };
+
+window.addStudent = async function() {
+    
+    const studentID = document.getElementById("studentID").value;
+    const parentEmail = document.getElementById("parentEmail").value;
+    const parentPassword = document.getElementById("parentPassword").value;
+    const adminPassword = document.getElementById("adminPassword").value;
+    
+    const adminUser = auth.currentUser;
+    const adminEmail = adminUser.email;
+    
+    try {
+        
+        // 1️⃣ Create Parent Account
+        const parentCredential = await createUserWithEmailAndPassword(
+            auth,
+            parentEmail,
+            parentPassword
+        );
+        
+        const parentUID = parentCredential.user.uid;
+        
+        // 2️⃣ Save student to Firestore
+        await setDoc(doc(db, "Students", studentID), {
+            studentID,
+            parentUID,
+            parentEmail,
+            studentName: document.getElementById("studentName").value,
+            studentClass: document.getElementById("studentClass").value,
+            attendance: Number(document.getElementById("attendance").value),
+            feeStatus: document.getElementById("feeStatus").value
+        });
+        
+        // 3️⃣ Sign admin back in
+        await signInWithEmailAndPassword(
+            auth,
+            adminEmail,
+            adminPassword
+        );
+        
+        alert("Parent account created and admin restored.");
+        
+        loadStudents();
+        
+    } catch (error) {
+        alert(error.message);
+    }
+};
         
         /* LOAD STUDENTS */
-        async function loadStudents() {
-            const snapshot = await getDocs(collection(db, "Students"));
-            const list = document.getElementById("studentList");
-            list.innerHTML = "";
-            
-            snapshot.forEach(docSnap => {
-                const student = docSnap.data();
-                list.innerHTML += `
+       async function loadStudents() {
+    const snapshot = await getDocs(collection(db, "Students"));
+    const list = document.getElementById("studentList");
+    list.innerHTML = "";
+    
+    snapshot.forEach((docSnap) => {
+        const student = docSnap.data();
+        
+        list.innerHTML += `
         <div class="card">
             <p><strong>${student.studentName}</strong></p>
             <p>${student.studentClass}</p>
+            <button onclick="exportPDF('${student.studentName}')">Export</button>
             <button onclick="deleteStudent('${docSnap.id}')">Delete</button>
         </div>
         `;
-            });
-        }
+    });
+}
         
         window.deleteStudent = async function(id) {
             await deleteDoc(doc(db, "Students", id));
@@ -269,6 +315,31 @@
         };
         
         loadStudents();
+        
+        
+        async function loadAnalytics() {
+    const snapshot = await getDocs(collection(db, "Students"));
+    document.getElementById("totalStudents").innerText =
+        "Total Students: " + snapshot.size;
+}
+
+loadAnalytics();
+
+window.exportPDF = function(name) {
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF();
+    pdf.text("Student Report", 20, 20);
+    pdf.text("Name: " + name, 20, 30);
+    pdf.save(name + "_report.pdf");
+};
+        const loginForm = document.getElementById("loginForm");
+
+if (loginForm) {
+    loginForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        // login logic
+    });
+}
     </script>
     
 </body>
