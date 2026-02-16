@@ -55,57 +55,54 @@ if (studentIndex !== -1) {
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import {
-        getAuth,
-        signInWithEmailAndPassword
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import {
-        getFirestore,
-        doc,
-        getDoc
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-    
-    const firebaseConfig = {
-        apiKey: "AIzaSyC4psvU8WSR1QQQsRlZ8HkHO57Dznbb9TA",
+import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyC4psvU8WSR1QQQsRlZ8HkHO57Dznbb9TA",
     authDomain: "episteme-learning-academy.firebaseapp.com",
     projectId: "episteme-learning-academy",
     storageBucket: "episteme-learning-academy.firebasestorage.app",
     messagingSenderId: "476274489231",
-    appId: "1:476274489231:web:fb67e5fde8a5d26328bdfa"
-    };
-    
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    
-    // Handle Admin Login
-    const loginForm = document.getElementById("adminLoginForm");
-    
-    if (loginForm) {
-        loginForm.addEventListener("submit", async (e) => {
-            e.preventDefault();
-            
-            const email = document.getElementById("adminEmail").value.trim();
-            const password = document.getElementById("adminPassword").value;
-            
-            try {
-                const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                const user = userCredential.user;
-                
-                const adminRef = doc(db, "Admin", user.email);
-                const adminSnap = await getDoc(adminRef);
-                
-                if (adminSnap.exists()) {
-                    window.location.href = "admin.html";
-                } else {
-                    alert("Access denied. Not registered as admin.");
-                }
-                
-            } catch (error) {
-                alert("Login failed: " + error.message);
-            }
-        });
+    appId: "1:476274489231:web:fb67e5fde8a5d26328bdfa",
+    measurementId: "G-PKPLKXMWSX",
+    databaseURL: "https://episteme-learning-academy-default-rtdb.europe-west1.firebasedatabase.app"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+
+async function adminLogin(email, password) {
+    try {
+        const auth = getAuth();
+        const db = getDatabase();
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        
+        // Check if user is listed as an admin in Realtime DB
+        const adminSnap = await get(ref(db, "admins/" + user.uid));
+        if (adminSnap.exists()) {
+            // Login successful
+            window.location.href = "admin.html";
+        } else {
+            alert("Access denied: not an admin");
+        }
+        
+    } catch (err) {
+        console.error(err);
+        alert("Login failed: " + err.message);
     }
+}
+
+// Attach this to your form submission
+const loginForm = document.getElementById("adminLoginForm");
+loginForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const email = document.getElementById("adminEmail").value.trim();
+    const password = document.getElementById("adminPassword").value;
+    adminLogin(email, password);
+});
 </script>
 </body>  
 </html>
