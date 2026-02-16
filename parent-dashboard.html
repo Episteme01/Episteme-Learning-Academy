@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">  
       
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>// ========== SECTION NAVIGATION ==========
 window.showSection = function(sectionId, btn) {
 const sections = document.querySelectorAll(".section");
@@ -21,13 +21,157 @@ buttons.forEach(b => b.classList.remove("active"));
 if (btn) btn.classList.add("active");
 };
 
+
+window.showSchedule = function(btn) {
+    showSection('schedule', btn);
+    
+    if (!currentStudent.schedule) {
+        document.getElementById("scheduleTable").innerHTML =
+            "<p>No schedule found.</p>";
+        return;
+    }
+    
+    renderSchedule(currentStudent.schedule);
+};
+
+function renderSchedule(scheduleData) {
+    
+    const container = document.getElementById("scheduleTable");
+    container.innerHTML = "";
+    
+    if (!scheduleData || !scheduleData.length) {
+        container.innerHTML = `
+            <div style="padding:20px;text-align:center;color:#555;">
+                <h4>No schedule Available</h4>
+                <p>The weekly schedule has not been uploaded yet.</p>
+            </div>
+        `;
+        return;
+    }
+    
+    const dayOrder = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+    scheduleData.sort((a, b) => dayOrder.indexOf(a.day) - dayOrder.indexOf(b.day));
+    
+    const table = document.createElement("table");
+    table.className = "schedule-grid";
+    
+    table.innerHTML = `
+        <thead>
+            <tr>
+                <th style="width:20%">Day</th>
+                <th style="width:30%">Time</th>
+                <th style="width:50%">Subject</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    `;
+    
+    const tbody = table.querySelector("tbody");
+    
+    scheduleData.forEach(dayObj => {
+        
+        if (!dayObj.periods) return;
+        
+        dayObj.periods.sort((a, b) =>
+            convertToMinutes(a.time) - convertToMinutes(b.time)
+        );
+        
+        dayObj.periods.forEach((period, index) => {
+            
+            const tr = document.createElement("tr");
+            
+            tr.innerHTML = `
+                ${index===0
+                    ? `<td rowspan="${dayObj.periods.length}">
+                         <strong>${dayObj.day}</strong>
+                       </td>`
+                    : ""}
+
+                <td>${period.time || "-"}</td>
+
+                <td>
+                    <span class="subject-badge"
+                        style="background:${getSubjectColor(period.subject)}">
+                        ${period.subject || "N/A"}
+                    </span>
+                </td>
+            `;
+            
+            tbody.appendChild(tr);
+        });
+    });
+    
+    container.appendChild(table);
+}
+
+let currentStudent = {};
+let weeklySchedule = [];
+
+// Sort periods by time (assumes format like "8:00 AM - 9:00 AM")
+function convertToMinutes(timeRange) {
+    if (!timeRange) return 0;
+    
+    const startTime = timeRange.split("-")[0].trim();
+    const [time, modifier] = startTime.split(" ");
+    let [hours, minutes] = time.split(":").map(Number);
+    
+    if (modifier === "PM" && hours !== 12) hours += 12;
+    if (modifier === "AM" && hours === 12) hours = 0;
+    
+    return hours * 60 + minutes;
+}
+
+function getSubjectColor(subject) {
+    const colorMap = {
+        Math: "#4b3cf0",
+        English: "#f39c12",
+        Science: "#27ae60",
+        History: "#e74c3c",
+        "Physical Education": "#16a085",
+        Arabic: "#8e44ad",
+        ICT: "#2980b9",
+        Break: "#95a5a6"
+    };
+    
+    return colorMap[subject] || generateColorFromText(subject);
+}
+
+function generateColorFromText(text) {
+    if (!text) return "#bdc3c7";
+    
+    let hash = 0;
+    for (let i = 0; i < text.length; i++) {
+        hash = text.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    
+    return "#" + ((hash & 0x00FFFFFF).toString(16).padStart(6, "0"));
+}
+
+// SHOW TABLES  
+window.showClasswork = function(btn) {
+    renderTable('classworks', currentStudent.classworks || [], "Classwork Records");
+    showSection('classworks', btn);
+};
+
+window.showAssignments = function(btn) {
+    renderTable('assignments', currentStudent.assignments || [], "Assignment Records");
+    showSection('assignments', btn);
+};
+
+window.showExams = function(btn) {
+    renderTable('exams', currentStudent.exams || [], "Exam Results");
+    showSection('exams', btn);
+};
+
 // Toggle submenu
 window.toggleSubmenu = function(id) {
 const submenu = document.getElementById(id);
 if(submenu) submenu.style.display = submenu.style.display === "flex" ? "none" : "flex";
-};</script>
+};
+   
+</script>
 
-<<script>        // 1️⃣ Get parent document
+<script>        // 1️⃣ Get parent document
         window.updateProfile = async function() {
     const user = auth.currentUser;
     const newName = document.getElementById("parentDisplayName").value.trim();
@@ -63,13 +207,14 @@ window.changePassword = async function() {
     } catch (error) {
         alert("You may need to re-login before changing password.");
     }
-};</script>
+};
+</script>
 
 
     <style>  
         /* ====== GLOBAL STYLES ====== */  
         body {  
-            margin: 0;  
+            margin: 0; 
             font-family: Arial, sans-serif;  
             background: linear-gradient(135deg, #1e3c72, #2a5298);  
             color: #fff;  
@@ -147,11 +292,12 @@ window.changePassword = async function() {
             border-radius: 15px;  
             margin-bottom: 20px;  
         }  
-        .results-grid {  
-            display: grid;  
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));  
-            gap: 15px;  
-        }  
+        .results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}  
         .subject-card {  
             background: white;  
             color: #2a5298;  
@@ -316,6 +462,24 @@ window.changePassword = async function() {
     font-weight: 600;  
     display: inline-block;  
 }  
+.category-section {
+    margin-bottom: 25px;
+}
+
+.category-section h3 {
+    margin-bottom: 10px;
+    color: #ffffff;
+}
+
+.grade-badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    display: inline-block;
+    margin-top: 5px;
+}
     </style>  
 </head>  
 <body>  
@@ -373,24 +537,29 @@ window.changePassword = async function() {
   
             <div class="card">  
                 <h3>Academic Results</h3>  
-                <div class="results-grid">  
-                    <div class="subject-card">Math <br><span id="math"></span></div>  
-                    <div class="subject-card">English <br><span id="english"></span></div>  
-                    <div class="subject-card">Science <br><span id="science"></span></div>  
-                </div>  
+<div class="results-grid" id="resultsGrid"></div>
             </div>  
   
             <div class="card average-box">  
                 Overall Average: <span id="averageScore"></span>  
             </div>  
-  
+  <h4>Performance Summary</h4>
+
+<p><strong>Best Subject:</strong> <span id="bestSubject">-</span></p>
+<p><strong>Conventional Average:</strong> <span id="conventionalAverage">-</span></p>
+<p><strong>Islamiyyah Average:</strong> <span id="islamiyyahAverage">-</span></p>
+<p><strong>Overall Performance:</strong> <span id="overallPerformance">-</span></p>
             <div class="card">  
                 <p><strong>Teacher Comment:</strong></p>  
                 <div id="comment" class="comment"></div>  
                 <h3>Attendance & Fees</h3>  
                 <p><strong>Attendance:</strong> <span id="attendance"></span>%</p>  
                 <p><strong>Fee Status:</strong> <span id="feeStatus"></span></p>  
+                <button class="download-btn" onclick="downloadPDF()">
+    Download Result Sheet (PDF)
+</button>
             </div>  
+            
         </div>  
   
         <!-- HISTORICAL GRADES SECTION -->  
@@ -416,7 +585,7 @@ window.changePassword = async function() {
         <div id="exams" class="section" style="display:none;"></div>  
   
         <!-- SCHEDULE SECTION -->  
-        <div id="Schedule" class="section" style="display:none;">  
+        <div id="schedule" class="section" style="display:none;">  
     <div class="card">  
         <h2>My Weekly Schedule</h2>  
         <div id="scheduleTable"></div>  
@@ -468,59 +637,59 @@ import {
 
 // Firestore imports
 import {
-    getFirestore,
-    collection,
-    query,
-    where,
-    getDocs,
-    doc,
-    getDoc
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    getDatabase,
+    ref,
+    get,
+    child
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {
-apiKey: "AIzaSyC4psvU8WSR1QQQsRlZ8HkHO57Dznbb9TA",
-authDomain: "episteme-learning-academy.firebaseapp.com",
-projectId: "episteme-learning-academy",
-storageBucket: "episteme-learning-academy.firebasestorage.app",
-messagingSenderId: "476274489231",
-appId: "1:476274489231:web:fb67e5fde8a5d26328bdfa",
-measurementId: "G-PKPLKXMWSX"
+    apiKey: "AIzaSyC4psvU8WSR1QQQsRlZ8HkHO57Dznbb9TA",
+    authDomain: "episteme-learning-academy.firebaseapp.com",
+    projectId: "episteme-learning-academy",
+    storageBucket: "episteme-learning-academy.firebasestorage.app",
+    messagingSenderId: "476274489231",
+    appId: "1:476274489231:web:fb67e5fde8a5d26328bdfa",
+    measurementId: "G-PKPLKXMWSX",
+    databaseURL: "https://episteme-learning-academy-default-rtdb.europe-west1.firebasedatabase.app"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getFirestore(app);
+const db = getDatabase(app);
 
 // ✅ GLOBAL STUDENT OBJECT
-let currentStudent = {};
-let weeklySchedule = [];
+
 
 onAuthStateChanged(auth, async (user) => {
     if (!user) {
         window.location.href = "parent-login.html";
         return;
     }
-    // Populate account info
+    
     document.getElementById("parentEmailDisplay").value = user.email;
     document.getElementById("parentDisplayName").value = user.displayName || "";
     
     try {
-        const parentDocRef = doc(db, "Parents", user.uid);
-        const parentSnap = await getDoc(parentDocRef);
+        const parentSnap = await get(ref(db, "parents/" + user.uid));
+        
         if (!parentSnap.exists()) {
             alert("Parent record not found.");
             return;
         }
         
-        const studentID = parentSnap.data().studentID;
-        const studentDocRef = doc(db, "Students", studentID);
-        const studentSnap = await getDoc(studentDocRef);
+        const children = parentSnap.val().children;
+const studentID = Object.keys(children)[0];
+        
+        const studentSnap = await get(ref(db, "students/" + studentID));
+        
         if (!studentSnap.exists()) {
             alert("Student record not found.");
             return;
         }
         
-        initializeDashboard(studentSnap.data());
+        initializeDashboard(studentSnap.val());
+        
     } catch (error) {
         console.error(error);
     }
@@ -530,54 +699,173 @@ onAuthStateChanged(auth, async (user) => {
 // ========== INITIALIZE DASHBOARD ==========  
 
 function initializeDashboard(studentData) {
-    currentStudent = studentData;
     
-    document.getElementById("studentID").textContent = studentData.studentID;
-    document.getElementById("studentName").textContent = studentData.studentName;
-    document.getElementById("studentClass").textContent = studentData.studentClass;
-    document.getElementById("studentAge").textContent = studentData.studentAge;
-    document.getElementById("studentDOB").textContent = studentData.studentDOB;
-    document.getElementById("studentProgram").textContent = studentData.studentProgram;
-    document.getElementById("studentInformation").textContent = studentData.studentInformation;
+    currentStudent = studentData || {};
     
-    updateTermData("term1");
+    document.getElementById("studentID").textContent =
+        studentData.studentID || "N/A";
+    
+    document.getElementById("studentName").textContent =
+        studentData.studentName || "N/A";
+    
+    document.getElementById("studentClass").textContent =
+        studentData.studentClass || "N/A";
+    
+    document.getElementById("studentAge").textContent =
+        studentData.studentAge || "N/A";
+    
+    document.getElementById("studentDOB").textContent =
+        studentData.studentDOB || "N/A";
+    
+    document.getElementById("studentProgram").textContent =
+        studentData.studentProgram || "N/A";
+    
+    document.getElementById("studentInformation").textContent =
+        studentData.studentInformation || "N/A";
+    
+    // Load first available term instead of assuming term1 exists
+    const term1 = studentData.results ?
+        Object.keys(studentData.results)[0] :
+        null;
+    
+    if (term1) {
+        updateTermData(term1);
+    }
+}
+  const islamiyyahSubjects = [
+    "Qur'an",
+    "Qira'ah",
+    "Kitaabah",
+    "Arabiyyah",
+    "Hadeeth",
+    "Fiqh",
+    "Tajweed",
+    "Seerah",
+    "Tawheed",
+    "Adab",
+    "Nahw",
+    "Sarf",
+    "Mutun"
+];
+
+const conventionalSubjects = [
+    "Math",
+    "English",
+    "Science",
+    "General Knowledge",
+    "Phonics"
+];
+// ========== RESULTS ==========  
+function updateTermData(term) {
+    
+    if (!currentStudent.results || !currentStudent.results[term]) return;
+    
+    const termData = currentStudent.results[term];
+    const resultsGrid = document.getElementById("resultsGrid");
+    
+    resultsGrid.innerHTML = "";
+    
+    let total = 0;
+let count = 0;
+
+let conventionalTotal = 0;
+let conventionalCount = 0;
+
+let islamiyyahTotal = 0;
+let islamiyyahCount = 0;
+
+let bestSubject = "";
+let highestScore = -1;
+    
+    // ===== CREATE CATEGORY CONTAINERS =====
+    const conventionalDiv = document.createElement("div");
+    conventionalDiv.innerHTML = "<h3>Conventional Subjects</h3>";
+    conventionalDiv.className = "category-section";
+    
+    const islamiyyahDiv = document.createElement("div");
+    islamiyyahDiv.innerHTML = "<h3>Islamiyyah Subjects</h3>";
+    islamiyyahDiv.className = "category-section";
+    
+    Object.entries(termData.subjects || {}).forEach(([subject, score]) => {
+    
+    score = Number(score);
+    
+    const badge = getPerformanceBadge(score);
+    
+    const card = document.createElement("div");
+    card.className = "subject-card";
+    card.innerHTML = `
+        ${subject}<br>
+        <span>${score}%</span><br>
+        <span class="grade-badge" style="background:${badge.color}">
+            ${badge.grade}
+        </span>
+    `;
+    
+    // Track best subject
+    if (score > highestScore) {
+        highestScore = score;
+        bestSubject = subject + " (" + score + "%)";
+    }
+    
+    // Group calculations
+    if (islamiyyahSubjects.includes(subject)) {
+        islamiyyahTotal += score;
+        islamiyyahCount++;
+        islamiyyahDiv.appendChild(card);
+    } else {
+        conventionalTotal += score;
+        conventionalCount++;
+        conventionalDiv.appendChild(card);
+    }
+    
+    total += score;
+    count++;
+});
+    
+    const overallAvg = count > 0 ? total / count : 0;
+const conventionalAvg = conventionalCount > 0 ? conventionalTotal / conventionalCount : 0;
+const islamiyyahAvg = islamiyyahCount > 0 ? islamiyyahTotal / islamiyyahCount : 0;
+
+document.getElementById("averageScore").textContent =
+    overallAvg.toFixed(1) + "%";
+
+document.getElementById("conventionalAverage").textContent =
+    conventionalAvg.toFixed(1) + "%";
+
+document.getElementById("islamiyyahAverage").textContent =
+    islamiyyahAvg.toFixed(1) + "%";
+
+document.getElementById("bestSubject").textContent =
+    bestSubject || "-";
+
+const performance = getOverallPerformanceStatus(overallAvg);
+
+document.getElementById("overallPerformance").textContent =
+    performance.text;
+
+document.getElementById("overallPerformance").style.color =
+    performance.color;
+    
+    document.getElementById("comment").textContent =
+        termData.comment || "No comment available.";
+    
+    document.getElementById("attendance").textContent =
+        currentStudent.attendance || 0;
+    
+    document.getElementById("feeStatus").textContent =
+        currentStudent.feeStatus || "N/A";
 }
   
-// ========== RESULTS ==========  
-function updateTermData(term){  
-    const termData = currentStudent.results[term];  
-    document.getElementById("math").textContent = termData.math;  
-    document.getElementById("english").textContent = termData.english;  
-    document.getElementById("science").textContent = termData.science;  
-    document.getElementById("comment").textContent = termData.comment;  
-    document.getElementById("attendance").textContent = currentStudent.attendance;  
-    document.getElementById("feeStatus").textContent = currentStudent.feeStatus;  
-  
-    const avg = (termData.math + termData.english + termData.science)/3;  
-    document.getElementById("averageScore").textContent = avg.toFixed(1) + "% (" + getGrade(avg) + ")";  
-}  
-window.changeTerm = function(){  
-    const selectedTerm = document.getElementById("termSelector").value;  
-    updateTermData(selectedTerm);  
-};  
-function getGrade(avg){  
-    avg = Number(avg);  
-    if(avg >= 70) return "A";  
-    if(avg >= 60) return "B";  
-    if(avg >= 50) return "C";  
-    if(avg >= 45) return "D";  
-    return "F";  
-}  
-  
 // ========== PROFESSIONAL TABLES ==========  
-function renderTable(sectionId, dataArray, title = "Assessment Records") {  
+window.renderTable = function(sectionId, dataArray, title = "Assessment Records") {
     const container = document.getElementById(sectionId);  
     container.innerHTML = "";  
       
-    if (dataArray.length === 0) {  
-        container.innerHTML = "<p>No records available.</p>";  
-        return;  
-    }  
+    if (!Array.isArray(dataArray) || dataArray.length === 0) {
+    container.innerHTML = "<p>No records available.</p>";
+    return;
+}
       
     const card = document.createElement("div");  
     card.className = "table-card";  
@@ -632,22 +920,7 @@ function downloadTableCSV(dataArray, filename){
     a.click();  
     URL.revokeObjectURL(url);  
 }  
-  
-// SHOW TABLES  
-window.showClasswork = function(btn) {  
-    renderTable('classworks', currentStudent.classworks, "Classwork Records");  
-    showSection('classworks', btn);  
-};  
-  
-window.showAssignments = function(btn) {  
-    renderTable('assignments', currentStudent.assignments, "Assignment Records");  
-    showSection('assignments', btn);  
-};  
-  
-window.showExams = function(btn) {  
-    renderTable('exams', currentStudent.exams, "Exam Results");  
-    showSection('exams', btn);  
-};  
+ 
   
 // SORT TABLE  
 function sortTable(sectionId, colIndex){  
@@ -666,6 +939,16 @@ function sortTable(sectionId, colIndex){
     rows.forEach(r=>tbody.appendChild(r));  
     table.asc = !asc;  
 }  
+function getPerformanceBadge(score) {
+    score = Number(score);
+    
+    if (score >= 90) return { grade: "A+", color: "#16a34a" };
+    if (score >= 80) return { grade: "A", color: "#22c55e" };
+    if (score >= 70) return { grade: "B", color: "#3b82f6" };
+    if (score >= 60) return { grade: "C", color: "#f59e0b" };
+    if (score >= 50) return { grade: "D", color: "#f97316" };
+    return { grade: "F", color: "#ef4444" };
+}
 
     // ===========================  
     // DOWNLOAD RESULTS  
@@ -687,27 +970,123 @@ function sortTable(sectionId, colIndex){
         }  
     }  
       
-    async function downloadPDF() {  
-        const { jsPDF } = window.jspdf;  
-        const doc = new jsPDF();  
-          
-        doc.text("Episteme Learning Academy", 20, 20);  
-        doc.text("Student Result Slip", 20, 30);  
-        doc.text("Name: " + currentStudent.studentName, 20, 40);  
-        doc.text("Age: " + currentStudent.studentAge, 20, 50);  
-        doc.text("Class: " + currentStudent.studentClass, 20, 60);  
-          
-        const term = document.getElementById("termSelector").value;  
-        const data = currentStudent.results[term];  
-          
-        doc.text("Math: " + data.math, 20, 80);  
-        doc.text("English: " + data.english, 20, 90);  
-        doc.text("Science: " + data.science, 20, 100);  
-        doc.text("Comment: " + data.comment, 20, 110);  
-          
-        doc.save("result-slip.pdf");  
-    }  
-      
+    async function downloadPDF() {
+    
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    const term = document.getElementById("termSelector").value;
+    const termData = currentStudent.results[term];
+    
+    if (!termData || !termData.subjects) {
+        alert("No results available.");
+        return;
+    }
+    
+    let y = 20;
+    
+    // ===== HEADER =====
+    doc.setFontSize(16);
+    doc.text("EPISTEME LEARNING ACADEMY", 20, y);
+    y += 10;
+    
+    doc.setFontSize(12);
+    doc.text("Official Result Sheet", 20, y);
+    y += 10;
+    
+    doc.text("Student Name: " + currentStudent.studentName, 20, y);
+    y += 7;
+    doc.text("Class: " + currentStudent.studentClass, 20, y);
+    y += 7;
+    doc.text("Term: " + term.toUpperCase(), 20, y);
+    y += 10;
+    
+    // ===== SUBJECTS =====
+    let total = 0;
+    let count = 0;
+    
+    let conventionalTotal = 0;
+    let conventionalCount = 0;
+    
+    let islamiyyahTotal = 0;
+    let islamiyyahCount = 0;
+    
+    let bestSubject = "";
+    let highestScore = -1;
+    
+    doc.setFontSize(11);
+    doc.text("Subjects & Scores:", 20, y);
+    y += 8;
+    
+    Object.entries(termData.subjects).forEach(([subject, score]) => {
+        
+        score = Number(score);
+        
+        doc.text(`${subject}: ${score}%`, 25, y);
+        y += 7;
+        
+        total += score;
+        count++;
+        
+        if (score > highestScore) {
+            highestScore = score;
+            bestSubject = subject + " (" + score + "%)";
+        }
+        
+        if (islamiyyahSubjects.includes(subject)) {
+            islamiyyahTotal += score;
+            islamiyyahCount++;
+        } else {
+            conventionalTotal += score;
+            conventionalCount++;
+        }
+        
+    });
+    
+    const overallAvg = count ? (total / count).toFixed(1) : 0;
+    const conventionalAvg = conventionalCount ? (conventionalTotal / conventionalCount).toFixed(1) : 0;
+    const islamiyyahAvg = islamiyyahCount ? (islamiyyahTotal / islamiyyahCount).toFixed(1) : 0;
+    
+    y += 5;
+    
+    // ===== SUMMARY SECTION =====
+    doc.setFontSize(12);
+    doc.text("Performance Summary", 20, y);
+    y += 8;
+    
+    doc.text("Best Subject: " + bestSubject, 25, y);
+    y += 7;
+    
+    doc.text("Conventional Average: " + conventionalAvg + "%", 25, y);
+    y += 7;
+    
+    doc.text("Islamiyyah Average: " + islamiyyahAvg + "%", 25, y);
+    y += 7;
+    
+    doc.text("Overall Average: " + overallAvg + "%", 25, y);
+    y += 7;
+    
+    const performance = getOverallPerformanceStatus(overallAvg);
+    
+    doc.text("Overall Performance: " + performance.text, 25, y);
+    y += 10;
+    
+    // ===== COMMENT =====
+    doc.text("Teacher's Comment:", 20, y);
+    y += 7;
+    doc.text(termData.comment || "No comment available.", 25, y);
+    y += 15;
+    
+    // ===== ATTENDANCE =====
+    doc.text("Attendance: " + (currentStudent.attendance || 0) + "%", 20, y);
+    y += 7;
+    doc.text("Fee Status: " + (currentStudent.feeStatus || "N/A"), 20, y);
+    
+    // ===== SAVE FILE =====
+    doc.save(
+        `${currentStudent.studentName}_${term}_Result_Sheet.pdf`
+    );
+}     
     // ===========================  
     // LOGOUT  
     // ===========================  
@@ -756,134 +1135,20 @@ function renderChart(averages) {
         }  
     });  
 }  
-
+function getOverallPerformanceStatus(avg) {
+    if (avg >= 85) return { text: "Excellent", color: "#16a34a" };
+    if (avg >= 70) return { text: "Very Good", color: "#22c55e" };
+    if (avg >= 60) return { text: "Good", color: "#3b82f6" };
+    if (avg >= 50) return { text: "Needs Improvement", color: "#f59e0b" };
+    return { text: "Poor", color: "#ef4444" };
+}
 // ===============================
 // WEEKLY SCHEDULE
 // ===============================
 
 
 
-window.showSchedule = function(btn) {
-    showSection('Schedule', btn);
-    
-    if (!currentStudent.Schedule) {
-        document.getElementById("scheduleTable").innerHTML =
-            "<p>No Schedule found.</p>";
-        return;
-    }
-    
-    renderSchedule(currentStudent.Schedule);
-};
 
-function renderSchedule(scheduleData) {
-    
-    const container = document.getElementById("scheduleTable");
-    container.innerHTML = "";
-    
-    if (!scheduleData || !scheduleData.length) {
-        container.innerHTML = `
-            <div style="padding:20px;text-align:center;color:#555;">
-                <h4>No Schedule Available</h4>
-                <p>The weekly schedule has not been uploaded yet.</p>
-            </div>
-        `;
-        return;
-    }
-    
-    const dayOrder = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
-    scheduleData.sort((a, b) => dayOrder.indexOf(a.day) - dayOrder.indexOf(b.day));
-    
-    const table = document.createElement("table");
-    table.className = "schedule-grid";
-    
-    table.innerHTML = `
-        <thead>
-            <tr>
-                <th style="width:20%">Day</th>
-                <th style="width:30%">Time</th>
-                <th style="width:50%">Subject</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    `;
-    
-    const tbody = table.querySelector("tbody");
-    
-    scheduleData.forEach(dayObj => {
-        
-        if (!dayObj.periods) return;
-        
-        dayObj.periods.sort((a, b) =>
-            convertToMinutes(a.time) - convertToMinutes(b.time)
-        );
-        
-        dayObj.periods.forEach((period, index) => {
-            
-            const tr = document.createElement("tr");
-            
-            tr.innerHTML = `
-                ${index===0
-                    ? `<td rowspan="${dayObj.periods.length}">
-                         <strong>${dayObj.day}</strong>
-                       </td>`
-                    : ""}
-
-                <td>${period.time || "-"}</td>
-
-                <td>
-                    <span class="subject-badge"
-                        style="background:${getSubjectColor(period.subject)}">
-                        ${period.subject || "N/A"}
-                    </span>
-                </td>
-            `;
-            
-            tbody.appendChild(tr);
-        });
-    });
-    
-    container.appendChild(table);
-}
-        
-        // Sort periods by time (assumes format like "8:00 AM - 9:00 AM")
-        function convertToMinutes(timeRange) {
-    if (!timeRange) return 0;
-    
-    const startTime = timeRange.split("-")[0].trim();
-    const [time, modifier] = startTime.split(" ");
-    let [hours, minutes] = time.split(":").map(Number);
-    
-    if (modifier === "PM" && hours !== 12) hours += 12;
-    if (modifier === "AM" && hours === 12) hours = 0;
-    
-    return hours * 60 + minutes;
-}
-
-function getSubjectColor(subject) {
-    const colorMap = {
-        Math: "#4b3cf0",
-        English: "#f39c12",
-        Science: "#27ae60",
-        History: "#e74c3c",
-        "Physical Education": "#16a085",
-        Arabic: "#8e44ad",
-        ICT: "#2980b9",
-        Break: "#95a5a6"
-    };
-    
-    return colorMap[subject] || generateColorFromText(subject);
-}
-
-function generateColorFromText(text) {
-    if (!text) return "#bdc3c7";
-    
-    let hash = 0;
-    for (let i = 0; i < text.length; i++) {
-        hash = text.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    
-    return "#" + ((hash & 0x00FFFFFF).toString(16).padStart(6, "0"));
-}
     
 </script>
     
