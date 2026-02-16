@@ -209,7 +209,9 @@ window.changePassword = async function() {
     }
 };
 </script>
+<script src="https://js.paystack.co/v1/inline.js"></script>
 
+<link rel="manifest" href="manifest.json">
 
     <style>  
         /* ====== GLOBAL STYLES ====== */  
@@ -554,7 +556,8 @@ window.changePassword = async function() {
                 <div id="comment" class="comment"></div>  
                 <h3>Attendance & Fees</h3>  
                 <p><strong>Attendance:</strong> <span id="attendance"></span>%</p>  
-                <p><strong>Fee Status:</strong> <span id="feeStatus"></span></p>  
+                <p><strong>Fee Status:</strong> <span id="feeStatus"></span></p>
+                <button onclick="payFees()">Pay School Fees</button>
                 <button class="download-btn" onclick="downloadPDF()">
     Download Result Sheet (PDF)
 </button>
@@ -732,6 +735,11 @@ function initializeDashboard(studentData) {
         updateTermData(term1);
     }
 }
+window.changeTerm = function() {
+    const term = document.getElementById("termSelector").value;
+    updateTermData(term);
+};
+
   const islamiyyahSubjects = [
     "Qur'an",
     "Qira'ah",
@@ -846,6 +854,9 @@ document.getElementById("overallPerformance").textContent =
 
 document.getElementById("overallPerformance").style.color =
     performance.color;
+    
+    resultsGrid.appendChild(conventionalDiv);
+resultsGrid.appendChild(islamiyyahDiv);
     
     document.getElementById("comment").textContent =
         termData.comment || "No comment available.";
@@ -1066,10 +1077,15 @@ function getPerformanceBadge(score) {
     doc.text("Overall Average: " + overallAvg + "%", 25, y);
     y += 7;
     
-    const performance = getOverallPerformanceStatus(overallAvg);
+    function getOverallPerformanceStatus(avg) {
+    avg = Number(avg);
     
-    doc.text("Overall Performance: " + performance.text, 25, y);
-    y += 10;
+    if (avg >= 85) return { text: "Excellent", color: "#16a34a" };
+    if (avg >= 70) return { text: "Very Good", color: "#22c55e" };
+    if (avg >= 60) return { text: "Good", color: "#3b82f6" };
+    if (avg >= 50) return { text: "Fair", color: "#f59e0b" };
+    return { text: "Needs Improvement", color: "#ef4444" };
+}
     
     // ===== COMMENT =====
     doc.text("Teacher's Comment:", 20, y);
@@ -1142,11 +1158,33 @@ function getOverallPerformanceStatus(avg) {
     if (avg >= 50) return { text: "Needs Improvement", color: "#f59e0b" };
     return { text: "Poor", color: "#ef4444" };
 }
-// ===============================
-// WEEKLY SCHEDULE
-// ===============================
 
-
+function payFees() {
+    const handler = PaystackPop.setup({
+        key: 'pk_live_64158b7b329777c76a9f71c8afea298fc5ff2452',
+        email: auth.currentUser.email,
+        amount: 30000, // 5000 Naira (amount is in kobo)
+        currency: "NGN",
+        callback: function(response) {
+            
+            alert("Payment successful!");
+            
+            // Update Firebase
+            import("https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js")
+                .then(({ ref, update }) => {
+                    update(ref(db, "students/" + currentStudent.studentID), {
+                        feeStatus: "Paid"
+                    });
+                });
+            
+        },
+        onClose: function() {
+            alert('Payment cancelled.');
+        }
+    });
+    
+    handler.openIframe();
+}
 
 
     
