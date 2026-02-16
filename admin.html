@@ -244,6 +244,15 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);
 
+const adminUID = "SqwLfhD2HLglbxRIWTXRXNeKymZ2";
+const adminData = {
+    email: "admin@example.com",
+    name: "Super Admin",
+    role: "admin"
+};
+
+// Save to Realtime Database
+
 const studentsRef = ref(db, "students");
 
 function loadStudentDropdowns() {
@@ -284,23 +293,31 @@ document.getElementById(id).style.display="block";
 if(id === "results") displayResults();
 };
 
-window.saveStudent = async function(){
-
-const id = document.getElementById("studentID").value;
-
-await set(ref(db,"students/"+id),{
-studentID:id,
-studentName:studentName.value,
-studentClass:studentClass.value,
-studentAge:studentAge.value,
-studentDOB:studentDOB.value,
-studentProgram:studentProgram.value,
-studentInformation:studentInformation.value,
-attendance:attendance.value,
-feeStatus:feeStatus.value
-});
-
-alert("Student saved");
+window.saveStudent = async function() {
+    
+    const id = document.getElementById("studentID").value;
+    const studentName = document.getElementById("studentName").value;
+    const studentClass = document.getElementById("studentClass").value;
+    const studentAge = document.getElementById("studentAge").value;
+    const studentDOB = document.getElementById("studentDOB").value;
+    const studentProgram = document.getElementById("studentProgram").value;
+    const studentInformation = document.getElementById("studentInformation").value;
+    const attendance = document.getElementById("attendance").value;
+    const feeStatus = document.getElementById("feeStatus").value;
+    
+    await set(ref(db, "students/" + id), {
+        studentID: id,
+        studentName,
+        studentClass,
+        studentAge,
+        studentDOB,
+        studentProgram,
+        studentInformation,
+        attendance,
+        feeStatus
+    });
+    
+    alert("Student saved");
 };
 
 // ✅ Student Search & List
