@@ -34,23 +34,3 @@ slider.addEventListener("touchend", e => {
   if (endX - startX > 50) changeSlide(-1);
 });
 
-/* FORMSPREE SUBMIT */
-const form = document.getElementById("admissionForm");
-const successMsg = document.getElementById("successMsg");
-
-form.addEventListener("submit", async function(e) {
-  e.preventDefault();
-
-  const response = await fetch(form.action, {
-    method: "POST",
-    body: new FormData(form),
-    headers: { "Accept": "application/json" }
-  });
-
-  if (response.ok) {
-    form.reset();
-    successMsg.style.display = "block";
-  } else {
-    alert("Submission failed. Please try again.");
-  }
-});
