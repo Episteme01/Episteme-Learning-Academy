@@ -285,8 +285,6 @@ function loadStudentDropdowns() {
     });
 }
 
-loadStudentDropdowns();
-
 window.showSection = function(id){
 document.querySelectorAll(".section").forEach(s=>s.style.display="none");
 document.getElementById(id).style.display="block";
@@ -610,6 +608,7 @@ onAuthStateChanged(auth, async (user) => {
     
     document.getElementById("loginScreen").style.display = "none";
     document.getElementById("adminPortal").style.display = "block";
+    loadStudentDropdowns();
 });
 
 window.adminLogout = function() {
@@ -617,19 +616,6 @@ window.adminLogout = function() {
         alert("Logged out successfully");
     });
 };
-
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        // Admin is logged in
-        document.getElementById("loginScreen").style.display = "none";
-        document.getElementById("adminPortal").style.display = "block";
-    } else {
-        // Not logged in
-        document.getElementById("loginScreen").style.display = "block";
-        document.getElementById("adminPortal").style.display = "none";
-    }
-});
-
 
 </script>
 <!-- EmailJS SDK -->
