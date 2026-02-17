@@ -258,7 +258,9 @@ const studentsRef = ref(db, "students");
 
 function loadStudentDropdowns() {
     onValue(studentsRef, (snapshot) => {
-        const data = snapshot.val() || {};
+                console.log("Students snapshot:", snapshot.val());
+                
+                const data = snapshot.val() || {};
         
         const dropdowns = [
             "resultStudentSelect",
@@ -615,6 +617,7 @@ window.adminLogout = function() {
     signOut(auth).then(() => {
         alert("Logged out successfully");
     });
+    console.log("Logged in UID:", user.uid);
 };
 
 </script>
