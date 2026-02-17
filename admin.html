@@ -295,29 +295,36 @@ if(id === "results") displayResults();
 
 window.saveStudent = async function() {
     
-    const id = document.getElementById("studentID").value;
-    const studentName = document.getElementById("studentName").value;
-    const studentClass = document.getElementById("studentClass").value;
-    const studentAge = document.getElementById("studentAge").value;
-    const studentDOB = document.getElementById("studentDOB").value;
-    const studentProgram = document.getElementById("studentProgram").value;
-    const studentInformation = document.getElementById("studentInformation").value;
-    const attendance = document.getElementById("attendance").value;
-    const feeStatus = document.getElementById("feeStatus").value;
+    const id = document.getElementById("studentID").value.trim();
     
-    await set(ref(db, "students/" + id), {
+    if (!id) {
+        alert("Student ID is required");
+        return;
+    }
+    
+    const studentData = {
         studentID: id,
-        studentName,
-        studentClass,
-        studentAge,
-        studentDOB,
-        studentProgram,
-        studentInformation,
-        attendance,
-        feeStatus
-    });
+        studentName: studentName.value,
+        studentClass: studentClass.value,
+        studentAge: studentAge.value,
+        studentDOB: studentDOB.value,
+        studentProgram: studentProgram.value,
+        studentInformation: studentInformation.value,
+        attendance: Number(attendance.value) || 0,
+        feeStatus: feeStatus.value
+    };
     
-    alert("Student saved");
+    try {
+        await set(ref(db, "students/" + id), studentData);
+        alert("Student saved successfully");
+    } catch (error) {
+        alert(error.message);
+    }
+};
+
+window.assignStudentToParent = async function(parentUID, studentID) {
+    await set(ref(db, `parents/${parentUID}/children/${studentID}`), true);
+    alert("Student linked to parent");
 };
 
 // ✅ Student Search & List
@@ -527,7 +534,6 @@ function updateDashboardAnalytics(data){
 }
 
 // ✅ Export PDF
-// Export PDF
 window.exportPDF = function() {
     const id = resultStudentSelect.value;
     if (!id) return alert("Select student");
