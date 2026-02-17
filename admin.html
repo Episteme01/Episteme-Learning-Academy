@@ -226,7 +226,8 @@ padding:2px 6px; font-size:12px;
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, set, update, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getDatabase, ref, get, set, update, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const firebaseConfig = {
@@ -296,22 +297,30 @@ if(id === "results") displayResults();
 window.saveStudent = async function() {
     
     const id = document.getElementById("studentID").value.trim();
+    const name = document.getElementById("studentName").value;
+    const studentClassVal = document.getElementById("studentClass").value;
+    const age = document.getElementById("studentAge").value;
+    const dob = document.getElementById("studentDOB").value;
+    const program = document.getElementById("studentProgram").value;
+    const info = document.getElementById("studentInformation").value;
+    const attendanceVal = document.getElementById("attendance").value;
+    const fee = document.getElementById("feeStatus").value;
     
-    if (!id) {
-        alert("Student ID is required");
+    if (!id || !name) {
+        alert("Student ID and Name required");
         return;
     }
     
     const studentData = {
         studentID: id,
-        studentName: studentName.value,
-        studentClass: studentClass.value,
-        studentAge: studentAge.value,
-        studentDOB: studentDOB.value,
-        studentProgram: studentProgram.value,
-        studentInformation: studentInformation.value,
-        attendance: Number(attendance.value) || 0,
-        feeStatus: feeStatus.value
+        studentName: name,
+        studentClass: studentClassVal,
+        studentAge: age,
+        studentDOB: dob,
+        studentProgram: program,
+        studentInformation: info,
+        attendance: Number(attendanceVal) || 0,
+        feeStatus: fee
     };
     
     try {
@@ -319,6 +328,7 @@ window.saveStudent = async function() {
         alert("Student saved successfully");
     } catch (error) {
         alert(error.message);
+        console.error(error);
     }
 };
 
@@ -583,14 +593,23 @@ function adminLogin() {
 // Attach login listener (no inline onclick needed)
 document.querySelector("#loginScreen button").addEventListener("click", adminLogin);
 
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        document.getElementById("loginScreen").style.display = "none";
-        document.getElementById("adminPortal").style.display = "block";
-    } else {
+onAuthStateChanged(auth, async (user) => {
+    if (!user) {
         document.getElementById("loginScreen").style.display = "block";
         document.getElementById("adminPortal").style.display = "none";
+        return;
     }
+    
+    const adminCheck = await get(ref(db, "admins/" + user.uid));
+    
+    if (!adminCheck.exists()) {
+        alert("Access denied. Not an admin.");
+        await signOut(auth);
+        return;
+    }
+    
+    document.getElementById("loginScreen").style.display = "none";
+    document.getElementById("adminPortal").style.display = "block";
 });
 
 window.adminLogout = function() {
