@@ -74,7 +74,7 @@ p, li {
 }
 
 .hero {
-    background: url("assets/images/hero.jpg") center/cover no-repeat;
+    background: url("images/hero.jpg") center/cover no-repeat;
     height: 70vh;
     position: relative;
 }
