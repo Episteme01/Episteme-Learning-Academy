@@ -86,6 +86,8 @@ display:flex; justify-content:space-between; padding:6px; border-bottom:1px soli
 padding:2px 6px; font-size:12px;
 }
 </style>
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 </head>
 
 <body>
@@ -109,6 +111,7 @@ padding:2px 6px; font-size:12px;
         <button onclick="showSection('results')">Results Manager</button>
         <button onclick="showSection('assessments')">Assessments</button>
         <button onclick="showSection('schedule')">Schedule Builder</button>
+        <button onclick="showSection('blogManager')">Blog Manager</button>
     </div>
     
     <div class="main">
@@ -125,6 +128,27 @@ padding:2px 6px; font-size:12px;
                     <p>Top Performer: <span id="topStudent">N/A</span></p>
                     <p>Average Grade: <span id="averageGrade">N/A</span></p>
                 </div>
+                <!-- BLOG MANAGER -->
+
+    <div class="card">
+        <h3>Blog Manager</h3>
+        
+        <input id="blogTitle" placeholder="Blog Title">
+        <input type="file" id="blogImageFile">
+        <input id="blogExcerpt" placeholder="Short Description">
+        
+        <div id="editor" style="height: 250px;"></div>
+        <select id="blogCategory">
+    <option value="Islamic Education">Islamic Education</option>
+    <option value="Parenting">Parenting</option>
+    <option value="Academic Excellence">Academic Excellence</option>
+</select>
+        <button class="primary" onclick="saveBlog()">Publish Blog</button>
+        
+        <h4>Existing Posts</h4>
+        <div id="blogList"></div>
+    </div>
+</div>
             </div>
         </div>
         <button onclick="adminLogout()" style="background:#ff4d4f; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer;">Logout</button>
@@ -220,16 +244,18 @@ padding:2px 6px; font-size:12px;
 <button class="primary" onclick="saveSchedule()">Add Period</button>
 </div>
 </div>
-
+f
 </div>
 </div>
 
 <script type="module">
+let currentBlogs = {};  // Holds all blogs from Firebase globally
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getDatabase, ref, get, set, update, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
+import { getStorage, ref as storageRef, uploadBytes, getDownloadURL }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 const firebaseConfig = {
     apiKey: "AIzaSyC4psvU8WSR1QQQsRlZ8HkHO57Dznbb9TA",
     authDomain: "episteme-learning-academy.firebaseapp.com",
@@ -243,15 +269,122 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
+const blogRef = ref(db, "blogs");
 const auth = getAuth(app);
-
+const storage = getStorage(app);
 const adminUID = "SqwLfhD2HLglbxRIWTXRXNeKymZ2";
 const adminData = {
-    email: "admin@example.com",
+    email: "epistemelearninghub@gmail.com",
     name: "Super Admin",
     role: "admin"
 };
+window.saveBlog = async function() {
+    
+    const title = blogTitle.value;
+    const excerpt = blogExcerpt.value;
+    const category = blogCategory.value;
+    const content = quill.root.innerHTML;
+    
+    if (!title || !excerpt || !content) {
+        return alert("Please fill all required fields");
+    }
+   
+    let imageURL = "";
+    
+    // 👇 THIS is where the image upload code goes
+    const fileInput = document.getElementById("blogImageFile");
+    const file = fileInput.files[0];
+    
+    if (file) {
+        const imgRef = storageRef(storage, "blog-images/" + Date.now());
+        await uploadBytes(imgRef, file);
+        imageURL = await getDownloadURL(imgRef);
+    }
+    
+    if (editingBlogId) {
+        
+        await update(ref(db, "blogs/" + editingBlogId), {
+            title,
+            excerpt,
+            content,
+            category,
+            image: imageURL || currentBlogs[editingBlogId].image,
+            updatedAt: Date.now()
+        });
+        
+        editingBlogId = null;
+        alert("Blog updated successfully");
+        
+    } else {
+        
+        await push(ref(db, "blogs"), {
+            title,
+            excerpt,
+            content,
+            category,
+            image: imageURL,
+            views: 0,
+            createdAt: Date.now()
+        });
+        
+        alert("Blog published successfully");
+    }
+    
+    // Clear form
+    blogTitle.value = "";
+    blogExcerpt.value = "";
+    fileInput.value = "";
+    quill.setContents([]);
+};
 
+function loadBlogs() {
+    const list = document.getElementById("blogList");
+    
+    onValue(blogRef, (snapshot) => {
+        currentBlogs = snapshot.val() || {}; // Update the global variable
+        list.innerHTML = "";
+        
+        Object.keys(currentBlogs).forEach(id => {
+            const blog = currentBlogs[id];
+            
+            const div = document.createElement("div");
+            div.className = "result-row";
+            
+            div.innerHTML = `
+                <span>${blog.title}</span>
+                <div>
+                    <button onclick="editBlog('${id}')">Edit</button>
+                    <button onclick="deleteBlog('${id}')">Delete</button>
+                 
+                </div>
+            `;
+            
+            list.appendChild(div);
+        });
+    });
+}
+
+window.deleteBlog = async function(id) {
+    if (confirm("Delete this blog?")) {
+        await remove(ref(db, "blogs/" + id));
+        alert("Deleted");
+    }
+};
+let editingBlogId = null;
+
+window.editBlog = function(id) {
+    editingBlogId = id;
+    const blog = currentBlogs[id];
+    if (!blog) return;
+    
+    // Fill form with existing blog data
+    blogTitle.value = blog.title;
+    blogExcerpt.value = blog.excerpt;
+    blogCategory.value = blog.category || "Islamic Education";
+    quill.root.innerHTML = blog.content || "";
+    
+    // Image: You can keep the file input empty; it will only upload a new file if changed
+};
 // Save to Realtime Database
 
 const studentsRef = ref(db, "students");
@@ -589,36 +722,7 @@ function adminLogin() {
         }
     });
 }
-
-// Attach login listener (no inline onclick needed)
-document.querySelector("#loginScreen button").addEventListener("click", adminLogin);
-
-onAuthStateChanged(auth, async (user) => {
-    if (!user) {
-        document.getElementById("loginScreen").style.display = "block";
-        document.getElementById("adminPortal").style.display = "none";
-        return;
-    }
-    
-    const adminCheck = await get(ref(db, "admins/" + user.uid));
-    
-    if (!adminCheck.exists()) {
-        alert("Access denied. Not an admin.");
-        await signOut(auth);
-        return;
-    }
-    
-    document.getElementById("loginScreen").style.display = "none";
-    document.getElementById("adminPortal").style.display = "block";
-    loadStudentDropdowns();
-});
-
-window.adminLogout = function() {
-    signOut(auth).then(() => {
-        alert("Logged out successfully");
-    });
-    console.log("Logged in UID:", user.uid);
-};
+   
 
 </script>
 <!-- EmailJS SDK -->
@@ -629,6 +733,9 @@ window.adminLogout = function() {
         emailjs.init("HRzpdij9ek-FzGhux");
 
     })();
+    
+    const quill = new Quill('#editor', { theme: 'snow' });
+// load blogs into the list after editor is ready
 </script>
 </body>
 </html>
