@@ -5,6 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
+.paper {
+  background: #fdf6e3;
+  color: #000;
+  padding: 25px;
+  border-radius: 10px;
+  font-size: 26px;
+  direction: rtl;
+  line-height: 2;
+  font-family: 'Scheherazade', serif;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
 body{
   margin:0;
   font-family:Arial;
@@ -164,7 +175,6 @@ footer{
 <header>
 🕌 Islamiyyah Public Portal  
 <br><br><font color="white" size="3">Episteme Learning Academy</font>
-        <div>
 </header>
 
 <nav>
@@ -191,7 +201,7 @@ footer{
 <audio id="player" controls></audio><br>
 <div class="card">
   <h3>Arabic Text</h3>
-  <p id="arabicText" style="font-size:22px; direction:rtl;"></p>
+  <div id="arabicText" class="paper"></div>
 </div>
 <button class="gold" onclick="downloadSurah()">🎧 Download Surah</button>
 </div>
