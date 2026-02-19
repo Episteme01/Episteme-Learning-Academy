@@ -149,7 +149,7 @@
 </div>
 
 <script type="module">
-
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, setPersistence, browserLocalPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
@@ -166,7 +166,11 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        window.location.href = "/parent-dashboard.html";
+    }
+});
 // Keep your togglePassword function (DO NOT DELETE IT)
 window.togglePassword = function() {
     const passwordField = document.getElementById("parentPassword");
@@ -204,13 +208,6 @@ window.loginParent = async function() {
     }
 };
 
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        window.location.href = "/parent-dashboard.html";
-    }
-});
 </script>
 
 </body>
