@@ -5,16 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-.paper {
-  background: #fdf6e3;
-  color: #000;
-  padding: 25px;
-  border-radius: 10px;
-  font-size: 26px;
-  direction: rtl;
-  line-height: 2;
-  font-family: 'Scheherazade', serif;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+#datetime {
+  display: inline-block;
+  background: rgba(26, 188, 156, 0.2); /* semi-transparent turquoise */
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  margin-top: 5px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
 }
 body{
   margin:0;
@@ -30,8 +30,17 @@ header{
   text-align:center;
   font-size:22px;
   font-weight:bold;
-  color:#1abc9c; /* emerald-ish */
+  color:#1abc9c;
   border-bottom:2px solid #1abc9c;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:15px;
+}
+
+header img{
+  height:50px;
+  border-radius:8px;
 }
 
 nav{
@@ -44,7 +53,7 @@ nav{
 }
 
 nav button{
-  background:#16a085; /* emerald/teal button */
+  background:#16a085;
   border:none;
   padding:8px 15px;
   color:white;
@@ -55,7 +64,7 @@ nav button{
 }
 
 nav button:hover{
-  background:#1abc9c; /* lighter emerald on hover */
+  background:#1abc9c;
 }
 
 .section{
@@ -69,42 +78,29 @@ nav button:hover{
   padding:20px;
   border-radius:12px;
   margin-top:15px;
-  border:1px solid #1abc9c; /* border color changed from gold to emerald */
+  border:1px solid #1abc9c;
 }
-/* ===== Surah Selector Styling ===== */
+
 #surah, #reciter {
-  width:95%;             /* almost full width */
-  padding:12px 15px;     /* nice padding */
-  margin:10px auto;      /* center horizontally */
-  font-size:16px;        /* readable text */
-  font-weight:bold;      /* bold words */
-  color:#fff;            /* white text */
-  background:linear-gradient(135deg,#0f3d2e,#145c43); /* emerald-blue gradient */
-  border:none;           /* no border */
-  border-radius:12px;    /* rounded corners */
-  box-shadow:0 5px 15px rgba(0,0,0,0.4); /* subtle depth */
-  appearance:none;       /* remove default arrow style */
+  width:95%;
+  padding:12px 15px;
+  margin:10px auto;
+  font-size:16px;
+  font-weight:bold;
+  color:#fff;
+  background:linear-gradient(135deg,#0f3d2e,#145c43);
+  border:none;
+  border-radius:12px;
+  box-shadow:0 5px 15px rgba(0,0,0,0.4);
+  appearance:none;
   cursor:pointer;
   transition:0.3s;
 }
 
-/* Hover effect */
 #surah:hover, #reciter:hover {
-  background:linear-gradient(135deg,#145c43,#0f3d2e); /* inverse gradient on hover */
+  background:linear-gradient(135deg,#145c43,#0f3d2e);
 }
 
-/* Focus effect */
-#surah:focus, #reciter:focus {
-  outline:none;
-  box-shadow:0 0 0 3px rgba(26,188,156,0.5); /* emerald glow */
-}
-
-/* Arrow icon for select */
-#surah::-ms-expand, #reciter::-ms-expand {
-  display: none; /* remove IE default arrow */
-}
-
-/* Optional: custom arrow using pseudo-element */
 .select-container {
   position: relative;
   display: inline-block;
@@ -124,7 +120,7 @@ nav button:hover{
 }
 
 .gold{
-  background:linear-gradient(to right,#16a085,#1abc9c); /* emerald gradient */
+  background:linear-gradient(to right,#16a085,#1abc9c);
   color:white;
   padding:8px 15px;
   border:none;
@@ -135,56 +131,48 @@ nav button:hover{
 }
 
 .gold:hover{
-  background:#149077; /* slightly darker emerald on hover */
+  background:#149077;
 }
 
 footer{
   text-align:center;
   padding:15px;
   background:#111;
-  color:#1abc9c; /* emerald color */
+  color:#1abc9c;
   margin-top:30px;
 }
-
-/* ===== THEME MODES ===== */
-
-.mode-ramadan {
-  background: linear-gradient(to bottom, #001f3f, #003366, #001a33);
-}
-
-.mode-emerald {
-  background: linear-gradient(to bottom, #004d40, #00695c, #00251a);
-}
-
-.mode-royal {
-  background: linear-gradient(to bottom, #3e1f47, #6a1b9a, #1a0033);
-}
-
-.mode-ocean {
-  background: linear-gradient(to bottom, #0f2027, #2c5364, #00c6ff);
-}
-
-.mode-gold {
-  background: linear-gradient(to bottom, #0f3d2e, #145c43); /* emerald version */
-  color: white;
+.mode-ramadan { background: linear-gradient(to bottom, #001f3f, #003366, #001a33); }
+.mode-emerald { background: linear-gradient(to bottom, #004d40, #00695c, #00251a); }
+.mode-royal   { background: linear-gradient(to bottom, #3e1f47, #6a1b9a, #1a0033); }
+.mode-ocean   { background: linear-gradient(to bottom, #0f2027, #2c5364, #00c6ff); }
+.mode-gold    { background: linear-gradient(to bottom, #0f3d2e, #145c43); }
+.mode-sunset  { background: linear-gradient(to bottom, #ff6f61, #ffb347, #ffd194); }
+.mode-midnight{ background: linear-gradient(to bottom, #0b0c10, #1f2833, #66fcf1); }
+#datetime {
+  color: #ffffffcc;
+  font-weight: bold;
+  margin-top: 5px;
 }
 </style>
 </head>
 <body>
 
 <header>
-🕌 Islamiyyah Public Portal  
-<br><br><font color="white" size="3">Episteme Learning Academy</font>
+  <img src="images/episteme logo. png" alt="Episteme Learning Academy Logo">
+  <div>
+    🕌 Islamiyyah Public Portal  
+    <br><font color="white" size="4">Episteme Learning Academy</font>
+    <div id="datetime" style="font-size:10px; margin-top:3px;"></div>
+  </div>
 </header>
 
 <nav>
 <button onclick="showSection('quran')">Qur’an</button>
 <button onclick="showSection('dua')">Daily Du’a</button>
 <button onclick="showSection('tajweed')">Tajweed</button>
-<button onclick="showSection('tafsir')">Tafsir</button>
-<button onclick="showSection('stats')">Most Listened</button>
+<button onclick="showSection('hadith')">Daily Hadith</button>
+<button onclick="showSection('admonition')">Daily Admonition</button>
 <button onclick="switchMode()">🎨 Change Mode</button>
-<button onclick="showSection('leaderboard')">Leaderboard</button>
 <button onclick="showSection('center')">Islamic Center</button>
 </nav>
 
@@ -197,6 +185,7 @@ footer{
     <option value="">Select Surah</option>
   </select>
 </div>
+
 <select id="reciter">
   <option value="afs">Mishary Rashid Al‑Afasy</option>
   <option value="mustafa">Mustafa Ismail</option>
@@ -218,12 +207,7 @@ footer{
   <option value="ryan">Adel Ryyan</option>
 </select>
 
-
 <audio id="player" controls></audio><br>
-<div class="card">
-  <h3>Arabic Text</h3>
-  <div id="arabicText" class="paper"></div>
-</div>
 <button class="gold" onclick="downloadSurah()">🎧 Download Surah</button>
 </div>
 
@@ -231,10 +215,24 @@ footer{
 <div id="dua" class="section">
 <h2>Daily Du’a</h2>
 <div class="card">
-<p id="duaText"></p>
+<p id="duaText">“Our Lord! Give us good in this world and good in the Hereafter.”</p>
 </div>
+</div>
+<!-- ================= HADITH ================= -->
+<div id="hadith" class="section">
+  <h2>Daily Hadith</h2>
+  <div class="card">
+    <p id="hadithText">Loading today's Hadith...</p>
+  </div>
 </div>
 
+<!-- ================= ADMONITION ================= -->
+<div id="admonition" class="section">
+  <h2>Daily Admonition</h2>
+  <div class="card">
+    <p id="admonitionText">Loading today's Admonition...</p>
+  </div>
+</div>
 <!-- ================= TAJWEED ================= -->
 <div id="tajweed" class="section">
 <h2>Tajweed Rules</h2>
@@ -245,367 +243,237 @@ footer{
 </div>
 </div>
 
-<div id="leaderboard" class="section">
-  <h2>Islamic Leaderboard</h2>
-  <div class="card">
-    <p id="leaderboardData">Loading...</p>
-  </div>
-</div>
 <div id="center" class="section">
-  <h2>Islamic Learning Center</h2>
-  
-  <div class="card">
-    <h3>Qur’an Classes</h3>
-    <p>Online & Onsite Hifdh and Tajweed classes.</p>
-  </div>
-  
-  <div class="card">
-    <h3>Islamic Studies</h3>
-    <p>Fiqh, Seerah, Aqeedah, Hadith.</p>
-  </div>
-  
-  <div class="card">
-    <h3>Ramadan Programs</h3>
-    <p>Daily Tafsir, Taraweeh streaming, Qur’an challenge.</p>
-  </div>
-  
-</div>
-
-<!-- ================= STATS ================= -->
-<div id="stats" class="section">
-<h2>Most Listened Surah</h2>
-<div class="card">
-<p id="mostListened">Loading...</p>
-</div>
-</div>
-<div id="tafsir" class="section">
-  <h2>Tafsir</h2>
-  <div class="card">
-    <p id="tafsirText">Select a Surah to view Tafsir.</p>
-  </div>
+<h2>Islamic Learning Center</h2>
+<div class="card"><h3>Qur’an Classes</h3><p>Online & Onsite Hifdh and Tajweed classes.</p></div>
+<div class="card"><h3>Islamic Studies</h3><p>Fiqh, Seerah, Aqeedah, Hadith.</p></div>
+<div class="card"><h3>Ramadan Programs</h3><p>Daily Tafsir, Taraweeh streaming, Qur’an challenge.</p></div>
 </div>
 
 <footer>
 © 2026 Episteme Learning Academy | Islamiyyah Department
 </footer>
 
-<!-- Firebase -->
-<script type="module">
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, set, update, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-
-const firebaseConfig = {
-apiKey: "AIzaSyC4psvU8WSR1QQQsRlZ8HkHO57Dznbb9TA",
-  authDomain: "episteme-learning-academy.firebaseapp.com",
-  projectId: "episteme-learning-academy",
-  storageBucket: "episteme-learning-academy.firebasestorage.app",
-  messagingSenderId: "476274489231",
-  appId: "1:476274489231:web:fb67e5fde8a5d26328bdfa",
-  measurementId: "G-PKPLKXMWSX",
-  databaseURL: "https://episteme-learning-academy-default-rtdb.europe-west1.firebasedatabase.app"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-
-/* ================= SECTION NAVIGATION ================= */
-window.showSection = function(id) {
-  document.querySelectorAll(".section").forEach(sec => {
-    sec.style.display = "none";
-  });
-  
-  const active = document.getElementById(id);
-  if (active) {
-    active.style.display = "block";
-  }
-  
-  // Load leaderboard automatically when opened
-  if (id === "leaderboard") {
-    loadLeaderboard();
-  }
-};
-/* 🎨 MODE SWITCHER */
-const modes = [
-  "",
-  "mode-ramadan",
-  "mode-emerald",
-  "mode-royal",
-  "mode-ocean",
-  "mode-gold"
-];
-
-let currentMode = 0;
-
-window.switchMode = function() {
-  document.body.className = "";
-  currentMode = (currentMode + 1) % modes.length;
-  if (modes[currentMode] !== "") {
-    document.body.classList.add(modes[currentMode]);
-  }
-};
-window.downloadSurah = function() {
-  if (player.src) {
-    window.open(player.src);
-  }
-};
-/* ===== Real Surah Names ===== */
-const surahs = [
-"Al-Fatiha","Al-Baqarah","Aal-E-Imran","An-Nisa","Al-Ma'idah",
-"Al-An'am","Al-A'raf","Al-Anfal","At-Tawbah","Yunus",
-"Hud","Yusuf","Ar-Ra'd","Ibrahim","Al-Hijr",
-"An-Nahl","Al-Isra","Al-Kahf","Maryam","Ta-Ha",
-"Al-Anbiya","Al-Hajj","Al-Mu'minun","An-Nur","Al-Furqan",
-"Ash-Shu'ara","An-Naml","Al-Qasas","Al-Ankabut","Ar-Rum",
-"Luqman","As-Sajdah","Al-Ahzab","Saba","Fatir",
-"Ya-Sin","As-Saffat","Sad","Az-Zumar","Ghafir",
-"Fussilat","Ash-Shura","Az-Zukhruf","Ad-Dukhan","Al-Jathiyah",
-"Al-Ahqaf","Muhammad","Al-Fath","Al-Hujurat","Qaf",
-"Adh-Dhariyat","At-Tur","An-Najm","Al-Qamar","Ar-Rahman",
-"Al-Waqi'ah","Al-Hadid","Al-Mujadila","Al-Hashr","Al-Mumtahanah",
-"As-Saff","Al-Jumu'ah","Al-Munafiqun","At-Taghabun","At-Talaq",
-"At-Tahrim","Al-Mulk","Al-Qalam","Al-Haqqah","Al-Ma'arij",
-"Nuh","Al-Jinn","Al-Muzzammil","Al-Muddathir","Al-Qiyamah",
-"Al-Insan","Al-Mursalat","An-Naba","An-Nazi'at","Abasa",
-"At-Takwir","Al-Infitar","Al-Mutaffifin","Al-Inshiqaq","Al-Buruj",
-"At-Tariq","Al-A'la","Al-Ghashiyah","Al-Fajr","Al-Balad",
-"Ash-Shams","Al-Layl","Ad-Duha","Ash-Sharh","At-Tin",
-"Al-Alaq","Al-Qadr","Al-Bayyinah","Az-Zalzalah","Al-Adiyat",
-"Al-Qari'ah","At-Takathur","Al-Asr","Al-Humazah","Al-Fil",
-"Quraysh","Al-Ma'un","Al-Kawthar","Al-Kafirun","An-Nasr",
-"Al-Masad","Al-Ikhlas","Al-Falaq","An-Nas"
-];
-
+<script>
 const surahSelect = document.getElementById("surah");
+const reciterSelect = document.getElementById("reciter");
 const player = document.getElementById("player");
 
-/* ===== LOAD SURAH AUDIO ===== */
-function loadSurahAudio() {
-  const surahNumber = surahSelect.value;
-  if (!surahNumber) return;
-  
-  const reciter = document.getElementById("reciter").value;
-  const url = "https://server8.mp3quran.net/" + reciter + "/" + surahNumber + ".mp3";
-  
-  player.src = url;
-  player.play();
-}
-
-surahs.forEach((name,index)=>{
-const option=document.createElement("option");
-option.value=(index+1).toString().padStart(3,'0');
-option.textContent=(index+1)+". "+name;
-surahSelect.appendChild(option);
-});
-surahSelect.addEventListener("change", async ()=>{
-const surahNumber = surahSelect.value;
-const reciter = document.getElementById("reciter").value;
-const url = "https://server8.mp3quran.net/" + reciter + "/" + surahNumber + ".mp3";
-player.src=url;
-player.play();
-
-/* 🎙 Change Reciter Without Changing Surah */
-document.getElementById("reciter").addEventListener("change", () => {
-  const surahNumber = surahSelect.value;
-  if (!surahNumber) return;
-  
-  const reciter = document.getElementById("reciter").value;
-  const url = "https://server8.mp3quran.net/" + reciter + "/" + surahNumber + ".mp3";
-  
-  player.src = url;
-  player.play();
-});
-/* Update Surah Global Stats */
-const globalRef = ref(db, "surahStats/" + parseInt(surahNumber));
-const globalSnap = await get(globalRef);
-let globalCount = globalSnap.exists() ? globalSnap.val() : 0;
-await set(globalRef, globalCount + 1);
-
-function downloadSurah() {
-  window.open(player.src);
-}
-// Fetch Arabic text
-const res = await fetch("https://api.alquran.cloud/v1/surah/" + parseInt(surahNumber));
-const data = await res.json();
-const ayahs = data.data.ayahs.map(a => a.text).join(" ");
-document.getElementById("arabicText").innerText = ayahs;
-// Fetch Tafsir (English)
-const tafsirRes = await fetch("https://api.alquran.cloud/v1/surah/" + parseInt(surahNumber) + "/en.asad");
-const tafsirData = await tafsirRes.json();
-const tafsirText = tafsirData.data.ayahs.map(a => a.text).join(" ");
-document.getElementById("tafsirText").innerText = tafsirText;
-/* 📊 Track Listening */
-const listenRef = ref(db, "leaderboard/" + reciter + "/" + surahNumber);
-const snap=await get(listenRef);
-let count=snap.exists()?snap.val():0;
-await set(listenRef,count+1);
-loadMostListened();
-});
-
-/* 📊 Most Listened */
-async function loadMostListened(){
-const snap=await get(ref(db,"surahStats"));
-const data=snap.val()||{};
-let topSurah="None";
-let max=0;
-
-Object.keys(data).forEach(key=>{
-if(data[key]>max){
-max=data[key];
-topSurah=surahs[parseInt(key)-1];
-}
-});
-
-document.getElementById("mostListened").innerText=
-topSurah+" ("+max+" plays)";
-}
-
-loadMostListened();
-
-/* 🌙 Ramadan Mode */
-window.toggleRamadan=function(){
-document.body.classList.toggle("ramadan");
-};
-
-/* 📿 2 WEEKS DAILY DU'A (Arabic + Transliteration + Translation) */
-
-const duas = [
-  
-  {
-    day: "Day 1",
-    arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْهُدَى وَالتُّقَى وَالْعَفَافَ وَالْغِنَى",
-    translit: "Allahumma inni as'aluka al-huda wa at-tuqa wal-'afafa wal-ghina.",
-    meaning: "O Allah, I ask You for guidance, piety, chastity, and self-sufficiency."
-  },
-  
-  {
-    day: "Day 2",
-    arabic: "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ",
-    translit: "Rabbana atina fid-dunya hasanah wa fil-akhirati hasanah wa qina 'adhaban-nar.",
-    meaning: "Our Lord, grant us good in this world and good in the Hereafter and protect us from the punishment of the Fire."
-  },
-  
-  {
-    day: "Day 3",
-    arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ",
-    translit: "Allahumma inni a'udhu bika minal-hammi wal-hazan.",
-    meaning: "O Allah, I seek refuge in You from anxiety and sorrow."
-  },
-  
-  {
-    day: "Day 4",
-    arabic: "رَبِّ زِدْنِي عِلْمًا",
-    translit: "Rabbi zidni 'ilma.",
-    meaning: "My Lord, increase me in knowledge."
-  },
-  
-  {
-    day: "Day 5",
-    arabic: "اللَّهُمَّ ثَبِّتْ قَلْبِي عَلَى دِينِكَ",
-    translit: "Allahumma thabbit qalbi 'ala deenik.",
-    meaning: "O Allah, make my heart firm upon Your religion."
-  },
-  
-  {
-    day: "Day 6",
-    arabic: "رَبِّ اغْفِرْ لِي وَلِوَالِدَيَّ وَارْحَمْهُمَا كَمَا رَبَّيَانِي صَغِيرًا",
-    translit: "Rabbighfir li waliwalidayya warhamhuma kama rabbayani saghira.",
-    meaning: "My Lord, forgive me and my parents and have mercy upon them as they raised me when I was small."
-  },
-  
-  {
-    day: "Day 7",
-    arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ حُبَّكَ وَحُبَّ مَنْ يُحِبُّكَ",
-    translit: "Allahumma inni as'aluka hubbak wa hubba man yuhibbuk.",
-    meaning: "O Allah, I ask You for Your love and the love of those who love You."
-  },
-  
-  {
-    day: "Day 8",
-    arabic: "رَبَّنَا لَا تُزِغْ قُلُوبَنَا بَعْدَ إِذْ هَدَيْتَنَا",
-    translit: "Rabbana la tuzigh qulubana ba'da idh hadaytana.",
-    meaning: "Our Lord, do not let our hearts deviate after You have guided us."
-  },
-  
-  {
-    day: "Day 9",
-    arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْجَنَّةَ",
-    translit: "Allahumma inni as'aluka al-jannah.",
-    meaning: "O Allah, I ask You for Paradise."
-  },
-  
-  {
-    day: "Day 10",
-    arabic: "رَبِّ اشْرَحْ لِي صَدْرِي وَيَسِّرْ لِي أَمْرِي",
-    translit: "Rabbi ishrah li sadri wa yassir li amri.",
-    meaning: "My Lord, expand my chest and make my task easy for me."
-  },
-  
-  {
-    day: "Day 11",
-    arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ فِتْنَةِ الْمَحْيَا وَالْمَمَاتِ",
-    translit: "Allahumma inni a'udhu bika min fitnatil-mahya wal-mamat.",
-    meaning: "O Allah, I seek refuge in You from the trials of life and death."
-  },
-  
-  {
-    day: "Day 12",
-    arabic: "رَبَّنَا هَبْ لَنَا مِنْ أَزْوَاجِنَا وَذُرِّيَّاتِنَا قُرَّةَ أَعْيُنٍ",
-    translit: "Rabbana hablana min azwajina wa dhurriyyatina qurrata a'yun.",
-    meaning: "Our Lord, grant us from our spouses and offspring comfort to our eyes."
-  },
-  
-  {
-    day: "Day 13",
-    arabic: "اللَّهُمَّ بَارِكْ لَنَا فِي وَقْتِنَا وَأَعْمَالِنَا",
-    translit: "Allahumma barik lana fi waqtina wa a'malina.",
-    meaning: "O Allah, bless our time and our deeds."
-  },
-  
-  {
-    day: "Day 14",
-    arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ حُسْنَ الْخَاتِمَةِ",
-    translit: "Allahumma inni as'aluka husnal-khatimah.",
-    meaning: "O Allah, I ask You for a good ending."
-  }
-  
+const surah = [
+  "Al-Fatiha", "Al-Baqarah", "Aal-E-Imran", "An-Nisa", "Al-Ma'idah",
+  "Al-An'am", "Al-A'raf", "Al-Anfal", "At-Tawbah", "Yunus",
+  "Hud", "Yusuf", "Ar-Ra'd", "Ibrahim", "Al-Hijr",
+  "An-Nahl", "Al-Isra", "Al-Kahf", "Maryam", "Ta-Ha",
+  "Al-Anbiya", "Al-Hajj", "Al-Mu'minun", "An-Nur", "Al-Furqan",
+  "Ash-Shu'ara", "An-Naml", "Al-Qasas", "Al-Ankabut", "Ar-Rum",
+  "Luqman", "As-Sajdah", "Al-Ahzab", "Saba", "Fatir",
+  "Ya-Sin", "As-Saffat", "Sad", "Az-Zumar", "Ghafir",
+  "Fussilat", "Ash-Shura", "Az-Zukhruf", "Ad-Dukhan", "Al-Jathiyah",
+  "Al-Ahqaf", "Muhammad", "Al-Fath", "Al-Hujurat", "Qaf",
+  "Adh-Dhariyat", "At-Tur", "An-Najm", "Al-Qamar", "Ar-Rahman",
+  "Al-Waqi'ah", "Al-Hadid", "Al-Mujadila", "Al-Hashr", "Al-Mumtahanah",
+  "As-Saff", "Al-Jumu'ah", "Al-Munafiqun", "At-Taghabun", "At-Talaq",
+  "At-Tahrim", "Al-Mulk", "Al-Qalam", "Al-Haqqah", "Al-Ma'arij",
+  "Nuh", "Al-Jinn", "Al-Muzzammil", "Al-Muddathir", "Al-Qiyamah",
+  "Al-Insan", "Al-Mursalat", "An-Naba", "An-Nazi'at", "Abasa",
+  "At-Takwir", "Al-Infitar", "Al-Mutaffifin", "Al-Inshiqaq", "Al-Buruj",
+  "At-Tariq", "Al-A'la", "Al-Ghashiyah", "Al-Fajr", "Al-Balad",
+  "Ash-Shams", "Al-Layl", "Ad-Duha", "Ash-Sharh", "At-Tin",
+  "Al-Alaq", "Al-Qadr", "Al-Bayyinah", "Az-Zalzalah", "Al-Adiyat",
+  "Al-Qari'ah", "At-Takathur", "Al-Asr", "Al-Humazah", "Al-Fil",
+  "Quraysh", "Al-Ma'un", "Al-Kawthar", "Al-Kafirun", "An-Nasr",
+  "Al-Masad", "Al-Ikhlas", "Al-Falaq", "An-Nas"
 ];
 
-
-/* ===== Display Function ===== */
-
-function loadDailyDua() {
-  
-  const todayIndex = new Date().getDate() % duas.length;
-  const dua = duas[todayIndex];
-  
-  document.getElementById("duaText").innerHTML = `
-<h3>${dua.day}</h3>
-<p style="font-size:22px; direction:rtl;">${dua.arabic}</p>
-<p><em>${dua.translit}</em></p>
-<p>${dua.meaning}</p>
-`;
-  
-}
-
-loadDailyDua();
-
-async function loadLeaderboard() {
-  const snap = await get(ref(db, "leaderboard"));
-  const data = snap.val() || {};
-  let text = "";
-  
-  Object.keys(data).forEach(rec => {
-    text += "Reciter: " + rec + "\n";
-    Object.keys(data[rec]).forEach(s => {
-      text += "Surah " + s + " → " + data[rec][s] + " plays\n";
-    });
-    text += "\n";
+function populateSurah() {
+  surah.forEach((name, index) => {
+    const option = document.createElement("option");
+    option.value = index + 1;
+    option.textContent = (index + 1) + ". " + name;
+    surahSelect.appendChild(option);
   });
-  
-  document.getElementById("leaderboardData").innerText = text;
 }
 
+function formatSurahNumber(num) {
+  return num.toString().padStart(3, "0");
+}
+
+function loadAudio() {
+  const currentSurah = parseInt(surahSelect.value);
+  if (!currentSurah) return;
+  const reciter = reciterSelect.value;
+  const url = `https://server8.mp3quran.net/${reciter}/${formatSurahNumber(currentSurah)}.mp3`;
+  player.src = url;
+  player.play();
+}
+
+function downloadSurah() {
+  if (player.src) window.open(player.src);
+}
+
+document.addEventListener("DOMContentLoaded", () => populateSurah());
+
+surahSelect.addEventListener("change", loadAudio);
+reciterSelect.addEventListener("change", loadAudio);
+
+function showSection(id) {
+  document.querySelectorAll(".section").forEach(sec => sec.style.display = "none");
+  const active = document.getElementById(id);
+  if (active) active.style.display = "block";
+}
+
+const modes = ["","mode-ramadan","mode-emerald","mode-royal","mode-ocean","mode-gold"];
+let currentMode = 0;
+function switchMode() {
+  document.body.className = "";
+  currentMode = (currentMode + 1) % modes.length;
+  if (modes[currentMode] !== "") document.body.classList.add(modes[currentMode]);
+}
+// ===== Month's Daily Du'a, Hadith, Admonition (30 items each) =====
+const dailyDuas = [
+  "Our Lord! Give us good in this world and good in the Hereafter.",
+  "O Allah! Increase us in knowledge and guidance.",
+  "O Allah! Protect us from evil and wrongdoing.",
+  "O Allah! Grant us patience and perseverance.",
+  "O Allah! Bless our families and loved ones.",
+  "O Allah! Strengthen our faith and resolve.",
+  "O Allah! Forgive our sins and shortcomings.",
+  "O Allah! Guide us to the straight path.",
+  "O Allah! Help us show kindness to others.",
+  "O Allah! Bless our work and efforts.",
+  "O Allah! Make us grateful and content.",
+  "O Allah! Protect us from harm and trials.",
+  "O Allah! Grant us wisdom and understanding.",
+  "O Allah! Unite our hearts in love and peace.",
+  "O Allah! Help us remember You always.",
+  "O Allah! Grant us health and vitality.",
+  "O Allah! Accept our prayers and fasting.",
+  "O Allah! Guide our children and youth.",
+  "O Allah! Make us honest and sincere.",
+  "O Allah! Remove anxiety and stress from us.",
+  "O Allah! Bless our neighbors and community.",
+  "O Allah! Increase our charity and compassion.",
+  "O Allah! Protect us from pride and arrogance.",
+  "O Allah! Help us forgive and be forgiven.",
+  "O Allah! Make our actions pleasing to You.",
+  "O Allah! Bless us with good friends.",
+  "O Allah! Give us courage in trials.",
+  "O Allah! Keep us steadfast in worship.",
+  "O Allah! Help us remember the needy.",
+  "O Allah! Let our hearts be filled with Your love."
+];
+
+const dailyHadiths = [
+  "The Prophet ﷺ said: 'The best among you are those who have the best manners and character.'",
+  "The Prophet ﷺ said: 'Seek knowledge from cradle to grave.'",
+  "The Prophet ﷺ said: 'None of you truly believes until he loves for his brother what he loves for himself.'",
+  "The Prophet ﷺ said: 'A kind word is charity.'",
+  "The Prophet ﷺ said: 'Feed the hungry, visit the sick, and free the captive.'",
+  "The Prophet ﷺ said: 'The strong believer is better and more beloved to Allah than the weak believer.'",
+  "The Prophet ﷺ said: 'Make things easy, not difficult.'",
+  "The Prophet ﷺ said: 'Do not waste water, even if you perform ablution on a flowing river.'",
+  "The Prophet ﷺ said: 'The best charity is that given when one is in need himself.'",
+  "The Prophet ﷺ said: 'Shall I not inform you of the best deeds?'",
+  "The Prophet ﷺ said: 'He who does not thank people, does not thank Allah.'",
+  "The Prophet ﷺ said: 'Tie your camel and trust in Allah.'",
+  "The Prophet ﷺ said: 'None of you should harm his neighbor.'",
+  "The Prophet ﷺ said: 'The one who treads a path to seek knowledge, Allah makes easy a path to Paradise.'",
+  "The Prophet ﷺ said: 'He who relieves a believer’s distress, Allah will relieve his distress in this world and the next.'",
+  "The Prophet ﷺ said: 'A Muslim is the one from whose tongue and hand the people are safe.'",
+  "The Prophet ﷺ said: 'Whoever believes in Allah and the Last Day, should speak good or remain silent.'",
+  "The Prophet ﷺ said: 'Paradise lies under the feet of mothers.'",
+  "The Prophet ﷺ said: 'Help your brother, whether he is an oppressor or oppressed.'",
+  "The Prophet ﷺ said: 'The best of you are those who are best to their families.'",
+  "The Prophet ﷺ said: 'Do not envy one another.'",
+  "The Prophet ﷺ said: 'Allah loves that whenever any of you does something, he does it well.'",
+  "The Prophet ﷺ said: 'Avoid suspicion, for suspicion is the worst of false tales.'",
+  "The Prophet ﷺ said: 'The best of people are those who are most beneficial to people.'",
+  "The Prophet ﷺ said: 'Feed people, greet those you know and those you do not know.'",
+  "The Prophet ﷺ said: 'Be merciful to those on earth, and the One in the heaven will be merciful to you.'",
+  "The Prophet ﷺ said: 'Allah does not look at your appearance or wealth but at your hearts and deeds.'",
+  "The Prophet ﷺ said: 'Do not turn away a beggar.'",
+  "The Prophet ﷺ said: 'The strong in faith is he who controls his anger.'",
+  "The Prophet ﷺ said: 'Speak good or remain silent.'"
+];
+
+const dailyAdmonitions = [
+  "Remember to start your day with Bismillah.",
+  "Be mindful of your words; they reflect your character.",
+  "Charity purifies your wealth and soul.",
+  "Patience is half of faith.",
+  "Maintain your prayers on time.",
+  "Respect elders and honor parents.",
+  "Avoid gossip and backbiting.",
+  "Control your anger and speak kindly.",
+  "Help others in need whenever possible.",
+  "Always tell the truth.",
+  "Practice gratitude every day.",
+  "Forgive those who wrong you.",
+  "Be punctual and responsible.",
+  "Speak gently, even in disagreements.",
+  "Avoid arrogance and pride.",
+  "Protect your environment and cleanliness.",
+  "Show compassion to animals.",
+  "Pray for others as you pray for yourself.",
+  "Seek knowledge consistently.",
+  "Remember the Hereafter in all deeds.",
+  "Avoid extravagance and waste.",
+  "Give charity secretly and sincerely.",
+  "Use social media wisely and positively.",
+  "Be humble in success and patient in trials.",
+  "Encourage good and forbid evil.",
+  "Smile often; it’s charity.",
+  "Control desires; avoid greed.",
+  "Maintain honesty in business and trade.",
+  "Remember Allah in every action.",
+  "Be gentle and kind to everyone you meet."
+];
+
+// ===== AUTOMATIC ROTATION =====
+let index = new Date().getDate() - 1; // start from today's date
+function updateDailyContent() {
+  const dayIndex = index % 30;
+  document.getElementById("duaText").innerText = dailyDuas[dayIndex];
+  document.getElementById("hadithText").innerText = dailyHadiths[dayIndex];
+  document.getElementById("admonitionText").innerText = dailyAdmonitions[dayIndex];
+  index++;
+}
+
+// Update every 10 seconds (for demo; change to 86400000 for daily)
+updateDailyContent(); // initial load
+setInterval(updateDailyContent, 86400000); // every 24 hours
+</script>
+<script>
+async function updateDateTime() {
+  const now = new Date();
+
+  // Gregorian date & time
+  const gregorian = now.toLocaleString('en-GB', {
+    weekday: 'short', day: '2-digit', month: 'short', year: 'numeric',
+    hour:'2-digit', minute:'2-digit', second:'2-digit'
+  });
+
+  // Fetch accurate Hijri date
+  let hijri = '';
+  try {
+    const day = now.getDate();
+    const month = now.getMonth() + 1;
+    const year = now.getFullYear();
+
+    const res = await fetch(`https://api.aladhan.com/v1/gToH?date=${day}-${month}-${year}`);
+    const data = await res.json();
+    hijri = `${data.data.hijri.day}-${data.data.hijri.month.en}-${data.data.hijri.year} AH`;
+  } catch(e) {
+    hijri = 'Hijri not available';
+  }
+
+  document.getElementById('datetime').innerHTML = 
+    `🗓 ${gregorian} | 🕋 Hijri: ${hijri}`;
+}
+
+// Update every 10 seconds (no need for every second)
+updateDateTime();
+setInterval(updateDateTime, 1000);
 </script>
 
 </body>
