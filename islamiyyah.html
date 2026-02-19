@@ -309,8 +309,8 @@ function loadAudio() {
 
 function downloadSurah() {
   if (player.src) window.open(player.src);
+ 
 }
-
 document.addEventListener("DOMContentLoaded", () => populateSurah());
 
 surahSelect.addEventListener("change", loadAudio);
@@ -321,7 +321,22 @@ function showSection(id) {
   const active = document.getElementById(id);
   if (active) active.style.display = "block";
 }
+// ===== AUTO PLAY NEXT SURAH =====
+player.addEventListener("ended", () => {
+  let currentSurah = parseInt(surahSelect.value);
 
+  if (!currentSurah) return;
+
+  // If not last surah
+  if (currentSurah < surah.length) {
+    surahSelect.value = currentSurah + 1;
+    loadAudio();
+  } else {
+    // Optional: loop back to Surah 1
+    surahSelect.value = 1;
+    loadAudio();
+  }
+});
 const modes = ["","mode-ramadan","mode-emerald","mode-royal","mode-ocean","mode-gold"];
 let currentMode = 0;
 function switchMode() {
