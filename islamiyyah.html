@@ -3,8 +3,40 @@
 <head>
 <title>Islamiyyah Public Portal | Episteme Learning Academy</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
 <style>
+.ayah {
+  padding: 12px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}
+
+.ayah:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.active-ayah {
+  background: rgba(26, 188, 156, 0.3);
+  border-left: 4px solid #1abc9c;
+}
+
+.arabic {
+  font-family: 'Amiri', serif;
+  font-size: 22px;
+  direction: rtl;
+  text-align: right;
+  line-height: 2.2;
+}
+
+.translation {
+  font-size: 16px;
+  margin-top: 5px;
+  color: #ddd;
+}
+#mushafText {
+  font-family: 'Amiri', serif;
+}
 #datetime {
   display: inline-block;
   background: rgba(26, 188, 156, 0.2); /* semi-transparent turquoise */
@@ -168,6 +200,7 @@ footer{
 
 <nav>
 <button onclick="showSection('quran')">Qur’an</button>
+<button onclick="showSection('mushaf')">📖 Mushaf</button>
 <button onclick="showSection('dua')">Daily Du’a</button>
 <button onclick="showSection('tajweed')">Tajweed</button>
 <button onclick="showSection('hadith')">Daily Hadith</button>
@@ -209,6 +242,30 @@ footer{
 
 <audio id="player" controls></audio><br>
 <button class="gold" onclick="downloadSurah()">🎧 Download Surah</button>
+</div>
+
+<div id="mushaf" class="section">
+  <h2>📖 Readable Mushaf</h2>
+
+  <div class="select-container">
+    <select id="mushafSurah">
+      <option value="">Select Surah</option>
+    </select>
+  </div>
+
+  <div style="margin-top:10px;">
+    <button class="gold" onclick="setLanguage('ar')">Arabic</button>
+    <button class="gold" onclick="setLanguage('en')">English</button>
+    <button class="gold" onclick="setLanguage('both')">Both</button>
+  </div>
+
+  <input type="text" id="searchAyah" placeholder="Search inside surah..."
+         style="margin-top:10px; padding:8px; width:90%; border-radius:6px;">
+
+  <div class="card" id="mushafText"
+       style="max-height:500px; overflow-y:auto; font-size:22px;">
+       Select a Surah to read...
+  </div>
 </div>
 
 <!-- ================= DU'A ================= -->
@@ -309,8 +366,8 @@ function loadAudio() {
 
 function downloadSurah() {
   if (player.src) window.open(player.src);
- 
 }
+
 document.addEventListener("DOMContentLoaded", () => populateSurah());
 
 surahSelect.addEventListener("change", loadAudio);
@@ -324,9 +381,9 @@ function showSection(id) {
 // ===== AUTO PLAY NEXT SURAH =====
 player.addEventListener("ended", () => {
   let currentSurah = parseInt(surahSelect.value);
-
+  
   if (!currentSurah) return;
-
+  
   // If not last surah
   if (currentSurah < surah.length) {
     surahSelect.value = currentSurah + 1;
@@ -337,6 +394,7 @@ player.addEventListener("ended", () => {
     loadAudio();
   }
 });
+
 const modes = ["","mode-ramadan","mode-emerald","mode-royal","mode-ocean","mode-gold"];
 let currentMode = 0;
 function switchMode() {
@@ -489,6 +547,92 @@ async function updateDateTime() {
 // Update every 10 seconds (no need for every second)
 updateDateTime();
 setInterval(updateDateTime, 1000);
+
+const mushafSurahSelect = document.getElementById("mushafSurah");
+const mushafText = document.getElementById("mushafText");
+
+// Populate Mushaf dropdown
+function populateMushaf() {
+  surah.forEach((name, index) => {
+    const option = document.createElement("option");
+    option.value = index + 1;
+    option.textContent = (index + 1) + ". " + name;
+    mushafSurahSelect.appendChild(option);
+  });
+}
+
+// Fetch Arabic text from API
+async function loadMushaf() {
+  const surahNumber = mushafSurahSelect.value;
+  if (!surahNumber) return;
+  
+  mushafText.innerHTML = "Loading...";
+  
+  try {
+    const res = await fetch(
+      `https://api.alquran.cloud/v1/surah/${surahNumber}/ar.alafasy`
+    );
+    const data = await res.json();
+    
+    let verses = data.data.ayahs
+      .map(ayah => `${ayah.text} ﴿${ayah.numberInSurah}﴾`)
+      .join(" ");
+    
+    mushafText.innerHTML = verses;
+    
+  } catch (error) {
+    mushafText.innerHTML = "Failed to load Surah.";
+  }
+}
+
+// Event Listener
+mushafSurahSelect.addEventListener("change", loadMushaf);
+
+// Load dropdown on page load
+document.addEventListener("DOMContentLoaded", () => {
+  populateMushaf();
+});
+
+let currentLanguage = 'ar'; // default
+
+async function setLanguage(lang) {
+  currentLanguage = lang;
+  await loadMushaf();
+}
+async function loadMushaf() {
+  const surahNumber = mushafSurahSelect.value;
+  if (!surahNumber) return;
+  
+  mushafText.innerHTML = "Loading...";
+  
+  try {
+    let arText = '';
+    let enText = '';
+    
+    // Fetch Arabic
+    const arRes = await fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}/ar.alafasy`);
+    const arData = await arRes.json();
+    arText = arData.data.ayahs.map(ayah => `${ayah.text} ﴿${ayah.numberInSurah}﴾`).join(" ");
+    
+    // Fetch English
+    const enRes = await fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}/en.asad`);
+    const enData = await enRes.json();
+    enText = enData.data.ayahs.map(ayah => `${ayah.numberInSurah}. ${ayah.text}`).join(" ");
+    
+    // Display based on selected language
+    if (currentLanguage === 'ar') {
+      mushafText.innerHTML = arText;
+    } else if (currentLanguage === 'en') {
+      mushafText.innerHTML = enText;
+    } else if (currentLanguage === 'both') {
+      mushafText.innerHTML = arText + "<br><br>" + enText;
+    }
+    
+  } catch (error) {
+    mushafText.innerHTML = "Failed to load Surah.";
+    console.error(error);
+  }
+}
 </script>
 
 </body>
