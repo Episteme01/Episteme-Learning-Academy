@@ -168,7 +168,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 onAuthStateChanged(auth, (user) => {
     if (user) {
-        window.location.href = "/parent-dashboard.html";
+        window.location.href = "parent-dashboard.html";
     }
 });
 // Keep your togglePassword function (DO NOT DELETE IT)
@@ -201,7 +201,7 @@ window.loginParent = async function() {
 
         await signInWithEmailAndPassword(auth, email, password);
 
-        window.location.href = "/parent-dashboard.html";
+        window.location.href = "parent-dashboard.html";
 
     } catch (error) {
         document.getElementById("errorMessage").textContent = "Invalid email or password";
