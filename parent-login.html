@@ -149,20 +149,7 @@
 </div>
 
 <script type="module">
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, setPersistence, browserLocalPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyC4psvU8WSR1QQQsRlZ8HkHO57Dznbb9TA",
-    authDomain: "episteme-learning-academy.firebaseapp.com",
-    projectId: "episteme-learning-academy",
-    storageBucket: "episteme-learning-academy.firebasestorage.app",
-    messagingSenderId: "476274489231",
-    appId: "1:476274489231:web:fb67e5fde8a5d26328bdfa",
-    measurementId: "G-PKPLKXMWSX",
-    databaseURL: "https://episteme-learning-academy-default-rtdb.europe-west1.firebasedatabase.app"
-};
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
