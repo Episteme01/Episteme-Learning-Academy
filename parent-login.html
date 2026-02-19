@@ -125,7 +125,7 @@
     <!-- Logo -->
     <div class="logo">
         <!-- Replace logo.png with your real logo file -->
-        <img src="images/episteme logo. png" alt="School Logo">
+        <img src="/images/episteme-logo.png" alt="School Logo">
     </div>
 
     <div class="school-name">Episteme Learning Academy</div>
@@ -152,8 +152,7 @@
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, setPersistence, browserLocalPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    
+
 const firebaseConfig = {
   apiKey: "AIzaSyC4psvU8WSR1QQQsRlZ8HkHO57Dznbb9TA",
     authDomain: "episteme-learning-academy.firebaseapp.com",
@@ -162,6 +161,7 @@ const firebaseConfig = {
     messagingSenderId: "476274489231",
     appId: "1:476274489231:web:fb67e5fde8a5d26328bdfa",
     measurementId: "G-PKPLKXMWSX",
+    databaseURL: "https://episteme-learning-academy-default-rtdb.europe-west1.firebasedatabase.app"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -197,18 +197,20 @@ window.loginParent = async function() {
 
         await signInWithEmailAndPassword(auth, email, password);
 
-        window.location.href = "parent-dashboard.html";
+        window.location.href = "/parent-dashboard.html";
 
     } catch (error) {
         document.getElementById("errorMessage").textContent = "Invalid email or password";
     }
 };
-    onAuthStateChanged(auth, (user) => {
+
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+onAuthStateChanged(auth, (user) => {
     if (user) {
-        window.location.href = "parent-dashboard.html";
+        window.location.href = "/parent-dashboard.html";
     }
 });
-
 </script>
 
 </body>
