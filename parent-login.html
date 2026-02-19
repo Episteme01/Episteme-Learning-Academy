@@ -152,7 +152,8 @@
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, setPersistence, browserLocalPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    
 const firebaseConfig = {
   apiKey: "AIzaSyC4psvU8WSR1QQQsRlZ8HkHO57Dznbb9TA",
     authDomain: "episteme-learning-academy.firebaseapp.com",
@@ -202,14 +203,12 @@ window.loginParent = async function() {
         document.getElementById("errorMessage").textContent = "Invalid email or password";
     }
 };
-
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(auth, (user) => {
     if (user) {
         window.location.href = "parent-dashboard.html";
     }
 });
+
 </script>
 
 </body>
