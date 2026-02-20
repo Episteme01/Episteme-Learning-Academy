@@ -1,0 +1,167 @@
+<header class="navbar">
+    <a href="subjects.html">← Back</a>
+</header>
+<style>/* =============================
+Global Styles
+============================= */
+body {
+font-family: 'Arial', sans-serif;
+margin: 0;
+padding: 0;
+background: #f5f7fa;
+color: #333;
+line-height: 1.6;
+}
+
+a {
+text-decoration: none;
+color: inherit;
+}
+
+/* =============================
+Navbar
+============================= */
+.navbar {
+background: #1e3c72;
+color: white;
+padding: 15px 20px;
+display: flex;
+align-items: center;
+font-weight: bold;
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar a {
+color: white;
+font-size: 16px;
+}
+
+/* =============================
+Page Container
+============================= */
+section {
+max-width: 900px;
+margin: 40px auto;
+padding: 20px;
+background: white;
+border-radius: 12px;
+box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* =============================
+Headings
+============================= */
+h1 {
+color: #1e3c72;
+margin-bottom: 20px;
+}
+
+h3 {
+margin-top: 30px;
+color: #0b1f4a;
+}
+
+/* =============================
+Lessons List
+============================= */
+ul {
+list-style: none;
+padding: 0;
+}
+
+ul li {
+margin: 10px 0;
+background: #e0e7ff;
+border-radius: 8px;
+padding: 12px 20px;
+transition: all 0.3s ease;
+}
+
+ul li a {
+color: #1e3c72;
+font-weight: bold;
+}
+
+ul li:hover {
+background: #c7d2fe;
+transform: translateX(5px);
+}
+
+/* =============================
+Buttons
+============================= */
+.btn-primary {
+display: inline-block;
+padding: 12px 25px;
+margin-top: 20px;
+background: #1e3c72;
+color: white;
+font-weight: bold;
+border-radius: 8px;
+transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+background: #0b1f4a;
+transform: translateY(-2px);
+}
+
+/* =============================
+Lesson Content
+============================= */
+#lessonContent p {
+font-size: 18px;
+margin-top: 20px;
+white-space: pre-line;
+}
+
+#lessonContent li {
+margin: 8px 0;
+}</style>
+<section id="lessonContent"></section>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    
+    const subjectId = getParam("subject");
+    const lessonId = getParam("lesson");
+    
+    const container = document.getElementById("lessonContent");
+    
+    const subject = subjects.find(s => s.id === subjectId);
+    
+    if (!subject) {
+        container.innerHTML = "<h1>Subject not found.</h1>";
+        return;
+    }
+    
+    const lesson = subject.lessons.find(l => l.id === lessonId);
+    
+    if (!lesson) {
+        container.innerHTML = "<h1>Lesson not found.</h1>";
+        return;
+    }
+    
+    container.innerHTML = `
+        <h1>${lesson.title}</h1>
+        <p>${lesson.content}</p>
+    `;
+    
+    /* ===== SAVE LESSON PROGRESS ===== */
+    
+    let progress = JSON.parse(localStorage.getItem("progress")) || {};
+    
+    if (!progress[subjectId]) {
+        progress[subjectId] = [];
+    }
+    
+    if (!progress[subjectId].includes(lessonId)) {
+        progress[subjectId].push(lessonId);
+        localStorage.setItem("progress", JSON.stringify(progress));
+    }
+    
+});
+</script>
+<script src="js/hub-data.js" defer></script>
+<script src="js/app.js" defer></script>

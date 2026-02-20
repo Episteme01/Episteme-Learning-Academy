@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>AI Practice Mode</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+/* ===== Page & Container ===== */
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg,#dff6ff,#c1e9ff);
+    margin: 0;
+}
+header.navbar {
+    background: #145c43;
+    color: white;
+    padding: 15px 30px;
+    font-size: 1.1em;
+}
+header.navbar a {
+    color: white;
+    text-decoration: none;
+}
+
+/* ===== Card ===== */
+.practice-card {
+    background: #fff;
+    max-width: 750px;
+    margin: 50px auto;
+    padding: 40px;
+    border-radius: 25px;
+    box-shadow: 0 12px 35px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+/* ===== Inputs & Buttons ===== */
+select, input {
+    padding: 12px;
+    margin: 10px 5px;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    font-size: 1em;
+}
+button.btn-primary {
+    background: #145c43;
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: 0.3s;
+}
+button.btn-primary:hover {
+    background: #0f3d2e;
+}
+
+/* ===== Stats Box ===== */
+.stats-box{
+    margin-top:25px;
+    background:#f1f1f1;
+    padding:20px;
+    border-radius:20px;
+    display:flex;
+    justify-content:space-around;
+    font-weight:bold;
+}
+#feedback{
+    margin-top:15px;
+    font-size:1.1em;
+    font-weight:bold;
+}
+
+/* ===== Timer ===== */
+#timer {
+    font-weight: bold;
+    font-size: 1.2em;
+    margin: 10px 0;
+    color: #ff4500;
+}
+</style>
+</head>
+<body>
+
+<header class="navbar">
+    <a href="subjects.html">← Back</a> | AI Practice Mode
+</header>
+
+<div class="practice-card">
+
+    <h2>🤖 AI Practice Mode</h2>
+
+    <select id="subjectSelect"></select>
+    <select id="lessonSelect"></select>
+
+    <p id="difficultyDisplay">Difficulty: Easy</p>
+
+    <p id="timer"></p>
+<!-- Progress Bar -->
+<div style="margin:15px 0;">
+    <div style="background:#eee;border-radius:20px;height:20px;overflow:hidden;">
+        <div id="progressBar"
+             style="height:100%;width:0%;background:#145c43;
+                    text-align:center;color:white;font-size:0.8em;
+                    line-height:20px;transition:0.4s;">
+        </div>
+    </div>
+    <p id="progressText" style="margin-top:5px;font-weight:bold;"></p>
+</div>
+    <p id="question"></p>
+
+    <input type="text" id="answer">
+    <br>
+    <button onclick="checkAnswer()" class="btn-primary">Submit</button>
+<br>
+<button onclick="restartPractice()" 
+        style="margin-top:10px;background:#ff9800;color:white;
+               padding:10px 20px;border:none;border-radius:10px;cursor:pointer;">
+    🔄 Restart Practice
+</button>
+    <p id="feedback"></p>
+
+    <div class="stats-box">
+        <p>Level: <span id="level">1</span></p>
+        <p>XP: <span id="xp">0</span></p>
+        <p>Accuracy: <span id="accuracy">0%</span></p>
+    </div>
+
+</div>
+
+<script src="js/hub-data.js"></script>
+<script>
+if (!subjects) {
+    alert("Data not loaded. Please reconnect to internet.");
+}
+/* ===================== STATE VARIABLES ===================== */
+let currentSubject = localStorage.getItem("aiSubject") || "math";
+let currentLesson = localStorage.getItem("aiLesson") || "";
+let correctAnswer;
+let difficulty = parseInt(localStorage.getItem("aiDifficulty")) || 1;
+
+let xp = parseInt(localStorage.getItem("aiXP")) || 0;
+let level = parseInt(localStorage.getItem("aiLevel")) || 1;
+let totalAttempts = parseInt(localStorage.getItem("aiAttempts")) || 0;
+let correctCount = parseInt(localStorage.getItem("aiCorrect")) || 0;
+
+let timerInterval;
+let timeLeft = 30; // 30 seconds per question
+let subjectQuestionCount = parseInt(localStorage.getItem("aiQCount_" + currentSubject)) || 0;
+const MAX_QUESTIONS = 10;
+
+function updateProgressBar() {
+    let percent = (subjectQuestionCount / MAX_QUESTIONS) * 100;
+    document.getElementById("progressBar").style.width = percent + "%";
+    document.getElementById("progressBar").innerText =
+        subjectQuestionCount + "/" + MAX_QUESTIONS;
+    document.getElementById("progressText").innerText =
+        "Progress: " + subjectQuestionCount + " of " + MAX_QUESTIONS + " questions";
+}
+
+/* ===================== ELEMENTS ===================== */
+const subjectSelect = document.getElementById("subjectSelect");
+const lessonSelect = document.getElementById("lessonSelect");
+const difficultyDisplay = document.getElementById("difficultyDisplay");
+const timerDisplay = document.getElementById("timer");
+
+/* ===================== LOAD SUBJECTS ===================== */
+function loadSubjects(){
+    subjectSelect.innerHTML = "";
+    subjects.forEach(sub => {
+        let option = document.createElement("option");
+        option.value = sub.id;
+        option.textContent = sub.title;
+        if(sub.id === currentSubject) option.selected = true;
+        subjectSelect.appendChild(option);
+    });
+    loadLessons();
+    updateProgressBar();
+}
+function loadLessons(){
+    lessonSelect.innerHTML = "";
+    let sub = subjects.find(s=>s.id===currentSubject);
+    if(sub && sub.lessons.length>0){
+        sub.lessons.forEach(lesson=>{
+            let option = document.createElement("option");
+            option.value = lesson.id;
+            option.textContent = lesson.title;
+            if(lesson.id===currentLesson) option.selected=true;
+            lessonSelect.appendChild(option);
+        });
+        currentLesson = lessonSelect.value;
+    }
+}
+
+/* ===================== EVENT LISTENERS ===================== */
+subjectSelect.addEventListener("change", () => {
+    currentSubject = subjectSelect.value;
+    localStorage.setItem("aiSubject", currentSubject);
+    
+    // Reset question counter for new subject
+    subjectQuestionCount = parseInt(localStorage.getItem("aiQCount_" + currentSubject)) || 0;
+    
+    loadLessons();
+    generateQuestion();
+    updateProgressBar();
+});
+
+lessonSelect.addEventListener("change", ()=>{
+    currentLesson = lessonSelect.value;
+    localStorage.setItem("aiLesson", currentLesson);
+    generateQuestion();
+    updateProgressBar();
+});
+
+/* ===================== TIMER ===================== */
+function startTimer(){
+    clearInterval(timerInterval);
+    timeLeft = 30;
+    timerDisplay.innerText = `⏱ Time left: ${timeLeft}s`;
+    timerInterval = setInterval(()=>{
+        timeLeft--;
+        timerDisplay.innerText = `⏱ Time left: ${timeLeft}s`;
+        if(timeLeft<=0){
+            clearInterval(timerInterval);
+            document.getElementById("feedback").innerText =
+                `Time's up! Correct: ${correctAnswer}`;
+            totalAttempts++;
+            updateStats();
+            adaptDifficulty();
+            generateQuestion();
+        }
+    },1000);
+}
+
+/* ===================== GENERATE QUESTION ===================== */
+function generateQuestion() {
+    
+    // 🔒 Stop if limit reached
+    if (subjectQuestionCount >= MAX_QUESTIONS) {
+        clearInterval(timerInterval);
+        document.getElementById("question").innerText =
+            "🎉 You have completed 10 questions for this subject!";
+        document.getElementById("feedback").innerText =
+            "Switch subject to continue practicing.";
+        document.getElementById("timer").innerText = "";
+        return;
+    }
+    
+    clearInterval(timerInterval);
+    document.getElementById("answer").value = "";
+    document.getElementById("feedback").innerText = "";
+    
+    let sub = subjects.find(s => s.id === currentSubject);
+    let lesson;
+    if (sub && sub.lessons.length > 0) {
+        lesson = sub.lessons.find(l => l.id === currentLesson) || sub.lessons[0];
+        currentLesson = lesson.id;
+        localStorage.setItem("aiLesson", currentLesson);
+    }
+    
+    difficultyDisplay.innerText = "Difficulty: " + ["Easy", "Medium", "Hard"][difficulty - 1];
+    
+    if (currentSubject === "math") {
+        generateMath();
+    } else if (currentSubject === "english") {
+        generateEnglish();
+    } else if (currentSubject === "science") {
+        generateScience();
+    } else if (currentSubject === "ict") {
+        generateICT();
+    } else {
+        generateGeneral();
+    }
+    
+    startTimer();
+}
+/* ===================== SUBJECT QUESTION GENERATORS ===================== */
+function generateMath(){
+    let max = difficulty===1?20:difficulty===2?50:100;
+    let n1 = Math.floor(Math.random()*max);
+    let n2 = Math.floor(Math.random()*max);
+    correctAnswer = n1+n2;
+    document.getElementById("question").innerText=`What is ${n1} + ${n2}?`;
+}
+function generateEnglish(){
+    const verbs = ["run","eat","write","jump","read","play"];
+    correctAnswer = verbs[Math.floor(Math.random()*verbs.length)];
+    document.getElementById("question").innerText=`Type a verb:`;
+}
+function generateScience(){
+    correctAnswer = "gas";
+    document.getElementById("question").innerText=`Which state of matter has no fixed shape?`;
+}
+function generateICT(){
+    correctAnswer = "cpu";
+    document.getElementById("question").innerText=`What is called the brain of the computer?`;
+}
+function generateGeneral(){
+    correctAnswer = "7";
+    document.getElementById("question").innerText=`How many continents are there?`;
+}
+
+/* ===================== CHECK ANSWER ===================== */
+function checkAnswer() {
+    clearInterval(timerInterval);
+    
+    let userAnswer = document.getElementById("answer").value.toLowerCase().trim();
+    totalAttempts++;
+    subjectQuestionCount++;
+    
+    localStorage.setItem("aiQCount_" + currentSubject, subjectQuestionCount);
+    
+    updateProgressBar(); // ✅ ADD THIS LINE
+    
+    if (userAnswer == correctAnswer.toString().toLowerCase()) {
+        document.getElementById("feedback").innerText = "Correct! 🎉";
+        correctCount++;
+        xp += 10 * difficulty;
+    } else {
+        document.getElementById("feedback").innerText = `Wrong. Correct: ${correctAnswer}`;
+    }
+    
+    updateStats();
+    adaptDifficulty();
+    saveProgress();
+    
+    setTimeout(generateQuestion, 1500);
+}
+
+/* ===================== ADAPTIVE DIFFICULTY ===================== */
+function adaptDifficulty(){
+    let accuracy = correctCount/totalAttempts;
+    if(accuracy>0.8 && difficulty<3) difficulty++;
+    if(accuracy<0.4 && difficulty>1) difficulty--;
+    localStorage.setItem("aiDifficulty", difficulty);
+}
+
+/* ===================== UPDATE STATS ===================== */
+function updateStats(){
+    if(xp>=level*100) level++;
+    let accPercent = totalAttempts===0?0:Math.round((correctCount/totalAttempts)*100);
+    document.getElementById("xp").innerText = xp;
+    document.getElementById("level").innerText = level;
+    document.getElementById("accuracy").innerText = accPercent+"%";
+    saveProgress();
+}
+
+/* ===================== SAVE PROGRESS ===================== */
+function saveProgress(){
+    localStorage.setItem("aiXP", xp);
+    localStorage.setItem("aiLevel", level);
+    localStorage.setItem("aiAttempts", totalAttempts);
+    localStorage.setItem("aiCorrect", correctCount);
+}
+
+/* ===================== INITIALIZE ===================== */
+loadSubjects();
+generateQuestion();
+
+function restartPractice() {
+    
+    subjectQuestionCount = 0;
+    localStorage.setItem("aiQCount_" + currentSubject, 0);
+    
+    // Optional: reset accuracy for subject session only
+    totalAttempts = 0;
+    correctCount = 0;
+    
+    document.getElementById("feedback").innerText = "";
+    document.getElementById("question").innerText = "";
+    
+    updateProgressBar();
+    updateStats();
+    generateQuestion();
+}
+</script>
+<script>
+    if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("/service-worker.js")
+            .then(() => console.log("Service Worker Registered"));
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Quiz</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<style>.quiz-card {
+background: white;
+padding: 40px;
+border-radius: 20px;
+box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+max-width: 600px;
+margin: auto;
+}
+
+.quiz-option {
+display: block;
+width: 100%;
+margin: 12px 0;
+padding: 12px;
+border-radius: 12px;
+border: none;
+background: #f0ede3;
+cursor: pointer;
+transition: 0.3s;
+font-size: 16px;
+}
+
+.quiz-option:hover {
+background: #145c43;
+color: white;
+transform: scale(1.03);
+}
+
+.quiz-result {
+text-align: center;
+}
+
+.fade-in {
+animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+from { opacity: 0; transform: translateY(15px); }
+to { opacity: 1; transform: translateY(0); }
+}</style>
+<body>
+
+<header class="navbar">
+    <a href="subjects.html" style="color:white;text-decoration:none;">← Back</a>
+</header>
+
+<section id="quizContainer" style="padding:40px;"></section>
+
+
+<script src="js/hub-data.js" defer></script>
+<script src="js/app.js" defer></script>
+
+<script defer>
+    document.addEventListener("DOMContentLoaded", function() {
+        
+        const subjectId3 = getParam("id");
+        const subject3 = subjects.find(s => s.id === subjectId3);
+        
+        if (!subject3) {
+            document.getElementById("quizContainer").innerHTML =
+                "<h2>Quiz not found.</h2>";
+            return;
+        }
+        
+        let currentQuestion = 0;
+        let score = 0;
+        
+        function selectAnswer(index) {
+            const correctAnswer =
+                subject3.quiz.questions[currentQuestion].answer;
+            
+            if (index === correctAnswer) {
+                score++;
+            }
+            
+            currentQuestion++;
+            showQuestion();
+        }
+        
+        function showQuestion() {
+            
+            if (currentQuestion >= subject3.quiz.questions.length) {
+                
+                let percentage = Math.round(
+                    (score / subject3.quiz.questions.length) * 100
+                );
+                
+                localStorage.setItem(subjectId3 + "_score", percentage);
+                
+                document.getElementById("quizContainer").innerHTML = `
+                <div class="quiz-result fade-in">
+                    <h2>Your Score: ${score}/${subject3.quiz.questions.length}</h2>
+                    <h3>${percentage}%</h3>
+                    <button onclick="location.reload()" class="btn-primary">
+                        Retake Quiz
+                    </button>
+                    <button onclick="generateCertificate()" class="btn-primary">
+                        Download Certificate
+                    </button>
+                </div>
+            `;
+                return;
+            }
+            
+            const q = subject3.quiz.questions[currentQuestion];
+            
+            let optionsHTML = "";
+            
+            q.options.forEach((option, index) => {
+                optionsHTML += `
+                <button class="quiz-option" onclick="selectAnswer(${index})">
+                    ${option}
+                </button>
+            `;
+            });
+            
+            document.getElementById("quizContainer").innerHTML = `
+            <div class="quiz-card fade-in">
+                <h2>Question ${currentQuestion + 1}</h2>
+                <p>${q.question}</p>
+                <div class="options-container">
+                    ${optionsHTML}
+                </div>
+            </div>
+        `;
+        }
+        
+        window.selectAnswer = selectAnswer; // make accessible globally
+        window.generateCertificate = generateCertificate;
+        
+        showQuestion();
+        
+    });
+</script>
+
+<script defer>
+    function generateCertificate() {
+        
+        const subjectId3 = getParam("id");
+        const subject3 = subjects.find(s => s.id === subjectId3);
+        
+        const studentName = localStorage.getItem("studentName") || "Student";
+        const score = localStorage.getItem(subjectId3 + "_score") || "0";
+        
+        const certificateWindow = window.open("", "_blank");
+        
+        certificateWindow.document.write(`
+        <html>
+        <head>
+            <title>Certificate</title>
+            <style>
+                body {
+                    font-family: Arial;
+                    text-align: center;
+                    padding: 50px;
+                }
+                .cert {
+                    border: 5px solid #0f3d2e;
+                    padding: 50px;
+                }
+                h1 { color: #0f3d2e; }
+            </style>
+        </head>
+        <body>
+            <div class="cert">
+                <h1>Certificate of Completion</h1>
+                <p>This is to certify that</p>
+                <h2>${studentName}</h2>
+                <p>has successfully completed</p>
+                <h3>${subject3.title}</h3>
+                <p>With a score of ${score}%</p>
+            </div>
+        </body>
+        </html>
+    `);
+    }
+</script>
+<script>
+    if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("/service-worker.js")
+            .then(() => console.log("Service Worker Registered"));
+    }
+</script>
+
+</body>
+</html>

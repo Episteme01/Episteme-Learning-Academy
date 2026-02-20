@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Subjects - Episteme Learning Hub</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<style>
+/* PREMIUM NAVBAR */
+
+.premium-navbar {
+    position: sticky;
+    top: 0;
+    backdrop-filter: blur(12px);
+    background: rgba(15, 61, 46, 0.9);
+    padding: 15px 40px;
+    z-index: 1000;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    font-size: 20px;
+    color: #e7d28d;
+}
+
+.logo-icon {
+    margin-right: 8px;
+    font-size: 24px;
+}
+
+.nav-links a {
+    margin: 0 15px;
+    color: white;
+    text-decoration: none;
+    position: relative;
+    transition: 0.3s;
+}
+
+.nav-links a::after {
+    content: "";
+    position: absolute;
+    width: 0%;
+    height: 2px;
+    bottom: -5px;
+    left: 0;
+    background: #e7d28d;
+    transition: 0.3s;
+}
+
+.nav-links a:hover::after,
+.nav-links .active::after {
+    width: 100%;
+}
+
+.nav-links a:hover {
+    color: #e7d28d;
+}
+
+.nav-button {
+    background: #e7d28d;
+    color: #0f3d2e;
+    padding: 8px 18px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.nav-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(231, 210, 141, 0.4);
+}
+.subjects-grid {
+display: flex;
+justify-content: center;
+flex-wrap: wrap;
+gap: 30px;
+padding: 60px 20px;
+}
+
+.subject-card {
+background: white;
+width: 280px;
+padding: 25px;
+border-radius: 20px;
+box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+text-align: center;
+transition: 0.3s;
+}
+
+.subject-card:hover {
+transform: translateY(-8px);
+}
+
+.subject-card h3 {
+margin-bottom: 10px;
+}
+
+.subject-card a {
+display: inline-block;
+margin-top: 15px;
+padding: 10px 20px;
+background: #0f3d2e;
+color: white;
+border-radius: 20px;
+text-decoration: none;
+}
+/* PREMIUM HERO */
+
+.premium-hero {
+    position: relative;
+    height: 380px;
+    background: linear-gradient(to right, #0f3d2e, #145c43);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    overflow: hidden;
+}
+
+.hero-overlay {
+    position: absolute;
+    width: 120%;
+    height: 120%;
+    background: radial-gradient(circle at top right, rgba(231,210,141,0.15), transparent);
+    animation: glowMove 8s infinite alternate;
+}
+
+@keyframes glowMove {
+    from { transform: translateX(-20px); }
+    to { transform: translateX(20px); }
+}
+
+.premium-hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 700px;
+}
+
+.premium-hero h1 {
+    font-size: 42px;
+    margin-bottom: 20px;
+}
+
+.premium-hero p {
+    font-size: 18px;
+    opacity: 0.9;
+}
+
+.hero-buttons {
+    margin-top: 25px;
+}
+
+.hero-btn-primary {
+    background: #e7d28d;
+    color: #0f3d2e;
+    padding: 12px 25px;
+    border-radius: 30px;
+    text-decoration: none;
+    margin-right: 10px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.hero-btn-primary:hover {
+    transform: translateY(-3px);
+}
+
+.hero-btn-secondary {
+    border: 2px solid #e7d28d;
+    color: #e7d28d;
+    padding: 12px 25px;
+    border-radius: 30px;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.hero-btn-secondary:hover {
+    background: #e7d28d;
+    color: #0f3d2e;
+}
+
+</style>
+
+<body>
+
+<header class="premium-navbar">
+    <div class="nav-container">
+        <div class="logo">
+            <span class="logo-icon">🎓</span>
+            <span class="logo-text">Episteme Digital Learning Hub</span>
+        </div>
+        
+        <nav class="nav-links">
+            <a href="hub-index.html">Home</a>
+            <a href="/blog">News</a>
+        </nav>
+        
+        <div class="nav-cta">
+            <a href="student-entry.html" class="nav-button">Start Learning</a>
+        </div>
+    </div>
+</header>
+
+ <section class="premium-hero">
+    <div class="hero-overlay"></div>
+    
+    <div class="premium-hero-content">
+        <h1>Our Academic Subjects</h1>
+        <p>
+            Structured lessons, intelligent assessments, and moral excellence
+            designed to nurture brilliance.
+        </p>
+        <div class="hero-buttons">
+            <a href="#subjectsContainer" class="hero-btn-primary">Browse Subjects</a>
+            <a href="/islamiyyah" class="hero-btn-secondary">Islamiyyah Portal</a>
+        </div>
+    </div>
+</section>
+
+<section class="subjects-grid" id="subjectsContainer">
+</section>
+
+<script>
+// Subjects array
+const subjects = [
+    {id:"math", title:"Mathematics", description:"Master numbers, algebra, and logical problem-solving."},
+    {id:"english", title:"English Language", description:"Improve grammar, comprehension, and communication."},
+    {id:"science", title:"Basic Science", description:"Explore the natural world and scientific reasoning."},
+    {id:"general", title:"General Knowledge", description:"Expand your awareness about the world around you."},
+    {id:"ict", title:"ICT", description:"Learn computers, digital literacy, and technology."},
+    {id:"hadith", title:"Hadith Studies", description:"Learn sayings and teachings of Prophet Muhammad ﷺ."},
+    {id:"fiqh", title:"Fiqh", description:"Understand Islamic jurisprudence and daily rulings."},
+    {id:"seerah", title:"Seerah", description:"Study the life and legacy of Prophet Muhammad ﷺ."},
+    {id:"tajweed", title:"Tajweed", description:"Master correct Quran recitation and pronunciation."},
+    {id:"tawheed", title:"Tawheed", description:"Learn the core concept of monotheism in Islam."}
+];
+
+// Icon mapping
+function getIcon(id){
+    switch(id){
+        case "math": return "📐";
+        case "english": return "📖";
+        case "science": return "🔬";
+        case "general": return "🌍";
+        case "ict": return "💻";
+        case "hadith": return "📜";
+        case "fiqh": return "⚖️";
+        case "seerah": return "🕌";
+        case "tajweed": return "🕋";
+        case "tawheed": return "☝️";
+        default: return "📘";
+    }
+}
+
+// Populate subjects
+const container = document.getElementById("subjectsContainer");
+subjects.forEach(subject => {
+    container.innerHTML += `
+        <div class="subject-card">
+            <div class="subject-icon">${getIcon(subject.id)}</div>
+            <h3>${subject.title}</h3>
+            <p>${subject.description}</p>
+            <!-- Link to hub-dashboard with subject id -->
+            <a href="student-entry.html?subject=${subject.id}">Explore</a>
+        </div>
+    `;
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Multi-Subject Worksheet Generator</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+.answer-page {
+    page-break-before: always;
+}
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f0f4f8;
+    padding: 20px;
+    color: #333;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 10px;
+    color: #1e3c72;
+}
+
+.tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    gap: 10px;
+}
+
+.tabs button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px 5px 0 0;
+    background: #2a5298;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.tabs button.active {
+    background: #1e3c72;
+}
+
+.controls {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.controls label {
+    font-weight: bold;
+}
+
+input[type=number], select {
+    padding: 4px 6px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+button.generate, button.print {
+    background-color: #2a5298;
+    color: white;
+    border-radius: 5px;
+    padding: 8px 15px;
+    cursor: pointer;
+}
+
+button.generate:hover, button.print:hover {
+    background-color: #1e3c72;
+}
+
+#worksheet {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.subject-section {
+    background: #fff;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+.subject-section h3 {
+    color: #2a5298;
+    margin-bottom: 10px;
+}
+
+.question {
+    margin: 8px 0;
+    padding: 8px;
+    background: #fdfdfd;
+    border-radius: 5px;
+    border-left: 4px solid #2a5298;
+}
+
+.answer {
+    display: none;
+    color: green;
+    font-weight: bold;
+    margin-left: 15px;
+}
+
+.show-answers .answer {
+    display: inline;
+}
+
+@media print {
+    body { background: #fff; }
+    .tabs, .controls, button { display: none; }
+    .subject-section { page-break-inside: avoid; }
+}
+/* ================= HEADER ================= */
+
+.worksheet-header {
+    text-align: center;
+    position: relative;
+    margin-bottom: 25px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #2a5298;
+}
+
+.header-logo {
+    max-height: 80px;
+    margin-bottom: 5px;
+}
+
+.school-name {
+    font-size: 22px;
+    font-weight: bold;
+    color: #1e3c72;
+}
+
+.header-details {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+/* ================= WATERMARK ================= */
+
+.watermark {
+    position: fixed;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0.05;
+    max-width: 400px;
+    z-index: 0;
+    pointer-events: none;
+}
+
+#worksheet {
+    position: relative;
+    z-index: 1;
+}
+
+/* Print Optimized */
+@media print {
+    .watermark {
+        opacity: 0.08;
+    }
+}
+.official-header {
+    border: 3px double #1e3c72;
+    padding: 15px;
+    margin-bottom: 25px;
+}
+
+.header-top {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.crest {
+    max-height: 90px;
+}
+
+.school-info {
+    text-align: center;
+}
+
+.worksheet-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+.worksheet-meta {
+    font-size: 13px;
+    margin-top: 4px;
+    color: #555;
+}
+
+.grade-info {
+    text-align: center;
+    margin-top: 10px;
+    font-weight: bold;
+}
+</style>
+</head>
+<body>
+
+<h2>Multi-Subject Worksheet Generator</h2>
+
+<div class="controls">
+    <label>Grade:
+    <select id="gradeLevel">
+        <option value="1">Grade 1</option>
+        <option value="2">Grade 2</option>
+        <option value="3">Grade 3</option>
+        <option value="4">Grade 4</option>
+        <option value="5">Grade 5</option>
+        <option value="6">Grade 6</option>
+    </select>
+</label>
+
+<label>Difficulty:
+    <select id="difficulty">
+        <option value="easy">Easy</option>
+        <option value="medium" selected>Medium</option>
+        <option value="hard">Hard</option>
+    </select>
+</label>
+    <label><input type="checkbox" class="subjectCheck" value="Math" checked> Math</label>
+    <label><input type="checkbox" class="subjectCheck" value="English" checked> English</label>
+    <label><input type="checkbox" class="subjectCheck" value="Science" checked> Science</label>
+    <label><input type="checkbox" class="subjectCheck" value="GK" checked> General Knowledge</label>
+</div>
+<div class="controls">
+    <label>School Logo:
+    <input type="file" id="logoUpload" accept="image/*">
+</label>
+
+<label>School Name:
+    <input type="text" id="schoolName" placeholder="Enter School Name">
+</label>
+    <label>Questions: <input type="number" id="numQuestions" value="5" min="1" max="50"></label>
+    <label>Max Number (Math): <input type="number" id="maxNumber" value="100" min="1" max="1000"></label>
+    <label>Operation (Math): 
+        <select id="operation">
+            <option value="+">Addition (+)</option>
+            <option value="-">Subtraction (-)</option>
+            <option value="*">Multiplication (×)</option>
+            <option value="/">Division (÷)</option>
+        </select>
+    </label>
+    <label><input type="checkbox" id="showAnswers"> Show Answers</label>
+</div>
+
+<button class="generate" onclick="generateWorksheet()">Generate Worksheet</button>
+<button class="print"onclick="downloadPDF()">Download Official PDF</button>
+
+<div id="worksheet"></div>
+
+<script>
+let worksheetCounter = 1;
+
+function generateWorksheetID() {
+    const randomPart = Math.floor(1000 + Math.random() * 9000);
+    const datePart = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+    return `WS-${datePart}-${randomPart}`;
+}
+// ==========================
+// Helper
+// ==========================
+function randomInt(max){ 
+    return Math.floor(Math.random() * (max + 1)); 
+}
+
+// ==========================
+// MATH Generator
+// ==========================
+function generateMathQuestion(grade, difficulty){
+
+    let maxNumber;
+
+    // Adjust by grade
+    if(grade <= 2) maxNumber = 20;
+    else if(grade <= 4) maxNumber = 100;
+    else maxNumber = 500;
+
+    // Adjust difficulty
+    if(difficulty === "hard") maxNumber *= 2;
+    if(difficulty === "easy") maxNumber /= 2;
+
+    const operationsByGrade = {
+        1: ["+"],
+        2: ["+","-"],
+        3: ["+","-","*"],
+        4: ["+","-","*","/"],
+        5: ["+","-","*","/"],
+        6: ["+","-","*","/"]
+    };
+
+    const opList = operationsByGrade[grade];
+    const op = opList[randomInt(opList.length-1)];
+
+    let a = randomInt(maxNumber);
+    let b = randomInt(maxNumber);
+
+    if(op === "/" && b === 0) b = 1;
+
+    let answer;
+
+    switch(op){
+        case '+': answer = a + b; break;
+        case '-': answer = a - b; break;
+        case '*': answer = a * b; break;
+        case '/': answer = (a / b).toFixed(2); break;
+    }
+
+    // Word problem for medium/hard
+    if(difficulty !== "easy" && grade >= 3){
+        return {
+            q: `Sara has ${a} books and buys ${b} more. How many books does she have now?`,
+            a: a + b
+        };
+    }
+
+    return { q:`${a} ${op} ${b} = ______`, a: answer };
+}
+
+// ==========================
+// ENGLISH Generator
+// ==========================
+function generateEnglishQuestion(grade, difficulty){
+
+    const gradeQuestions = {
+
+        1: [
+            {q:"Write the alphabet from A to Z.", a:"A–Z"},
+            {q:"Write a sentence about your pet.", a:"Answers vary."}
+        ],
+
+        2: [
+            {q:"Add punctuation: where are you going", a:"Where are you going?"},
+            {q:"Write 3 describing words for 'dog'.", a:"Big, friendly, fast"}
+        ],
+
+        3: [
+            {q:"Change to past tense: 'I play outside.'", a:"I played outside."},
+            {q:"Write 4 sentences about your school.", a:"Answers vary."}
+        ],
+
+        4: [
+            {q:"Identify the adjective: 'The tall tree fell.'", a:"tall"},
+            {q:"Write a short paragraph (5 sentences).", a:"Answers vary."}
+        ],
+
+        5: [
+            {q:"What is a synonym for 'brave'?", a:"Courageous"},
+            {q:"Explain the difference between a noun and a verb.", a:"Noun = person/place/thing, Verb = action"}
+        ],
+
+        6: [
+            {q:"Write a persuasive paragraph about reading.", a:"Answers vary."},
+            {q:"Identify subject and predicate: 'The boy ran fast.'", a:"Subject: The boy | Predicate: ran fast"}
+        ]
+    };
+
+    return gradeQuestions[grade][randomInt(gradeQuestions[grade].length-1)];
+}
+
+// ==========================
+// SCIENCE Generator
+// ==========================
+function generateScienceQuestion(grade, difficulty){
+
+    const scienceByGrade = {
+
+        1: [
+            {q:"Name 3 animals.", a:"Dog, Cat, Cow"},
+            {q:"What do plants need to grow?", a:"Water and sunlight"}
+        ],
+
+        2: [
+            {q:"Name the 5 senses.", a:"Sight, Hearing, Taste, Touch, Smell"},
+            {q:"What is the sun?", a:"A star"}
+        ],
+
+        3: [
+            {q:"What is evaporation?", a:"Water turning into vapor"},
+            {q:"Name the states of matter.", a:"Solid, Liquid, Gas"}
+        ],
+
+        4: [
+            {q:"What causes day and night?", a:"Earth's rotation"},
+            {q:"Define food chain.", a:"How energy moves from one organism to another"}
+        ],
+
+        5: [
+            {q:"What is photosynthesis?", a:"Plants making food using sunlight"},
+            {q:"What is gravity?", a:"Force pulling objects to Earth"}
+        ],
+
+        6: [
+            {q:"Explain the water cycle.", a:"Evaporation, condensation, precipitation"},
+            {q:"What is a habitat?", a:"Natural home of an organism"}
+        ]
+    };
+
+    return scienceByGrade[grade][randomInt(scienceByGrade[grade].length-1)];
+}
+
+// ==========================
+// GK Generator
+// ==========================
+function generateGKQuestion(grade){
+
+    const gkByGrade = {
+
+        1: [{q:"Capital of France?", a:"Paris"}],
+        2: [{q:"How many days in a week?", a:"7"}],
+        3: [{q:"Who invented the telephone?", a:"Alexander Graham Bell"}],
+        4: [{q:"Largest continent?", a:"Asia"}],
+        5: [{q:"Who wrote Romeo and Juliet?", a:"William Shakespeare"}],
+        6: [{q:"What does UNESCO stand for?", a:"United Nations Educational, Scientific and Cultural Organization"}]
+    };
+
+    return gkByGrade[grade][randomInt(gkByGrade[grade].length-1)];
+}
+
+
+// ==========================
+// MAIN GENERATOR
+// ==========================
+function generateWorksheet() {
+    
+    const container = document.getElementById("worksheet");
+    const numQ = parseInt(document.getElementById("numQuestions").value);
+    const showAns = document.getElementById("showAnswers").checked;
+    const grade = parseInt(document.getElementById("gradeLevel").value);
+    const difficulty = document.getElementById("difficulty").value;
+    const schoolName = document.getElementById("schoolName").value || "Your School Name";
+    const logoFile = document.getElementById("logoUpload").files[0];
+    
+    const selectedSubjects =
+        Array.from(document.querySelectorAll(".subjectCheck:checked"))
+        .map(el => el.value);
+    
+    if (selectedSubjects.length === 0) {
+        alert("Please select at least one subject.");
+        return;
+    }
+    
+    let logoURL = "";
+    if (logoFile) {
+        logoURL = URL.createObjectURL(logoFile);
+    }
+    
+    const worksheetID = generateWorksheetID();
+    const worksheetNumber = worksheetCounter++;
+    
+    const marksPerQuestion = 2;
+    
+    let html = `
+    <div class="worksheet-header official-header">
+        <div class="header-top">
+            ${logoURL ? `<img src="${logoURL}" class="header-logo crest">` : ""}
+            <div class="school-info">
+                <div class="school-name">${schoolName}</div>
+                <div class="worksheet-title">Official Academic Worksheet</div>
+                <div class="worksheet-meta">
+                    Worksheet No: ${worksheetNumber} |
+                    ID: ${worksheetID}
+                </div>
+            </div>
+        </div>
+
+        <div class="header-details">
+            <div>Name: ____________________</div>
+            <div>Class: ____________________</div>
+            <div>Date: ____________________</div>
+        </div>
+
+        <div class="grade-info">
+            Grade ${grade} | Difficulty: ${difficulty.toUpperCase()}
+        </div>
+    </div>
+    `;
+    
+    if (logoURL) {
+        html += `<img src="${logoURL}" class="watermark">`;
+    }
+    
+    // SUBJECT LOOP (ONLY ONCE)
+    selectedSubjects.forEach(subject => {
+        
+        const totalMarks = numQ * marksPerQuestion;
+        
+        html += `
+        <div class="subject-section">
+            <h3>${subject} (Total: ${totalMarks} Marks)</h3>
+        `;
+        
+        for (let i = 1; i <= numQ; i++) {
+            
+            let q, a;
+            
+            switch (subject) {
+                case "Math":
+                    ({ q, a } = generateMathQuestion(grade, difficulty));
+                    break;
+                case "English":
+                    ({ q, a } = generateEnglishQuestion(grade, difficulty));
+                    break;
+                case "Science":
+                    ({ q, a } = generateScienceQuestion(grade, difficulty));
+                    break;
+                case "GK":
+                    ({ q, a } = generateGKQuestion(grade));
+                    break;
+            }
+            
+            html += `
+            <div class="question">
+                ${i}. ${q}
+                <span style="float:right; font-weight:bold;">
+                    (${marksPerQuestion} marks)
+                </span>
+                ${showAns ? `<div class="answer">Answer: ${a}</div>` : ""}
+            </div>
+            `;
+        }
+        
+        html += `</div>`;
+    });
+// ==========================
+// ANSWER KEY PAGE
+// ==========================
+let answerKeyHTML = `
+<div class="answer-page">
+    <h2 style="text-align:center;">Answer Key</h2>
+    <p><strong>Worksheet ID:</strong> ${worksheetID}</p>
+`;
+
+// Generate answers again
+selectedSubjects.forEach(subject => {
+    
+    answerKeyHTML += `<h3>${subject}</h3>`;
+    
+    for (let i = 1; i <= numQ; i++) {
+        
+        let q, a;
+        
+        switch (subject) {
+            case "Math":
+                ({ q, a } = generateMathQuestion(grade, difficulty));
+                break;
+            case "English":
+                ({ q, a } = generateEnglishQuestion(grade, difficulty));
+                break;
+            case "Science":
+                ({ q, a } = generateScienceQuestion(grade, difficulty));
+                break;
+            case "GK":
+                ({ q, a } = generateGKQuestion(grade));
+                break;
+        }
+        
+        answerKeyHTML += `<div>${i}. ${a}</div>`;
+    }
+});
+
+answerKeyHTML += `</div>`;
+
+// Combine worksheet + answer key
+container.innerHTML = html + answerKeyHTML;
+}
+</script>
+
+<script>
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/service-worker.js")
+        .then(() => console.log("Service Worker Registered"));
+}
+async function downloadPDF() {
+    
+    const element = document.getElementById("worksheet");
+    
+    if (!element.innerHTML.trim()) {
+        alert("Please generate worksheet first.");
+        return;
+    }
+    
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF("p", "pt", "a4");
+    
+    try {
+        await doc.html(element, {
+            x: 20,
+            y: 20,
+            width: 555,
+            windowWidth: element.scrollWidth
+        });
+        
+        doc.save("Official_Worksheet.pdf");
+        
+    } catch (error) {
+        console.error("PDF generation failed:", error);
+        alert("PDF failed to generate. Check console.");
+    }
+}
+</script>
+
+</body>
+</html>

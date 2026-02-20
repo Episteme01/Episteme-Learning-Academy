@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Student Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="css/style.css">
+
+<style>
+
+/* ===========================
+GLOBAL
+=========================== */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(to bottom right,#f6f5ef,#eef3f1);
+}
+
+/* ===========================
+NAVBAR
+=========================== */
+.navbar {
+    background: #0f3d2e;
+    padding: 18px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+}
+
+.navbar a {
+    color: #e7d28d;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* ===========================
+CONTAINER
+=========================== */
+.dashboard-container {
+    max-width: 1200px;
+    margin: 50px auto;
+    padding: 20px;
+}
+
+/* ===========================
+WELCOME HERO
+=========================== */
+.welcome-box {
+    background: linear-gradient(135deg,#0f3d2e,#145c43);
+    color: white;
+    padding: 40px;
+    border-radius: 25px;
+    margin-bottom: 50px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.welcome-box h2 {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.welcome-box p {
+    opacity: 0.9;
+}
+
+/* Decorative glow */
+.welcome-box::after {
+    content:"";
+    position:absolute;
+    width:200px;
+    height:200px;
+    background: rgba(231,210,141,0.2);
+    border-radius:50%;
+    top:-50px;
+    right:-50px;
+}
+
+/* ===========================
+STATS SUMMARY
+=========================== */
+.stats-grid {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 50px;
+}
+
+.stat-card {
+    flex: 1;
+    min-width: 220px;
+    background: white;
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    text-align: center;
+}
+
+.stat-card h3 {
+    font-size: 28px;
+    color: #0f3d2e;
+}
+
+/* ===========================
+SUBJECT CARDS GRID
+=========================== */
+.progress-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+}
+
+.progress-card {
+    background: white;
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    transition: 0.3s;
+}
+
+.progress-card:hover {
+    transform: translateY(-6px);
+}
+
+.progress-card h3 {
+    margin-bottom: 10px;
+}
+
+/* ===========================
+PROGRESS BAR
+=========================== */
+.progress-bar {
+    background: #e5e5e5;
+    border-radius: 20px;
+    height: 12px;
+    margin-top: 10px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(to right,#145c43,#1d7a5a);
+    border-radius: 20px;
+    width: 0;
+    transition: width 1s ease;
+}
+
+/* ===========================
+BUTTON
+=========================== */
+.btn-primary {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 20px;
+    background: #0f3d2e;
+    color: white;
+    text-decoration: none;
+    border-radius: 25px;
+    transition: 0.3s;
+}
+
+.btn-primary:hover {
+    background: #145c43;
+}
+.dark-mode {
+    background: #111 !important;
+    color: #eee !important;
+}
+
+.dark-mode .progress-card,
+.dark-mode .stat-card {
+    background: #1e1e1e !important;
+    color: white;
+}
+
+.dark-mode .welcome-box {
+    background: linear-gradient(135deg, #000, #222);
+}
+</style>
+</head>
+
+<body>
+
+<header class="navbar">
+    <div><h2>STUDENT DASHBOARD</h2></div>
+    <a href="subjects.html">Subjects</a>
+    <button onclick="toggleDarkMode()" id="darkToggle" style="
+background:#e7d28d;
+border:none;
+padding:8px 15px;
+border-radius:20px;
+cursor:pointer;
+font-weight:bold;">
+    🌙 Dark Mode
+</button>
+</header>
+
+<section class="dashboard-container">
+
+    <div class="welcome-box">
+        <h2 id="welcomeText"></h2>
+        <center><p>Keep pushing forward. Excellence with morality 💚</p>
+        </center>
+        <p id="rankDisplay"></p>
+    <div class="dashboard-card">
+    <h3>Leaderboard</h3>
+    <div id="leaderboard"></div>
+<div><center>
+  <button 
+    onclick="window.location.href='/practice.html'" 
+    style="
+      background:#e7d28d;
+      border:none;
+      padding:8px 15px;
+      border-radius:20px;
+      cursor:pointer;
+      font-weight:bold;
+    ">
+    Practice Test
+  </button>
+</center>
+</div>
+</section>
+
+    <!-- SUMMARY STATS -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3 id="totalLessons"></h3>
+            <p>Total Lessons Completed</p>
+        </div>
+        <div class="stat-card">
+            <h3 id="averageScore"></h3>
+            <p>Average Quiz Score</p>
+        </div>
+        <div class="stat-card">
+            <h3 id="subjectsCount"></h3>
+            <p>Subjects Enrolled</p>
+        </div>
+    </div>
+<div class="stat-card">
+    <h3>Achievements</h3>
+    <div id="badges"></div>
+</div>
+    <!-- SUBJECT PROGRESS -->
+    <div class="progress-grid" id="progressContainer"></div>
+
+</section>
+
+<script src="js/hub-data.js"></script>
+<script src="js/app.js"></script>
+
+<script>
+// Redirect if no name is stored
+if (!localStorage.getItem("studentName")) {
+    window.location.href = "student-entry.html";
+}
+
+const name = localStorage.getItem("studentName") || "Student";
+document.getElementById("welcomeText").innerText = "Welcome back, " + name + " 👋";
+
+let progress = JSON.parse(localStorage.getItem("progress")) || {};
+let container = document.getElementById("progressContainer");
+
+let totalCompleted = 0;
+let totalScores = 0;
+let scoreCount = 0;
+
+subjects.forEach(subject => {
+
+    let completed = progress[subject.id] ? progress[subject.id].length : 0;
+    let total = subject.lessons.length;
+    let percent = Math.round((completed / total) * 100);
+
+    totalCompleted += completed;
+
+    let score = localStorage.getItem(subject.id + "_score");
+    if (score) {
+        totalScores += parseInt(score);
+        scoreCount++;
+    }
+
+    container.innerHTML += `
+        <div class="progress-card">
+            <h3>${getIcon(subject.id)} ${subject.title}</h3>
+            <p>${completed}/${total} Lessons Completed</p>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width:${percent}%"></div>
+            </div>
+            <p>Quiz Score: ${score ? score + "%" : "Not Taken"}</p>
+            <a href="subject.html?id=${subject.id}" class="btn-primary">Continue Learning</a>
+        </div>
+    `;
+});
+
+/* Summary Stats */
+document.getElementById("totalLessons").innerText = totalCompleted;
+document.getElementById("averageScore").innerText = 
+    scoreCount > 0 ? Math.round(totalScores / scoreCount) + "%" : "N/A";
+document.getElementById("subjectsCount").innerText = subjects.length;
+
+if (localStorage.getItem("darkMode") === "true") {
+    document.body.classList.add("dark-mode");
+}
+
+function toggleDarkMode() {
+    document.body.classList.toggle("dark-mode");
+    localStorage.setItem("darkMode",
+        document.body.classList.contains("dark-mode"));
+}
+let badgesHTML = "";
+
+if (totalCompleted >= 5)
+    badgesHTML += "🥉 Beginner<br>";
+
+if (totalCompleted >= 15)
+    badgesHTML += "🥈 Intermediate<br>";
+
+if (totalCompleted >= 30)
+    badgesHTML += "🥇 Advanced Learner<br>";
+
+if (scoreCount > 0 && (totalScores / scoreCount) >= 80)
+    badgesHTML += "🏆 High Achiever<br>";
+
+if (badgesHTML === "")
+    badgesHTML = "No badges yet";
+
+document.getElementById("badges").innerHTML = badgesHTML;
+
+let average = scoreCount > 0 ? (totalScores / scoreCount) : 0;
+
+let rank = "Beginner";
+
+if (average >= 90) rank = "💎 Diamond";
+else if (average >= 80) rank = "🥇 Gold";
+else if (average >= 70) rank = "🥈 Silver";
+else if (average >= 60) rank = "🥉 Bronze";
+
+document.getElementById("rankDisplay").innerText = "Rank: " + rank;
+
+let students = JSON.parse(localStorage.getItem("leaderboard")) || [];
+
+let student = students.find(s => s.name === name);
+if (student) {
+    student.score = average;
+}
+
+localStorage.setItem("leaderboard", JSON.stringify(students));
+</script>
+
+
+</body>
+</html>
