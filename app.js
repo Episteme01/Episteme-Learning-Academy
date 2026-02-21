@@ -47,30 +47,3 @@ function getIcon(id) {
         default: return "📘";
     }
 }
-// ====================
-// PWA Install Button Setup
-// ====================
-let deferredPrompt;
-const installBtn = document.getElementById('installBtn');
-
-// Only run if the button exists
-if (installBtn) {
-    // Listen for the beforeinstallprompt event
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault(); // Prevent automatic prompt
-        deferredPrompt = e; // Save the event for later
-        installBtn.style.display = 'block'; // Show the install button
-    });
-    
-    // Click handler for the install button
-    installBtn.addEventListener('click', async () => {
-        if (!deferredPrompt) return; // Safety check
-        deferredPrompt.prompt(); // Show install prompt
-        
-        const { outcome } = await deferredPrompt.userChoice;
-        console.log('User choice:', outcome); // accepted or dismissed
-        
-        deferredPrompt = null; // Clear the saved event
-        installBtn.style.display = 'none'; // Hide the button after prompt
-    });
-}
