@@ -175,9 +175,6 @@ color: white;
             <a href="subjects.html" class="btn-primary">Explore Subjects</a>
             <a href="/islamiyyah" class="btn-secondary">Watch Videos</a>
             <a href="student-entry.html" class="btn-primary">Dashboard</a>
-        <button id="installBtn" style="display:none; padding:10px 20px; background:#0f3d2e; color:white; border:none; border-radius:5px; cursor:pointer;">
-    Install App
-</button>
         </div>
        
     </section>
@@ -223,33 +220,5 @@ color: white;
         <p>© 2026 Episteme Learning Academy</p>
     </footer>
     
-    <script>
-        if ("serviceWorker" in navigator) {
-            navigator.serviceWorker.register("service-worker.js");
-        }
-    </script>
-    
-    <script>
-    if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.register("/service-worker.js")
-            .then(() => console.log("Service Worker Registered"));
-    }
-</script>
-
-
-<script>
-    let deferredPrompt;
-    
-    window.addEventListener("beforeinstallprompt", (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-        document.getElementById("installBtn").style.display = "inline-block";
-    });
-    
-    document.getElementById("installBtn").addEventListener("click", async () => {
-        deferredPrompt.prompt();
-        deferredPrompt = null;
-    });
-</script>
 </body>
 </html>
