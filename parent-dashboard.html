@@ -140,18 +140,29 @@ function convertToMinutes(timeRange) {
 
 function getSubjectColor(subject) {
     const colorMap = {
+        
         Math: "#4b3cf0",
+        Mathematics: "#4b3cf0",
+        
         English: "#f39c12",
+        
         Science: "#27ae60",
+        
         History: "#e74c3c",
+        
         "Physical Education": "#16a085",
+        
         Arabic: "#8e44ad",
+        
         ICT: "#2980b9",
-        Break: "#95a5a6"
+        
+        Break: "#6b7280",
+        
     };
     
-    return colorMap[subject] || generateColorFromText(subject);
+    return colorMap[subject] || "#1e3c72";
 }
+    
 
 function generateColorFromText(text) {
     if (!text) return "#bdc3c7";
