@@ -141,29 +141,28 @@ function convertToMinutes(timeRange) {
 function getSubjectColor(subject) {
     const colorMap = {
         
-        Mathematics/Numeracy: "#4b3cf0",
-        
-        English/Literacy: "#f39c12",
-        
+        // ===== Conventional =====
+        Mathematics: "#4b3cf0",
+        English: "#f39c12",
         Science: "#27ae60",
+        "Social Habit": "#2ecc71",
+        "General Knowledge": "#e74c3c",
+        Phonics: "#d35400",
         
-        Social Habit: "#27ae60",
-        
-        General Knowledge: "#e74c3c",
-        
-        Quran Recitation: "#16a085",
-        Quran Memorization: "#16a085",
-        
-        Arabic: "#8e44ad",
-        
-        Seerah: "#8e44ad",
-        
-        Hadith: "#2980b9",
-        
-        Fiqh: "#2980b9",
-        
-        Mutun: "#6b7280",
-        
+        // ===== Islamiyyah =====
+        "Qur'an": "#16a085",
+        "Qira'ah": "#1abc9c",
+        "Kitaabah": "#3498db",
+        "Arabiyyah": "#8e44ad",
+        Hadeeth: "#2980b9",
+        Fiqh: "#2c3e50",
+        Tajweed: "#00b894",
+        Seerah: "#9b59b6",
+        Tawheed: "#e67e22",
+        Adab: "#f1c40f",
+        Nahw: "#6c5ce7",
+        Sarf: "#fd79a8",
+        Mutun: "#636e72"
     };
     
     return colorMap[subject] || "#1e3c72";
@@ -900,7 +899,7 @@ window.changeTerm = function() {
 ];
 
 const conventionalSubjects = [
-    "Math",
+    "Mathematics",
     "English",
     "Science",
     "General Knowledge",
