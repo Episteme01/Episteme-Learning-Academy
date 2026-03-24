@@ -298,7 +298,7 @@ const studentsRef = ref(db, "students");
 function loadStudentDropdowns() {
     onValue(studentsRef, (snapshot) => {
                 console.log("Students snapshot:", snapshot.val());
-                
+                console.log("Loaded students:", data);
                 const data = snapshot.val() || {};
         
         const dropdowns = [
