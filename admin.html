@@ -91,9 +91,7 @@ cursor:pointer;
 button.primary:hover{
 transform:translateY(-2px);
 }
-.section {
-    display: none;
-}
+b
 </style>
 </head>
 
@@ -289,7 +287,7 @@ const auth = getAuth(app);
 
 const adminUID = "SqwLfhD2HLglbxRIWTXRXNeKymZ2";
 const adminData = {
-    email: "admin@example.com",
+    email: "epistemelearninghub@gmail.com",
     name: "Super Admin",
     role: "admin"
 };
@@ -744,30 +742,63 @@ function adminLogin() {
 document.querySelector("#loginScreen button").addEventListener("click", adminLogin);
 
 onAuthStateChanged(auth, async (user) => {
+    console.log("🔄 Auth state changed:", user);
+    
     if (!user) {
+        console.warn("⚠️ No user logged in");
+        
         document.getElementById("loginScreen").style.display = "block";
         document.getElementById("adminPortal").style.display = "none";
         return;
     }
     
-    const adminCheck = await get(ref(db, "admins/" + user.uid));
-    
-    if (!adminCheck.exists()) {
-        alert("Access denied. Not an admin.");
-        await signOut(auth);
-        return;
+    try {
+        console.log("✅ Logged in UID:", user.uid);
+        
+        // Check if user is admin
+        const adminRef = ref(db, "admins/" + user.uid);
+        const adminCheck = await get(adminRef);
+        
+        if (!adminCheck.exists()) {
+            console.error("❌ Access denied: Not an admin");
+            
+            alert("Access denied. Not an admin.");
+            await signOut(auth);
+            return;
+        }
+        
+        console.log("✅ Admin verified:", adminCheck.val());
+        
+        // Show portal
+        document.getElementById("loginScreen").style.display = "none";
+        document.getElementById("adminPortal").style.display = "block";
+        
+        // 🔥 FORCE LOAD STUDENTS
+        console.log("📡 Loading students...");
+        loadStudentDropdowns();
+        
+    } catch (error) {
+        console.error("🔥 Auth error:", error);
+        alert("Something went wrong. Check console.");
     }
-    
-    document.getElementById("loginScreen").style.display = "none";
-    document.getElementById("adminPortal").style.display = "block";
-    loadStudentDropdowns();
 });
 
+
+// ✅ LOGOUT (Improved)
 window.adminLogout = function() {
-    signOut(auth).then(() => {
-        alert("Logged out successfully");
-    });
-    console.log("Admin logged out");
+    signOut(auth)
+        .then(() => {
+            console.log("👋 Admin logged out");
+            alert("Logged out successfully");
+            
+            // Reset UI immediately
+            document.getElementById("loginScreen").style.display = "block";
+            document.getElementById("adminPortal").style.display = "none";
+        })
+        .catch((error) => {
+            console.error("❌ Logout error:", error);
+            alert("Logout failed");
+        });
 };
     
     window.saveSchedule = async function() {
