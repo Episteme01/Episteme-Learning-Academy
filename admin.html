@@ -9,26 +9,30 @@
 body{
 margin:0;
 font-family:Arial;
-background:#f4f6fb;
+background:linear-gradient(135deg,#1e3c72,#2a5298);
+color:white;
 }
 
+/* HEADER */
 .header{
-background:#1e3c72;
-color:white;
-padding:15px 25px;
 display:flex;
 justify-content:space-between;
+align-items:center;
+padding:15px 25px;
+background:rgba(255,255,255,0.1);
+backdrop-filter:blur(10px);
 }
 
+/* LAYOUT */
 .wrapper{
 display:flex;
 min-height:90vh;
 }
 
 .sidebar{
-width:240px;
-background:#2a5298;
-color:white;
+width:250px;
+background:rgba(255,255,255,0.1);
+backdrop-filter:blur(10px);
 padding:20px;
 display:flex;
 flex-direction:column;
@@ -41,49 +45,51 @@ border:none;
 color:white;
 padding:10px;
 text-align:left;
-border-radius:6px;
+border-radius:8px;
 cursor:pointer;
 }
 
-.sidebar button:hover{
+.sidebar button:hover,
+.sidebar button.active{
 background:rgba(255,255,255,0.2);
 }
 
+/* MAIN */
 .main{
 flex:1;
 padding:20px;
 }
 
+/* CARD */
 .card{
-background:white;
+background:rgba(255,255,255,0.1);
+backdrop-filter:blur(12px);
 padding:20px;
-border-radius:10px;
+border-radius:15px;
 margin-bottom:20px;
-box-shadow:0 4px 10px rgba(0,0,0,0.08);
 }
 
+/* INPUT */
 input, select, textarea{
 width:100%;
-padding:8px;
-margin:6px 0;
-}
-
-button.primary{
-background:#2a5298;
-color:white;
-padding:8px 15px;
+padding:10px;
+margin:8px 0;
 border:none;
 border-radius:6px;
+}
+
+/* BUTTON */
+button.primary{
+background:linear-gradient(135deg,#4b3cf0,#2a5298);
+color:white;
+padding:10px 15px;
+border:none;
+border-radius:8px;
 cursor:pointer;
 }
 
-.section{display:none;}
-
-.result-row{
-display:flex; justify-content:space-between; padding:6px; border-bottom:1px solid #ccc;
-}
-.result-row button{
-padding:2px 6px; font-size:12px;
+button.primary:hover{
+transform:translateY(-2px);
 }
 </style>
 </head>
@@ -104,8 +110,8 @@ padding:2px 6px; font-size:12px;
 <div id="adminPortal" style="display:none;">
 <div class="wrapper">
     <div class="sidebar">
-        <button onclick="showSection('dashboard')">Dashboard</button>
-        <button onclick="showSection('students')">Students</button>
+       <button onclick="showSection('dashboard', this)">Dashboard</button>
+        <button onclick="showSection('students', this)">Students</button>
         <button onclick="showSection('results')">Results Manager</button>
         <button onclick="showSection('assessments')">Assessments</button>
         <button onclick="showSection('schedule')">Schedule Builder</button>
@@ -115,19 +121,27 @@ padding:2px 6px; font-size:12px;
     <div class="main">
         
         <!-- DASHBOARD -->
-        <div id="dashboard" class="section" style="display:block">
-            <div class="card">
-                <h3>Welcome Admin</h3>
-                <p>Use sidebar to manage school data.</p>
-                
-                <div id="analytics">
-                    <h4>School Analytics</h4>
-                    <p>Total Students: <span id="totalStudents">0</span></p>
-                    <p>Top Performer: <span id="topStudent">N/A</span></p>
-                    <p>Average Grade: <span id="averageGrade">N/A</span></p>
-                </div>
-            </div>
+        <div id="dashboard" class="section">
+    <h3>School Analytics</h3>
+    
+    <div class="results-grid">
+        <div class="subject-card">
+            Total Students<br>
+            <strong id="totalStudents">0</strong>
         </div>
+        
+        <div class="subject-card">
+            Top Performer<br>
+            <strong id="topStudent">N/A</strong>
+        </div>
+        
+        <div class="subject-card">
+            Average Score<br>
+            <strong id="averageGrade">N/A</strong>
+        </div>
+    </div>
+    <canvas id="adminChart" height="100"></canvas>
+    
         <button onclick="adminLogout()" style="background:#ff4d4f; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer;">Logout</button>
 </div>
 
@@ -139,7 +153,11 @@ padding:2px 6px; font-size:12px;
 <input type="text" id="studentSearch" placeholder="Search Student by Name or ID" onkeyup="searchStudent()">
 
 <div id="studentList"></div>
-
+<input id="parentUID" placeholder="Parent UID">
+<button class="primary" onclick="assignStudentToParent(
+document.getElementById('parentUID').value,
+document.getElementById('studentID').value
+)">Link to Parent</button>
 <input id="studentID" placeholder="Student ID">
 <input id="studentName" placeholder="Student Name">
 <input id="studentClass" placeholder="Class">
@@ -152,7 +170,9 @@ padding:2px 6px; font-size:12px;
 <option>Paid</option>
 <option>Pending</option>
 </select>
-
+<label>Student Photo</label>
+<input type="file" id="studentPhoto">
+<button class="primary" onclick="uploadPhoto()">Upload Photo</button><br><br>
 <button class="primary" onclick="saveStudent()">Save Student</button>
 </div>
 </div>
@@ -175,7 +195,10 @@ padding:2px 6px; font-size:12px;
 <input id="subjectScore" placeholder="Score">
 
 <textarea id="teacherComment" placeholder="Teacher Comment"></textarea>
-
+<div class="card">
+    <h4>Performance Insight</h4>
+    <p id="insightBox"></p>
+</div>
 <button class="primary" onclick="saveResult()">Save Result</button>
 
 <h4>Existing Results</h4>
@@ -233,7 +256,15 @@ padding:2px 6px; font-size:12px;
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, get, set, update, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getDatabase, ref, get, set, update, push, onValue, remove }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+import {
+    getStorage,
+    ref as storageRef,
+    uploadBytes,
+    getDownloadURL
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js"; 
 
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
@@ -249,6 +280,7 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+const storage = getStorage(app);
 const db = getDatabase(app);
 const auth = getAuth(app);
 
@@ -290,15 +322,19 @@ function loadStudentDropdowns() {
         });
 
         displayStudentList(data);
-        updateDashboardAnalytics(data);
+updateDashboardAnalytics(data);
+renderAdminChart(data);
     });
 }
 
-window.showSection = function(id){
-document.querySelectorAll(".section").forEach(s=>s.style.display="none");
-document.getElementById(id).style.display="block";
-
-if(id === "results") displayResults();
+window.showSection = function(id, btn) {
+    document.querySelectorAll(".section").forEach(s => s.style.display = "none");
+    document.getElementById(id).style.display = "block";
+    
+    document.querySelectorAll(".sidebar button").forEach(b => b.classList.remove("active"));
+    if (btn) btn.classList.add("active");
+    
+    if (id === "results") displayResults();
 };
 
 window.saveStudent = async function() {
@@ -356,21 +392,23 @@ function displayStudentList(data){
     });
 }
 
-window.searchStudent = function(){
+window.searchStudent = async function() {
     const term = document.getElementById("studentSearch").value.toLowerCase();
-    onValue(studentsRef, (snapshot)=>{
-        const data = snapshot.val() || {};
-        const listDiv = document.getElementById("studentList");
-        listDiv.innerHTML = "";
-        Object.keys(data).forEach(id=>{
-            const stu = data[id];
-            if(stu.studentName.toLowerCase().includes(term) || stu.studentID.includes(term)){
-                const div = document.createElement("div");
-                div.textContent = `${stu.studentName} (${stu.studentID}) - Class: ${stu.studentClass}`;
-                listDiv.appendChild(div);
-            }
-        });
-    }, {onlyOnce:true});
+    
+    const snapshot = await get(studentsRef);
+    const data = snapshot.val() || {};
+    
+    const listDiv = document.getElementById("studentList");
+    listDiv.innerHTML = "";
+    
+    Object.keys(data).forEach(id => {
+        const stu = data[id];
+        if (stu.studentName.toLowerCase().includes(term) || stu.studentID.includes(term)) {
+            const div = document.createElement("div");
+            div.textContent = `${stu.studentName} (${stu.studentID}) - Class: ${stu.studentClass}`;
+            listDiv.appendChild(div);
+        }
+    });
 };
 
 // ✅ Save Result + Auto-Calculate
@@ -378,7 +416,7 @@ window.saveResult = async function() {
     
     const id = resultStudentSelect.value;
     const term = termSelect.value;
-    const subject = subjectName.value;
+    const subject = subjectName.value.trim();
     const score = Number(subjectScore.value);
     const comment = teacherComment.value;
     
@@ -386,63 +424,119 @@ window.saveResult = async function() {
         return alert("Invalid data");
     }
     
-    const termRef = ref(db, `students/${id}/results/${term}/subjects`);
-    
-    await update(termRef, {
-    [subject]: Number(score)
-});
-    
-    const snapshot = await new Promise(resolve => {
-        onValue(termRef, resolve, { onlyOnce: true });
-    });
-    
-    const subjects = snapshot.val() || {};
-    const scores = Object.values(subjects);
-    
-    const total = scores.reduce((a, b) => a + b, 0);
-    const average = total / scores.length;
-    
-    let grade = "F";
-    if (average >= 75) grade = "A";
-    else if (average >= 65) grade = "B";
-    else if (average >= 55) grade = "C";
-    else if (average >= 45) grade = "D";
-    
-    await update(ref(db, `students/${id}/results/${term}`), {
-        average: average.toFixed(2),
-        grade: grade,
-        comment: comment
-    });
-    
-    alert("Result saved & calculated");
-    displayResults();
-    
-    // ✅ Send email
-emailjs.send("service_q5c4ig3", "template_hqu62kk", {
-    student_name: resultStudentSelect.options[resultStudentSelect.selectedIndex].text,
-    term: term,
-    average: average.toFixed(2),
-    grade: grade,
-    parent_email: "parent@email.com"
-}).then(() => {
-    console.log("Email sent successfully");
-}).catch(err => {
-    console.error("Email failed", err);
-});
+    try {
+        // ✅ Save subject score
+        const termRef = ref(db, `students/${id}/results/${term}/subjects`);
+        
+        await update(termRef, {
+            [subject]: score
+        });
+        
+        // ✅ Get updated subjects safely (FIXED: removed onValue)
+        const snapshot = await get(termRef);
+        const subjects = snapshot.val() || {};
+        
+        const scores = Object.values(subjects);
+        
+        if (scores.length === 0) return;
+        
+        const total = scores.reduce((a, b) => a + b, 0);
+        const average = total / scores.length;
+        
+        // ✅ Grade logic
+        let grade = "F";
+        if (average >= 75) grade = "A";
+        else if (average >= 65) grade = "B";
+        else if (average >= 55) grade = "C";
+        else if (average >= 45) grade = "D";
+        
+        // ✅ Save summary
+        await update(ref(db, `students/${id}/results/${term}`), {
+            average: average.toFixed(2),
+            grade: grade,
+            comment: comment
+        });
+        
+        // ✅ Insight FIX (no more "t" error)
+        document.getElementById("insightBox").textContent =
+            generateInsight(average);
+        
+        alert("Result saved & calculated");
+        
+        displayResults();
+        
+        // ✅ Send email
+        emailjs.send("service_q5c4ig3", "template_hqu62kk", {
+                student_name: resultStudentSelect.options[resultStudentSelect.selectedIndex].text,
+                term: term,
+                average: average.toFixed(2),
+                grade: grade,
+                parent_email: "parent@email.com"
+            })
+            .then(() => {
+                console.log("Email sent successfully");
+            })
+            .catch(err => {
+                console.error("Email failed", err);
+            });
+        
+    } catch (error) {
+        console.error(error);
+        alert("Error saving result");
+    }
 };
-window.editResult = function(id, term, subject){
+
+
+// ✅ EDIT RESULT (fixed: use get instead of onValue)
+window.editResult = async function(id, term, subject) {
+    
     subjectName.value = subject;
     resultStudentSelect.value = id;
     termSelect.value = term;
+    
     const scoreRef = ref(db, `students/${id}/results/${term}/subjects/${subject}`);
-    onValue(scoreRef, snapshot=>{
-        subjectScore.value = snapshot.val() || 0;
-    }, {onlyOnce:true});
+    
+    const snapshot = await get(scoreRef);
+    subjectScore.value = snapshot.val() || 0;
 };
 
-window.deleteResult = async function(id, term, subject){
-    if(confirm("Delete this result?")){
+
+// ✅ DELETE RESULT (recalculate after delete)
+window.deleteResult = async function(id, term, subject) {
+    
+    if (confirm("Delete this result?")) {
+        
+        const termRef = ref(db, `students/${id}/results/${term}/subjects`);
+        
         await remove(ref(db, `students/${id}/results/${term}/subjects/${subject}`));
+        
+        
+        // ✅ Recalculate after delete
+        const snapshot = await get(termRef);
+        const subjects = snapshot.val() || {};
+        
+        const scores = Object.values(subjects);
+        
+        if (scores.length > 0) {
+            const total = scores.reduce((a, b) => a + b, 0);
+            const average = total / scores.length;
+            
+            let grade = "F";
+            if (average >= 75) grade = "A";
+            else if (average >= 65) grade = "B";
+            else if (average >= 55) grade = "C";
+            else if (average >= 45) grade = "D";
+            
+            await update(ref(db, `students/${id}/results/${term}`), {
+                average: average.toFixed(2),
+                grade: grade
+            });
+            
+        } else {
+            // If no subjects left
+            await remove(ref(db, `students/${id}/results/${term}`));
+        }
+        
         alert("Deleted");
         displayResults();
     }
@@ -452,33 +546,52 @@ window.deleteResult = async function(id, term, subject){
 async function displayResults() {
     const id = resultStudentSelect.value;
     if (!id) return;
+    
     const resDiv = document.getElementById("resultsList");
     resDiv.innerHTML = "";
+    
     const studentRef = ref(db, `students/${id}/results`);
-    onValue(studentRef, snapshot => {
-        const data = snapshot.val() || {};
-        Object.keys(data).forEach(term => {
-            const t = data[term];
-            const div = document.createElement("div");
-            div.innerHTML = `<h4>${term}</h4>`;
-            if (t.subjects) {
-                Object.keys(t.subjects).forEach(sub => {
-                    const score = t.subjects[sub];
-                    const row = document.createElement("div");
-                    row.className = "result-row";
-                    row.innerHTML = `
+    
+    const snapshot = await get(studentRef);
+    const data = snapshot.val() || {};
+    
+    Object.keys(data).forEach(term => {
+        
+        const termData = data[term];
+        
+        const div = document.createElement("div");
+        div.innerHTML = `<h4>${term}</h4>`;
+        
+        if (termData.subjects) {
+            Object.keys(termData.subjects).forEach(sub => {
+                
+                const score = termData.subjects[sub];
+                
+                const row = document.createElement("div");
+                row.className = "result-row";
+                
+                row.innerHTML = `
                     <span>${sub}: ${score}</span>
                     <span>
                         <button onclick="editResult('${id}','${term}','${sub}')">Edit</button>
                         <button onclick="deleteResult('${id}','${term}','${sub}')">Delete</button>
-                    </span>`;
-                    div.appendChild(row);
-                });
-            }
-            div.innerHTML += `<p>Average: ${t.average || 0} | Grade: ${t.grade || 'N/A'} | Comment: ${t.comment || ''}</p>`;
-            resDiv.appendChild(div);
-        });
-    }, { onlyOnce: true });
+                    </span>
+                `;
+                
+                div.appendChild(row);
+            });
+        }
+        
+        div.innerHTML += `
+            <p>
+                Average: ${termData.average || 0} | 
+                Grade: ${termData.grade || 'N/A'} | 
+                Comment: ${termData.comment || ''}
+            </p>
+        `;
+        
+        resDiv.appendChild(div);
+    });
 }
 
 // ✅ Save Assessment
@@ -624,9 +737,59 @@ window.adminLogout = function() {
     signOut(auth).then(() => {
         alert("Logged out successfully");
     });
-    console.log("Logged in UID:", user.uid);
+    console.log("Admin logged out");
+};
+    
+    window.saveSchedule = async function() {
+    
+    const id = scheduleStudentSelect.value;
+    const day = scheduleDay.value;
+    const time = scheduleTime.value;
+    const subject = scheduleSubject.value;
+    
+    if (!id || !day || !time || !subject) {
+        alert("Fill all fields");
+        return;
+    }
+    
+    const scheduleRef = ref(
+        db,
+        `students/${id}/schedule/${day}`
+    );
+    
+    await push(scheduleRef, {
+        time: time,
+        subject: subject
+    });
+    
+    alert("Schedule saved");
 };
 
+window.uploadPhoto = async function() {
+    
+    const id = document.getElementById("studentID").value;
+    const file = document.getElementById("studentPhoto").files[0];
+    
+    if (!id || !file) {
+        alert("Select student ID and photo");
+        return;
+    }
+    
+    const fileRef = storageRef(
+        storage,
+        "students/" + id + "/photo.jpg"
+    );
+    
+    await uploadBytes(fileRef, file);
+    
+    const url = await getDownloadURL(fileRef);
+    
+    await update(ref(db, "students/" + id), {
+        photoURL: url
+    });
+    
+    alert("Photo uploaded");
+};
 </script>
 <!-- EmailJS SDK -->
 <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
@@ -636,7 +799,39 @@ window.adminLogout = function() {
         emailjs.init("HRzpdij9ek-FzGhux");
 
     })();
+    
+    function renderAdminChart(data) {
+    const ctx = document.getElementById("adminChart").getContext("2d");
+    
+    let labels = [];
+    let values = [];
+    
+    Object.keys(data).forEach(id => {
+        const student = data[id];
+        if (student.results) {
+            Object.keys(student.results).forEach(term => {
+                labels.push(student.studentName + " (" + term + ")");
+                values.push(Number(student.results[term].average) || 0);
+            });
+        }
+    });
+    
+    if (window.adminChartInstance) {
+        window.adminChartInstance.destroy();
+    }
+    
+    window.adminChartInstance = new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: labels,
+            datasets: [{
+                label: "Student Performance",
+                data: values
+            }]
+        }
+    });
+}
 </script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 </html>
-
