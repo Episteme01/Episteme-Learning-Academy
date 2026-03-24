@@ -25,11 +25,30 @@ if (btn) btn.classList.add("active");
 window.showSchedule = function(btn) {
     showSection('schedule', btn);
     
-    if (!currentStudent.schedule || !Array.isArray(currentStudent.schedule))
+    const rawSchedule = currentStudent.schedule;
+    
+    if (!rawSchedule) {
         document.getElementById("scheduleTable").innerHTML =
             "<p>No schedule found.</p>";
         return;
     }
+    
+    // Convert Firebase object → array
+    const formatted = [];
+    
+    Object.keys(rawSchedule).forEach(day => {
+        const periodsObj = rawSchedule[day];
+        
+        const periods = Object.values(periodsObj || {});
+        
+        formatted.push({
+            day: day,
+            periods: periods
+        });
+    });
+    
+    renderSchedule(formatted);
+};
     
 
 function renderSchedule(scheduleData) {
