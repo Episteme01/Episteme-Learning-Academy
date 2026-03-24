@@ -25,14 +25,12 @@ if (btn) btn.classList.add("active");
 window.showSchedule = function(btn) {
     showSection('schedule', btn);
     
-    if (!currentStudent.schedule) {
+    if (!currentStudent.schedule || !Array.isArray(currentStudent.schedule))
         document.getElementById("scheduleTable").innerHTML =
             "<p>No schedule found.</p>";
         return;
     }
     
-    renderSchedule(currentStudent.schedule);
-};
 
 function renderSchedule(scheduleData) {
     
@@ -172,8 +170,14 @@ if(submenu) submenu.style.display = submenu.style.display === "flex" ? "none" : 
 </script>
 
 <script>        // 1️⃣ Get parent document
-        window.updateProfile = async function() {
+        window.updateParentProfile = async function() {
     const user = auth.currentUser;
+    
+    if (!user) {
+        alert("User not logged in");
+        return;
+    }
+    
     const newName = document.getElementById("parentDisplayName").value.trim();
     
     if (!newName) {
@@ -487,9 +491,7 @@ window.changePassword = async function() {
 <body>  
   
 <div class="header">  
-    <h1>EPISTEME LEARNING ACADEMY</h1> 
-    <br>
-    <h2>Student Dashboard</h2>
+    <h2>Episteme Learning Academy</h2>  
     <button class="logout-btn" onclick="logout()">Logout</button>
 </div>  
   
@@ -498,7 +500,7 @@ window.changePassword = async function() {
     <div class="sidebar">  
         <button id="btn-dashboard" onclick="showSection('dashboard', this)">Dashboard</button>  
         <button onclick="showSection('performance', this)">Performance & Attendance</button>  
-        <button onclick="showSection('historical', this)">Historical Grades</button>  
+        <button onclick="showHistorical(this)">Historical Grades</button>
   
         <button onclick="toggleSubmenu('assessmentSubmenu')">Assessment Portfolio ▾</button>  
         <div id="assessmentSubmenu" class="submenu">  
@@ -508,6 +510,8 @@ window.changePassword = async function() {
         </div>  
   
 <button onclick="showSchedule(this)">My Schedule</button>  
+<button onclick="showSection('fees', this)">Fee History</button>
+
        <button onclick="showSection('accountPreferences', this)">Account Preferences</button>
     </div>  
   
@@ -518,13 +522,15 @@ window.changePassword = async function() {
         <div id="dashboard" class="section">  
             <div class="card">  
                 <h3>Student Information</h3>  
+                <img id="studentPhoto" style="width:120px;height:120px;border-radius:10px;margin-bottom:10px;">
                 <p><strong>ID:</strong> <span id="studentID"></span></p>  
                 <p><strong>Name:</strong> <span id="studentName"></span></p>  
                 <p><strong>Class:</strong> <span id="studentClass"></span></p>  
                 <p><strong>Age:</strong> <span id="studentAge"></span></p>  
                 <p><strong>Date of Birth:</strong> <span id="studentDOB"></span></p>  
                 <p><strong>Program:</strong> <span id="studentProgram"></span></p>  
-                <p><strong>Additional Info:</strong> <span id="studentInformation"></span></p>  
+                <p><strong>Additional Info:</strong> <span id="studentInformation"></span></p>   <p><strong>Fee Status:</strong> <span id="feeStatus"></span></p>
+ <button onclick="payFees()">Pay School Fees</button>
             </div>  
         </div>  
   
@@ -556,17 +562,21 @@ window.changePassword = async function() {
             <div class="card">  
                 <p><strong>Teacher Comment:</strong></p>  
                 <div id="comment" class="comment"></div>  
-                <h3>Attendance & Fees</h3>  
+                <h3>Attendance</h3>  
                 <p><strong>Attendance:</strong> <span id="attendance"></span>%</p>  
-                <p><strong>Fee Status:</strong> <span id="feeStatus"></span></p>
-                <button onclick="payFees()">Pay School Fees</button>
+               
                 <button class="download-btn" onclick="downloadPDF()">
     Download Result Sheet (PDF)
 </button>
             </div>  
             
         </div>  
-  
+  <div id="fees" class="section" style="display:none;">
+    <div class="card">
+        <h3>Fee History</h3>
+        <div id="feeTable"></div>
+    </div>
+</div>
         <!-- HISTORICAL GRADES SECTION -->  
         <div id="historical" class="section" style="display:none;">  
     <div class="card">  
@@ -607,7 +617,7 @@ window.changePassword = async function() {
         
         <label>Display Name</label>
         <input type="text" id="parentDisplayName">
-        <button class="primary-btn" onclick="updateProfile()">Update Name</button>
+        <button class="primary-btn" onclick="updateParentProfile()">Update Name</button>
         
         <hr style="margin:20px 0;">
         
@@ -645,7 +655,9 @@ import {
     getDatabase,
     ref,
     get,
-    child
+    child,
+    update,
+    push
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {
@@ -661,10 +673,14 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+window.auth = auth;
+window.updateProfile = updateProfile;
+window.updatePassword = updatePassword;
+window.signOut = signOut;
+
 const db = getDatabase(app);
 
 // ✅ GLOBAL STUDENT OBJECT
-
 
 onAuthStateChanged(auth, async (user) => {
     if (!user) {
@@ -684,6 +700,12 @@ onAuthStateChanged(auth, async (user) => {
         }
         
         const children = parentSnap.val().children;
+
+if (!children) {
+    alert("No child linked to this parent.");
+    return;
+}
+
 const studentID = Object.keys(children)[0];
         
         const studentSnap = await get(ref(db, "students/" + studentID));
@@ -707,6 +729,10 @@ function initializeDashboard(studentData) {
     
     currentStudent = studentData || {};
     
+    document.getElementById("studentPhoto").src =
+    studentData.photoURL || "";
+    
+    
     document.getElementById("studentID").textContent =
         studentData.studentID || "N/A";
     
@@ -728,6 +754,39 @@ function initializeDashboard(studentData) {
     document.getElementById("studentInformation").textContent =
         studentData.studentInformation || "N/A";
     
+    function renderChart(averages) {
+    
+    const ctx = document.getElementById("performanceChart").getContext("2d");
+    
+    // Destroy old chart if it exists
+    if (window.performanceChartInstance) {
+        window.performanceChartInstance.destroy();
+    }
+    
+    window.performanceChartInstance = new Chart(ctx, {
+        type: "line",
+        data: {
+            labels: averages.map((_, i) => "Term " + (i + 1)),
+            datasets: [{
+                label: "Average Performance (%)",
+                data: averages,
+                borderColor: "#4b3cf0",
+                backgroundColor: "rgba(75,60,240,0.2)",
+                tension: 0.3,
+                fill: true,
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100
+                }
+            }
+        }
+    });
+}
     // Load first available term instead of assuming term1 exists
     const term1 = studentData.results ?
         Object.keys(studentData.results)[0] :
@@ -940,7 +999,7 @@ function sortTable(sectionId, colIndex){
     const table = document.querySelector(`#${sectionId} table`);  
     const tbody = table.querySelector('tbody');  
     const rows = Array.from(tbody.querySelectorAll('tr'));  
-    let asc = table.asc;  
+   let asc = table.asc || true; 
   
     rows.sort((a,b)=>{  
         const aText = a.cells[colIndex].textContent.trim();  
@@ -963,6 +1022,14 @@ function getPerformanceBadge(score) {
     return { grade: "F", color: "#ef4444" };
 }
 
+
+function getOverallPerformanceStatus(avg) {
+    if (avg >= 80) return { text: "Excellent", color: "#16a34a" };
+    if (avg >= 70) return { text: "Very Good", color: "#22c55e" };
+    if (avg >= 60) return { text: "Good", color: "#3b82f6" };
+    if (avg >= 50) return { text: "Average", color: "#f59e0b" };
+    return { text: "Needs Improvement", color: "#ef4444" };
+}
     // ===========================  
     // DOWNLOAD RESULTS  
     // ===========================  
@@ -983,213 +1050,115 @@ function getPerformanceBadge(score) {
         }  
     }  
       
-    async function downloadPDF() {
+    window.downloadPDF = async function() {
     
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
     
-    const term = document.getElementById("termSelector").value;
-    const termData = currentStudent.results[term];
-    
-    if (!termData || !termData.subjects) {
-        alert("No results available.");
-        return;
-    }
+   const term = document.getElementById("termSelector").value;
+    const data = currentStudent.results?.[term];
+
+if (!data) {
+    alert("No result data available for this term.");
+    return;
+}
     
     let y = 20;
     
-    // ===== HEADER =====
     doc.setFontSize(16);
-    doc.text("EPISTEME LEARNING ACADEMY", 20, y);
+    doc.text("EPISTEME LEARNING ACADEMY", 60, y);
+    
     y += 10;
     
     doc.setFontSize(12);
-    doc.text("Official Result Sheet", 20, y);
+    doc.text("Official Report Card", 70, y);
+    
     y += 10;
     
-    doc.text("Student Name: " + currentStudent.studentName, 20, y);
+    doc.text(
+        "Name: " + currentStudent.studentName,
+        20,
+        y
+    );
+    
     y += 7;
-    doc.text("Class: " + currentStudent.studentClass, 20, y);
-    y += 7;
-    doc.text("Term: " + term.toUpperCase(), 20, y);
+    
+    doc.text(
+        "Class: " + currentStudent.studentClass,
+        20,
+        y
+    );
+    
     y += 10;
     
-    // ===== SUBJECTS =====
-    let total = 0;
-    let count = 0;
-    
-    let conventionalTotal = 0;
-    let conventionalCount = 0;
-    
-    let islamiyyahTotal = 0;
-    let islamiyyahCount = 0;
-    
-    let bestSubject = "";
-    let highestScore = -1;
-    
-    doc.setFontSize(11);
-    doc.text("Subjects & Scores:", 20, y);
-    y += 8;
-    
-    Object.entries(termData.subjects).forEach(([subject, score]) => {
-        
-        score = Number(score);
-        
-        doc.text(`${subject}: ${score}%`, 25, y);
-        y += 7;
-        
-        total += score;
-        count++;
-        
-        if (score > highestScore) {
-            highestScore = score;
-            bestSubject = subject + " (" + score + "%)";
-        }
-        
-        if (islamiyyahSubjects.includes(subject)) {
-            islamiyyahTotal += score;
-            islamiyyahCount++;
-        } else {
-            conventionalTotal += score;
-            conventionalCount++;
-        }
-        
-    });
-    
-    const overallAvg = count ? (total / count).toFixed(1) : 0;
-    const conventionalAvg = conventionalCount ? (conventionalTotal / conventionalCount).toFixed(1) : 0;
-    const islamiyyahAvg = islamiyyahCount ? (islamiyyahTotal / islamiyyahCount).toFixed(1) : 0;
+    doc.text("Subjects", 20, y);
+    doc.text("Score", 120, y);
     
     y += 5;
     
-    // ===== SUMMARY SECTION =====
-    doc.setFontSize(12);
-    doc.text("Performance Summary", 20, y);
-    y += 8;
+    Object.entries(data.subjects).forEach(([s, v]) => {
+        
+        y += 7;
+        
+        doc.text(s, 20, y);
+        doc.text(v + "%", 120, y);
+        
+    });
     
-    doc.text("Best Subject: " + bestSubject, 25, y);
-    y += 7;
+    y += 10;
     
-    doc.text("Conventional Average: " + conventionalAvg + "%", 25, y);
-    y += 7;
+    doc.text(
+        "Comment: " + data.comment,
+        20,
+        y
+    );
     
-    doc.text("Islamiyyah Average: " + islamiyyahAvg + "%", 25, y);
-    y += 7;
+    doc.save(
+        currentStudent.studentName +
+        "_report.pdf"
+    );
     
-    doc.text("Overall Average: " + overallAvg + "%", 25, y);
-    y += 7;
-    
-    function getOverallPerformanceStatus(avg) {
-    avg = Number(avg);
-    
-    if (avg >= 85) return { text: "Excellent", color: "#16a34a" };
-    if (avg >= 70) return { text: "Very Good", color: "#22c55e" };
-    if (avg >= 60) return { text: "Good", color: "#3b82f6" };
-    if (avg >= 50) return { text: "Fair", color: "#f59e0b" };
-    return { text: "Needs Improvement", color: "#ef4444" };
 }
     
-    // ===== COMMENT =====
-    doc.text("Teacher's Comment:", 20, y);
-    y += 7;
-    doc.text(termData.comment || "No comment available.", 25, y);
-    y += 15;
-    
-    // ===== ATTENDANCE =====
-    doc.text("Attendance: " + (currentStudent.attendance || 0) + "%", 20, y);
-    y += 7;
-    doc.text("Fee Status: " + (currentStudent.feeStatus || "N/A"), 20, y);
-    
-    // ===== SAVE FILE =====
-    doc.save(
-        `${currentStudent.studentName}_${term}_Result_Sheet.pdf`
-    );
-}     
-    // ===========================  
-    // LOGOUT  
-    // ===========================  
-   window.logout = async function() {
+window.showHistorical = function(btn) {
+    showSection('historical', btn);
+    renderHistoricalGrades(); // 🔥 THIS triggers your function
+};
+
+function renderHistoricalGrades() {
+    const container = document.getElementById("historicalTable");
+    container.innerHTML = "<p>Historical data coming soon...</p>";
+}
+
+window.logout = async function() {
     try {
         await signOut(auth);
         window.location.href = "parent-login.html";
     } catch (error) {
-        console.error("Logout error:", error);
-        alert("Logout failed. Please try again.");
+        alert("Logout failed");
     }
 };
 
-    function showHistorical(btn) {  
-    showSection('historical', btn);  
-    renderHistoricalGrades();  
-}  
-      
-function renderChart(averages) {  
-    const ctx = document.getElementById("performanceChart").getContext("2d");  
-      
-    new Chart(ctx, {  
-        type: "line",  
-        data: {  
-            labels: ["Term 1", "Term 2", "Term 3"],  
-            datasets: [{  
-                label: "Average Performance (%)",  
-                data: averages,  
-                borderColor: "#4b3cf0",  
-                backgroundColor: "rgba(75,60,240,0.2)",  
-                tension: 0.3,  
-                fill: true,  
-            }]  
-        },  
-        options: {  
-            responsive: true,  
-            plugins: {  
-                legend: { display: true }  
-            },  
-            scales: {  
-                y: {  
-                    beginAtZero: true,  
-                    max: 100  
-                }  
-            }  
-        }  
-    });  
-}  
-function getOverallPerformanceStatus(avg) {
-    if (avg >= 85) return { text: "Excellent", color: "#16a34a" };
-    if (avg >= 70) return { text: "Very Good", color: "#22c55e" };
-    if (avg >= 60) return { text: "Good", color: "#3b82f6" };
-    if (avg >= 50) return { text: "Needs Improvement", color: "#f59e0b" };
-    return { text: "Poor", color: "#ef4444" };
-}
-
-function payFees() {
+window.payFees = function() {
+    
     const handler = PaystackPop.setup({
-        key: 'pk_live_64158b7b329777c76a9f71c8afea298fc5ff2452',
+        key: "pk_live_64158b7b329777c76a9f71c8afea298fc5ff2452", // replace this
         email: auth.currentUser.email,
-        amount: 30000, // 5000 Naira (amount is in kobo)
-        currency: "NGN",
+        amount: 30000 * 100, // ₦30,000 (Paystack uses kobo)
+        
         callback: function(response) {
+            alert("Payment successful! Ref: " + response.reference);
             
-            alert("Payment successful!");
-            
-            // Update Firebase
-            import("https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js")
-                .then(({ ref, update }) => {
-                    update(ref(db, "students/" + currentStudent.studentID), {
-                        feeStatus: "Paid"
-                    });
-                });
-            
+            // OPTIONAL: update database
         },
+        
         onClose: function() {
-            alert('Payment cancelled.');
+            alert("Payment window closed.");
         }
     });
     
     handler.openIframe();
-}
-
-
-    
+};
 </script>
     
     </body>  
