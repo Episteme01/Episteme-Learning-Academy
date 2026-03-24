@@ -431,62 +431,101 @@ window.changePassword = async function() {
             font-size: 13px;  
             opacity: 0.7;  
         }  
-.schedule-grid {  
-    width: 100%;  
-    border-collapse: collapse;  
-    margin-top: 15px;  
-}  
-  
-.schedule-grid th {  
-    background: #2a5298;  
-    color: white;  
-    padding: 10px;  
-}  
-  
-.schedule-grid td {  
-    padding: 12px;  
-    text-align: center;  
-    border: 1px solid #e0e0e0;  
-}  
-  
-.schedule-grid tbody tr:nth-child(even) {  
-    background: #f4f7ff;  
-}  
-  
-.schedule-subject {  
-    background: #4b3cf0;  
-    color: white;  
-    padding: 6px;  
-    border-radius: 8px;  
-    font-size: 13px;  
-}  
-.schedule-grid {  
-    width: 100%;  
-    border-collapse: collapse;  
-    background: white;  
-    border-radius: 8px;  
-    overflow: hidden;  
-}  
-  
-.schedule-grid th,  
-.schedule-grid td {  
-    padding: 12px;  
-    border-bottom: 1px solid #e5e7eb;  
-    text-align: center;  
-}  
-  
-.schedule-grid th {  
-    background: #1e3a8a;  
-    color: white;  
-}  
-  
-.subject-badge {  
-    padding: 6px 12px;  
-    border-radius: 20px;  
-    color: white;  
-    font-weight: 600;  
-    display: inline-block;  
-}  
+/* ===== BEAUTIFUL SCHEDULE DESIGN ===== */
+
+#scheduleTable {
+    margin-top: 15px;
+}
+
+/* Card look */
+#schedule .card {
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(12px);
+    border-radius: 16px;
+}
+
+/* Table */
+.schedule-grid {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: white;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    font-size: 14px;
+}
+
+/* Header */
+.schedule-grid thead {
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: white;
+}
+
+.schedule-grid th {
+    padding: 14px;
+    text-align: center;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* Cells */
+.schedule-grid td {
+    padding: 14px;
+    text-align: center;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+/* Day column */
+.schedule-grid td:first-child {
+    font-weight: bold;
+    background: #f1f5ff;
+    color: #1e3a8a;
+}
+
+/* Zebra rows */
+.schedule-grid tbody tr:nth-child(even) {
+    background: #f8faff;
+}
+
+/* Hover effect */
+.schedule-grid tbody tr:hover {
+    background: #eaf0ff;
+    transition: 0.2s ease;
+}
+
+/* Subject badge */
+.subject-badge {
+    padding: 6px 14px;
+    border-radius: 20px;
+    color: white;
+    font-weight: 600;
+    font-size: 13px;
+    display: inline-block;
+    min-width: 90px;
+}
+
+/* Time style */
+.schedule-grid td:nth-child(2) {
+    font-weight: 600;
+    color: #374151;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    
+    .schedule-grid th,
+    .schedule-grid td {
+        padding: 8px;
+        font-size: 12px;
+    }
+    
+    .subject-badge {
+        font-size: 11px;
+        padding: 4px 8px;
+    }
+    
+}
 .category-section {
     margin-bottom: 25px;
 }
