@@ -432,7 +432,7 @@ window.saveStudent = async function() {
     };
     
     try {
-        await set(ref(db, "students/" + id), studentData);
+        await update(ref(db, "students/" + id), studentData);
         alert("Student saved successfully");
     } catch (error) {
         alert(error.message);
