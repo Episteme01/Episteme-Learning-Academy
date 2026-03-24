@@ -91,6 +91,9 @@ cursor:pointer;
 button.primary:hover{
 transform:translateY(-2px);
 }
+.section {
+    display: none;
+}
 </style>
 </head>
 
@@ -110,12 +113,12 @@ transform:translateY(-2px);
 <div id="adminPortal" style="display:none;">
 <div class="wrapper">
     <div class="sidebar">
-       <button onclick="showSection('dashboard', this)">Dashboard</button>
-        <button onclick="showSection('students', this)">Students</button>
-        <button onclick="showSection('results')">Results Manager</button>
-        <button onclick="showSection('assessments')">Assessments</button>
-        <button onclick="showSection('schedule')">Schedule Builder</button>
-        <button onclick="showSection('worksheetManager')">Worksheet Generator</button>
+      <button onclick="showSection('dashboard', this)">Dashboard</button>
+<button onclick="showSection('students', this)">Students</button>
+<button onclick="showSection('results', this)">Results Manager</button>
+<button onclick="showSection('assessments', this)">Assessments</button>
+<button onclick="showSection('schedule', this)">Schedule Builder</button>
+<button onclick="showSection('worksheetManager', this)">Worksheet Generator</button>
     </div>
     
     <div class="main">
@@ -162,7 +165,7 @@ document.getElementById('studentID').value
 <input id="studentName" placeholder="Student Name">
 <input id="studentClass" placeholder="Class">
 <input id="studentAge" placeholder="Age">
-<input type="date" id="studentDOB" placeholder="Date of Birth">
+<input id="studentDOB" placeholder="Date of Birth">
 <input id="studentProgram" placeholder="Program">
 <input id="studentInformation" placeholder="Additional Info">
 <input id="attendance" placeholder="Attendance %">
@@ -297,9 +300,15 @@ const studentsRef = ref(db, "students");
 
 function loadStudentDropdowns() {
     onValue(studentsRef, (snapshot) => {
-                console.log("Students snapshot:", snapshot.val());
-                console.log("Loaded students:", data);
-                const data = snapshot.val() || {};
+        
+        const data = snapshot.val() || {}; // ✅ FIXED (declare first)
+        
+        console.log("✅ Firebase Students Data:", data);
+        
+        // If no data exists
+        if (!Object.keys(data).length) {
+            console.warn("⚠️ No students found in database");
+        }
         
         const dropdowns = [
             "resultStudentSelect",
@@ -309,21 +318,42 @@ function loadStudentDropdowns() {
         
         dropdowns.forEach(id => {
             const select = document.getElementById(id);
-            if (!select) return;
             
+            if (!select) {
+                console.warn(`⚠️ Dropdown not found: ${id}`);
+                return;
+            }
+            
+            // Reset dropdown
             select.innerHTML = '<option value="">Select Student</option>';
             
+            // Populate dropdown
             Object.keys(data).forEach(studentID => {
+                const student = data[studentID];
+                
                 const option = document.createElement("option");
                 option.value = studentID;
-                option.textContent = data[studentID].studentName + " (" + studentID + ")";
+                option.textContent = `${student.studentName || "Unnamed"} (${studentID})`;
+                
                 select.appendChild(option);
             });
         });
-
-        displayStudentList(data);
-updateDashboardAnalytics(data);
-renderAdminChart(data);
+        
+        // ✅ Safe function calls
+        if (typeof displayStudentList === "function") {
+            displayStudentList(data);
+        }
+        
+        if (typeof updateDashboardAnalytics === "function") {
+            updateDashboardAnalytics(data);
+        }
+        
+        if (typeof renderAdminChart === "function") {
+            renderAdminChart(data);
+        }
+        
+    }, (error) => {
+        console.error("❌ Firebase read error:", error);
     });
 }
 
