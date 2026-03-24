@@ -6,6 +6,13 @@
 <title>Admin Portal - Episteme Learning Academy</title>
 
 <style>
+#dashboard {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 20px;
+    border-radius: 15px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
 body{
 margin:0;
 font-family:Arial;
@@ -91,7 +98,37 @@ cursor:pointer;
 button.primary:hover{
 transform:translateY(-2px);
 }
-b
+
+/* RESULTS GRID */
+.results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.subject-card {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 25px;
+    border-radius: 15px;
+    text-align: center;
+    font-weight: 600;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.subject-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.3);
+}
+
+.subject-card strong {
+    display: block;
+    font-size: 2em;
+    margin-top: 10px;
+}
+
 </style>
 </head>
 
@@ -409,15 +446,61 @@ window.assignStudentToParent = async function(parentUID, studentID) {
 };
 
 // ✅ Student Search & List
-function displayStudentList(data){
+function displayStudentList(data) {
+    
     const listDiv = document.getElementById("studentList");
     listDiv.innerHTML = "";
-    Object.keys(data).forEach(id=>{
+    
+    Object.keys(data).forEach(id => {
+        
         const stu = data[id];
+        
         const div = document.createElement("div");
-        div.textContent = `${stu.studentName} (${stu.studentID}) - Class: ${stu.studentClass}`;
+        
+        div.style.cursor = "pointer";
+        div.style.padding = "6px";
+        div.style.borderBottom =
+            "1px solid rgba(255,255,255,0.2)";
+        
+        div.textContent =
+            `${stu.studentName} (${stu.studentID}) - Class: ${stu.studentClass}`;
+        
+        // ✅ CLICK STUDENT → LOAD INTO FORM
+        div.onclick = () => {
+            
+            document.getElementById("studentID").value =
+                stu.studentID || "";
+            
+            document.getElementById("studentName").value =
+                stu.studentName || "";
+            
+            document.getElementById("studentClass").value =
+                stu.studentClass || "";
+            
+            document.getElementById("studentAge").value =
+                stu.studentAge || "";
+            
+            document.getElementById("studentDOB").value =
+                stu.studentDOB || "";
+            
+            document.getElementById("studentProgram").value =
+                stu.studentProgram || "";
+            
+            document.getElementById("studentInformation").value =
+                stu.studentInformation || "";
+            
+            document.getElementById("attendance").value =
+                stu.attendance || "";
+            
+            document.getElementById("feeStatus").value =
+                stu.feeStatus || "Paid";
+            
+        };
+        
         listDiv.appendChild(div);
+        
     });
+    
 }
 
 window.searchStudent = async function() {
@@ -518,7 +601,7 @@ window.saveResult = async function() {
 // ✅ EDIT RESULT (fixed: use get instead of onValue)
 window.editResult = async function(id, term, subject) {
     
-    subjectName.value = subject;
+    Name.value = subject;
     resultStudentSelect.value = id;
     termSelect.value = term;
     
@@ -827,33 +910,52 @@ window.adminLogout = function() {
 };
 
 window.uploadPhoto = async function() {
-    
-    const id = document.getElementById("studentID").value;
-    const file = document.getElementById("studentPhoto").files[0];
-    
-    if (!id || !file) {
-        alert("Select student ID and photo");
-        return;
+
+    try {
+
+        const id =
+            document.getElementById("studentID").value.trim();
+
+        const input =
+            document.getElementById("studentPhoto");
+
+        if (!input.files.length) {
+            alert("Choose photo");
+            return;
+        }
+
+        const file = input.files[0];
+
+        const fileRef = storageRef(
+            storage,
+            "students/" + id + "/photo.jpg"
+        );
+
+        await uploadBytes(fileRef, file);
+
+        const url = await getDownloadURL(fileRef);
+
+        await update(
+            ref(db, "students/" + id),
+            { photoURL: url }
+        );
+
+        alert("Photo updated");
+
+    } catch (err) {
+
+        console.error("UPLOAD ERROR:", err);
+
+        alert("Upload failed");
+
     }
-    
-    const fileRef = storageRef(
-        storage,
-        "students/" + id + "/photo.jpg"
-    );
-    
-    await uploadBytes(fileRef, file);
-    
-    const url = await getDownloadURL(fileRef);
-    
-    await update(ref(db, "students/" + id), {
-        photoURL: url
-    });
-    
-    alert("Photo uploaded");
+
 };
+
 </script>
 <!-- EmailJS SDK -->
 <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
     (function() {
@@ -862,7 +964,11 @@ window.uploadPhoto = async function() {
     })();
     
     function renderAdminChart(data) {
-    const ctx = document.getElementById("adminChart").getContext("2d");
+    
+    const canvas = document.getElementById("adminChart");
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext("2d");
     
     let labels = [];
     let values = [];
@@ -882,17 +988,46 @@ window.uploadPhoto = async function() {
     }
     
     window.adminChartInstance = new Chart(ctx, {
-        type: "bar",
-        data: {
-            labels: labels,
-            datasets: [{
-                label: "Student Performance",
-                data: values
-            }]
+    type: "bar",
+    data: {
+        labels: labels,
+        datasets: [{
+            label: "Student Performance",
+            data: values,
+            backgroundColor: values.map(v => `rgba(102, 126, 234, 0.7)`),
+            borderColor: values.map(v => `rgba(118, 75, 162, 1)`),
+            borderWidth: 2,
+            borderRadius: 10, // Rounded bar edges
+            maxBarThickness: 50
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                display: false
+            },
+            tooltip: {
+                backgroundColor: '#764ba2',
+                titleColor: '#fff',
+                bodyColor: '#fff',
+                bodyFont: { weight: 'bold' }
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: { stepSize: 10 }
+            },
+            x: {
+                ticks: { color: '#fff', font: { weight: 'bold' } }
+            }
         }
-    });
+    }
+});
 }
+
 </script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </body>
 </html>
