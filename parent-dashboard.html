@@ -810,9 +810,13 @@ function initializeDashboard(studentData) {
     
     currentStudent = studentData || {};
     
-    document.getElementById("studentPhoto").src =
-    studentData.photoURL || "";
-    
+    const photo = document.getElementById("studentPhoto");
+
+if (studentData.photoURL) {
+    photo.src = studentData.photoURL;
+} else {
+    photo.src = "https://via.placeholder.com/120";
+}
     
     document.getElementById("studentID").textContent =
         studentData.studentID || "N/A";
