@@ -910,46 +910,61 @@ window.adminLogout = function() {
 };
 
 window.uploadPhoto = async function() {
-
-    try {
-
-        const id =
-            document.getElementById("studentID").value.trim();
-
-        const input =
-            document.getElementById("studentPhoto");
-
-        if (!input.files.length) {
-            alert("Choose photo");
-            return;
-        }
-
-        const file = input.files[0];
-
-        const fileRef = storageRef(
-            storage,
-            "students/" + id + "/photo.jpg"
-        );
-
-        await uploadBytes(fileRef, file);
-
-        const url = await getDownloadURL(fileRef);
-
-        await update(
-            ref(db, "students/" + id),
-            { photoURL: url }
-        );
-
-        alert("Photo updated");
-
-    } catch (err) {
-
-        console.error("UPLOAD ERROR:", err);
-
-        alert("Upload failed");
-
+    
+    const id = document.getElementById("studentID").value.trim();
+    const input = document.getElementById("studentPhoto");
+    
+    if (!id) {
+        alert("Enter Student ID first");
+        return;
     }
-
+    
+    if (!input.files.length) {
+        alert("Choose photo");
+        return;
+    }
+    
+    const file = input.files[0];
+    
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "episteme_upload"); // ✅ FIXED
+    
+    try {
+        
+        const res = await fetch(
+            "https://api.cloudinary.com/v1_1/du3egqkxh/image/upload",
+            {
+                method: "POST",
+                body: formData
+            }
+        );
+        
+        const data = await res.json();
+        
+        // ✅ DEBUG (VERY IMPORTANT)
+        console.log("Cloudinary response:", data);
+        
+        // ❌ HANDLE ERROR PROPERLY
+        if (!data.secure_url) {
+            throw new Error(data.error?.message || "Upload failed");
+        }
+        
+        const imageUrl = data.secure_url;
+        
+        // ✅ SAVE TO FIREBASE
+        await update(ref(db, "students/" + id), {
+            photoURL: imageUrl
+        });
+        
+        alert("Photo uploaded successfully");
+        
+        loadStudentDropdowns();
+        
+    } catch (err) {
+        console.error("Upload error:", err);
+        alert(err.message || "Upload failed");
+    }
 };
 
 </script>
