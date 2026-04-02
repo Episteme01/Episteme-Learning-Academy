@@ -823,7 +823,8 @@ if (studentData.photoURL) {
     
     document.getElementById("studentName").textContent =
         studentData.studentName || "N/A";
-    
+    document.getElementById("feeStatus").textContent =
+    studentData.feeStatus || "N/A";
     document.getElementById("studentClass").textContent =
         studentData.studentClass || "N/A";
     
@@ -1010,8 +1011,6 @@ resultsGrid.appendChild(islamiyyahDiv);
     document.getElementById("attendance").textContent =
         currentStudent.attendance || 0;
     
-    document.getElementById("feeStatus").textContent =
-        currentStudent.feeStatus || "N/A";
 }
   
 // ========== PROFESSIONAL TABLES ==========  
