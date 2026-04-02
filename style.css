@@ -1,552 +1,1172 @@
+/* ===============================
+   ROOT DESIGN SYSTEM
+================================= */
+:root {
+  --green: #1f6b2d;
+  --green-dark: #15501b;
+  --navy: #0a2a66;
+  --wine: #7a0019;
+  --wine-dark: #5a0013;
+  --yellow: #f4c430;
+  --light: #f7f9f7;
+  --white: #ffffff;
+  --text: #333;
+  --black: black;
+}
+
+/* ===============================
+   RESET
+================================= */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
 }
 
 body {
-    font-family: 'Poppins', sans-serif;
-    line-height: 1.6;
-    color: #333;
+  color: var(--text);
+  line-height: 1.6;
+  background: var(--light);
 }
 
-/* Utility */
+/* ===============================
+   LAYOUT
+================================= */
 .container {
-    width: 90%;
-    max-width: 1100px;
-    margin: auto;
+  width: 90%;
+  max-width: 1100px;
+  margin: auto;
 }
 
 .section {
-    padding: 60px 0;
+  padding: 70px 0;
+}
+
+.section h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: var(--green);
+  position: relative;
+}
+
+.section h2::after {
+  content: "";
+  width: 60px;
+  height: 4px;
+  background: var(--wine);
+  display: block;
+  margin: 10px auto;
+  border-radius: 4px;
 }
 
 .light {
-    background: #f7f9f7;
-}
-
- h3, h4 {
-    margin-bottom: 15px;
-    color: #1f6b2d;
-
-    
+  background: var(--white);
 }
 
 p, li {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
-/* Header */
+/* ===============================
+   HEADER
+================================= */
 .header {
-    background: #1f6b2d;
-    color: #fff;
-    text-align: center;
-    padding: 50px 20px;
+  background: linear-gradient(15deg, var(--green), var(--green-dark));
+  color: white;
+  padding: 30px 20px;
 }
 
 .header-flex {
-    display: flex;
-    align-items: center;
-    gap: 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.logo-img {
+  width: 70px;
 }
 
 .academy-name {
-    font-size: 2.2rem;
-    font-weight: 700;
-    margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
 }
 
-/* Color branding */
-.episteme {
-    color: #0a2a66; /* Deep Blue */
-}
-
-.learning {
-    color: #000000; /* Black */
-}
-
-.academy {
-    color: #7a0019; /* Wine */
-}
-.logo-img {
-    width: 80px;
-    height: auto;
-}
-
-.hero {
-    background: url("images/hero.jpg") center/cover no-repeat;
-    height: 70vh;
-    position: relative;
-}
-
-.hero-overlay {
-    background: rgba(0, 0, 0, 0.55);
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    color: #fff;
-    padding: 20px;
-}
-
-.hero-overlay h2 {
-    font-size: 2.5rem;
-    margin-bottom: 10px;
-}
+.episteme { color: navy; }
+.learning { color: black; }
+.academy { color: var(--wine-dark); }
 
 .tagline {
-    font-style: italic;
-    opacity: 0.9;
-    
+  font-style: italic;
+  opacity: 0.9;
 }
 
-/* Navbar */
+/* ===============================
+   NAVBAR (DESKTOP + MOBILE)
+================================= */
+
+.nav-links.active {
+  display: block;
+}
+
 .navbar {
-    background: #fff;
-    border-bottom: 1px solid #ddd;
+  background: white;
+  border-bottom: 1px solid #ddd;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 .nav-flex {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.nav-links {
-    list-style: none;
-    display: flex;
-}
-
-.nav-links li a {
-    text-decoration: none;
-    padding: 15px;
-    color: #1f6b2d;
-    font-weight: 500;
-}
-
-.menu-btn {
-    display: none;
-    background: none;
-    border: none;
-    font-size: 24px;
-}
-
-/* Grid */
-.grid-2 {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 40px;
-}
-
-.program-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 25px;
-}
-
-.card {
-    background: #fff;
-    padding: 25px;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-}
-
-.card img {
-    width: 100%;
-    border-radius: 10px;
-    margin-bottom: 15px;
-}
-
-/* Footer */
-.footer {
-    background: #1f6b2d;
-    color: #fff;
-    text-align: center;
-    padding: 30px 15px;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .grid-2 {
-        grid-template-columns: 1fr;
-    }
-}
-@media (max-width: 768px) {
-    .header-flex {
-        flex-direction: column;
-        text-align: center;
-    }
-}
-@media (max-width: 768px) {
-    
-    .header-flex {
-        flex-direction: column;
-        text-align: center;
-    }
-    
-    .academy-name {
-        font-size: 1.6rem;
-    }
-    
-    .hero {
-        height: 50vh;
-    }
-    
-    .hero-overlay h2 {
-        font-size: 1.8rem;
-    }
-    
-    .nav-links {
-        display: none;
-        flex-direction: column;
-        width: 100%;
-    }
-    
-    .nav-links.active {
-        display: flex;
-    }
-    
-    .menu-btn {
-        display: block;
-    }
-}
-.academy-name span {
-    transition: color 0.3s ease;
-}
-
-.academy-name span:hover {
-    opacity: 0.85;
-}
-.slider-section {
-    width: 100%;
-    margin: 20px auto;
-}
-
-.slider-container {
-    position: relative;
-    width: 100%;
-    height: 220px;
-    overflow: hidden;
-}
-
-.slide {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    transition: opacity 1s ease-in-out;
-}
-
-.slide.active {
-    opacity: 1;
-    z-index: 1;
-}
-
-.slide img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 8px;
-}
-.slide.active {
-    opacity: 1;
-}
-/* Fading animation */
-.fade {
-    animation-name: fade;
-    animation-duration: 4s;
-}
-
-@keyframes fade {
-    from {opacity: 0.4;}
-    to {opacity: 1;}
-}
-
-/* Dots */
-.dot {
-    height: 15px;
-    width: 15px;
-    margin: 0 5px;
-    background-color: #bbb;
-    border-radius: 50%;
-    display: inline-block;
-    transition: background-color 0.3s ease;
-    cursor: pointer;
-}
-
-.active-dot {
-    background-color: #1f6b2d;
-}
-.whatsapp-float {
-    position: fixed;
-    width: 60px;
-    height: 60px;
-    bottom: 30px;
-    right: 30px;
-    z-index: 100;
-    cursor: pointer;
-}
-
-.whatsapp-float img {
-    width: 100%;
-    height: 100%;
-}
-.program-card {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    background: #fff;
-    border-radius: 10px;
-    overflow: hidden;
-    margin-bottom: 24px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-}
-
-/* IMAGE SIZE CONTROL */
-.program-card img {
-    width: 80%;
-    height: 140px;        /* 👈 THIS reduces the size */
-    object-fit: cover;   /* crops nicely instead of stretching */
-    display: block;
-}
-
-/* TEXT AREA */
-.program-content {
-    padding: 16px;
-}
-
-.program-content h3 {
-    margin-bottom: 8px;
-    color: #1f7a3f;
-}
-@media (min-width: 768px) {
-    .program-card {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    
-    .program-card img {
-        width: 40%;
-        height: auto;
-    }
-    
-    .program-content {
-        width: 60%;
-    }
-}
-
-.email-link {
-    color: red;
-    text-decoration: none;
-    font-weight: 600;
-}
-
-.email-link:hover {
-    text-decoration: underline;
-}
-
-.phone-link {
-    color: blue;
-    text-decoration: none;
-    font-weight: 600;
-}
-
-.phone-link:hover {
-    text-decoration: underline;
-}
-.popup-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.6);
-  display: none;
-  justify-content: center;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  z-index: 999;
 }
 
-.popup-box {
-  background: #ffffff;
-  width: 90%;
-  max-width: 400px;
-  padding: 25px;
-  border-radius: 12px;
+/* NAV LINKS */
+.nav-links {
+  display: none;
+  flex-direction: column;
+  list-style: none;
+  width: 100%;
+}
+
+.nav-links.active {
+  display: flex;
+}
+
+.nav-links li {
   position: relative;
-  animation: popIn 0.4s ease;
 }
 
-@keyframes popIn {
-  from {
-    transform: scale(0.8);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
+.nav-links a {
+  text-decoration: none;
+  padding: 12px 15px;
+  color: var(--green);
+  font-weight: 500;
+  display: block;
+  transition: 0.3s;
 }
 
-.popup-box h2 {
-  margin-bottom: 10px;
-  color: #0a2a66;
+/* HOVER EFFECT */
+.nav-links a:hover {
+  color: var(--wine);
 }
 
-.popup-box p {
-  font-size: 0.95rem;
-  margin-bottom: 15px;
-}
-
-.popup-box form input,
-.popup-box form select {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 12px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
-
-.popup-box form button {
-  width: 100%;
-  padding: 12px;
-  background: #7a0019;
-  color: #ffffff;
+/* MENU BUTTON */
+.menu-btn {
+  display: none;
+  font-size: 26px;
+  background: none;
   border: none;
-  border-radius: 25px;
-  font-weight: 600;
   cursor: pointer;
 }
 
-.popup-box form button:hover {
-  background: #5a0013;
+@media(min-width: 768px) {
+  .nav-links {
+    display: flex !important;
+    flex-direction: row;
+  }
+}
+/* ===============================
+   HERO
+================================= */
+.hero {
+  background: url("images/hero.jpg") center/cover no-repeat;
+  height: 70vh;
+  position: relative;
 }
 
+.hero-overlay {
+  background: rgba(0,0,0,0.6);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  text-align: center;
+}
+
+.hero-overlay h2 {
+  font-size: 2.5rem;
+}
+
+.hero button {
+  margin-top: 25px;
+  padding: 14px 32px;
+  border-radius: 30px;
+  background: var(--wine);
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.hero button:hover {
+  background: var(--wine-dark);
+}
+
+/* ===============================
+   SLIDER
+================================= */
+.slider-container {
+  position: relative;
+  height: 220px;
+  overflow: hidden;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: 2s;
+}
+
+.slide.active {
+  opacity: 1;
+}
+
+.slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ===============================
+   PROGRAM CARDS
+================================= */
+.program-card {
+  background: white;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 25px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  transition: 1s;
+}
+
+.program-card:hover {
+  transform: translateY(-5px);
+}
+
+.program-card img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.program-card h3 {
+  color: var(--green);
+  margin: 10px 0;
+}
+
+/* ===============================
+   CTA BUTTONS
+================================= */
+.cta-btn {
+  display: inline-block;
+  padding: 12px 25px;
+  border-radius: 25px;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.light-btn {
+  background: white;
+  color: var(--wine);
+}
+
+.dark-btn {
+  background: var(--green);
+  color: white;
+}
+
+/* ===============================
+   WHY US
+================================= */
+#why-us li {
+  background: lightcyan;
+  padding: 14px;
+  border-left: 5px solid var(--green);
+  border-radius: 6px;
+}
+
+#why-us li:hover {
+  background: #e9f5ec;
+}
+
+/* ===============================
+   GALLERY
+================================= */
+#gallery div {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 15px;
+}
+
+#gallery img {
+  height: 200px;
+  object-fit: cover;
+  border-radius: 10px;
+  transition: 0.3s;
+}
+
+#gallery img:hover {
+  transform: scale(1.05);
+}
+
+/* ===============================
+   TESTIMONIAL
+================================= */
+.testimonial {
+  background: darkgray;
+  padding: 20px;
+  border-left: 5px solid var(--green);
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+/* ===============================
+   FAQ
+================================= */
+.faq-item {
+  margin-bottom: 10px;
+}
+
+.faq-question {
+  background: var(--green);
+  color: white;
+  padding: 15px;
+  border: none;
+  width: 100%;
+  text-align: left;
+}
+
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  background: white;
+}
+
+/* ===============================
+   BLOG
+================================= */
+.blog-preview-grid {
+  display: grid;
+  gap: 20px;
+}
+
+.blog-preview-card {
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.blog-preview-card img {
+  height: 180px;
+  width: 100%;
+  object-fit: cover;
+}
+
+/* ===============================
+   POPUP
+================================= */
+.popup-overlay {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  display: none;
+  background: rgba(0,0,0,0.6);
+  justify-content: center;
+  align-items: center;
+}
+
+.popup-box {
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 400px;
+}
+
+
+/* ===============================
+   FOOTER
+================================= */
+/* ===============================
+   FOOTER (PRO MAX UPGRADE)
+================================= */
+.footer {
+  background: linear-gradient(15deg, #081, black);
+  color: white;
+  padding: 50px 20px 25px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decorative top line */
+.footer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, #f4c430, #7a0019, #1f6b2d);
+}
+
+/* Footer container */
+.footer .container {
+  max-width: 1100px;
+  margin: auto;
+}
+
+/* Footer links */
+.footer a {
+  color: #f4c430;
+  text-decoration: none;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.footer a:hover {
+  color: white;
+  text-decoration: underline;
+}
+
+/* Footer text */
+.footer p {
+  margin: 10px 0;
+  font-size: 0.95rem;
+  opacity: 0.9;
+}
+
+/* Highlight quote */
+.footer i {
+  color: #f4c430;
+  font-style: italic;
+}
+
+/* Footer bottom line */
+.footer-bottom {
+  margin-top: 25px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+/* Social icons in footer (optional reuse) */
+.footer-social {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.footer-social img {
+  width: 30px;
+  transition: 0.3s;
+}
+
+.footer-social img:hover {
+  transform: translateY(-5px) scale(1.1);
+}
+
+/* ===============================
+   WHATSAPP FLOAT
+================================= */
+.whatsapp-float {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+}
+
+.whatsapp-float img {
+  width: 60px;
+}
+
+/* ===============================
+   RESPONSIVE
+================================= */
+@media(max-width:768px) {
+  
+  .nav-links a {
+    width: 100%;
+    text-align: center;
+    padding: 15px;
+    border-top: 1px solid #eee;
+  }
+  
+  .menu-btn {
+    display: block;
+  }
+  
+  .hero {
+    height: 50vh;
+  }
+}
+
+/* ANIMATION */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* ===============================
+   PREMIUM CTA CARDS (APPLE STYLE)
+================================= */
+
+.dual-cta-section {
+  padding: 80px 20px;
+}
+
+.cta-container {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* BASE CARD */
+.cta-card {
+  position: relative;
+  flex: 1;
+  max-width: 500px;
+  padding: 50px 30px;
+  border-radius: 22px;
+  text-align: center;
+  overflow: hidden;
+  backdrop-filter: blur(12px);
+  color: white;
+  transition: 0.4s ease;
+  z-index: 1;
+}
+
+/* FLOAT EFFECT */
+.cta-card:hover {
+  transform: translateY(-10px) scale(1.02);
+}
+
+/* ICON */
+.cta-card .icon {
+  font-size: 40px;
+  margin-bottom: 15px;
+  animation: floatIcon 3s ease-in-out infinite;
+}
+
+@keyframes floatIcon {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* ===============================
+   GRADIENT BORDER ANIMATION
+================================= */
+.cta-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 2px;
+  border-radius: 22px;
+  background: linear-gradient(270deg, #ff004c, #6a00ff, #00d4ff, #ff004c);
+  background-size: 600% 600%;
+  animation: borderFlow 8s linear infinite;
+
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+}
+
+@keyframes borderFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ===============================
+   INNER BACKGROUND (GLASS STYLE)
+================================= */
+.cta-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 22px;
+  z-index: -1;
+  opacity: 0.95;
+}
+
+/* ===============================
+   ADMISSION CARD (WINE GLOW)
+================================= */
+.primary-card::after {
+  background: linear-gradient(135deg, #7a0019, #b3002d);
+  box-shadow: 0 20px 60px rgba(122, 0, 25, 0.6);
+}
+
+/* ===============================
+   SELAR CARD (PURPLE GLOW)
+================================= */
+.selar-card::after {
+  background: linear-gradient(135deg, #4b0082, #7b1fa2);
+  box-shadow: 0 20px 60px rgba(123, 31, 162, 0.6);
+}
+
+/* ===============================
+   BUTTON (APPLE STYLE)
+================================= */
+.cta-btn {
+  display: inline-block;
+  padding: 14px 34px;
+  border-radius: 999px;
+  background: white;
+  color: black;
+  font-weight: 600;
+  text-decoration: none;
+  margin-top: 25px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+/* BUTTON HOVER */
+.cta-btn:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+/* BUTTON CLICK FEEDBACK */
+.cta-btn:active {
+  transform: scale(0.96);
+}
+
+/* ===============================
+   SUBTLE GLOW PULSE
+================================= */
+.primary-card {
+  animation: glowWine 4s ease-in-out infinite;
+}
+
+.selar-card {
+  animation: glowPurple 4s ease-in-out infinite;
+}
+
+@keyframes glowWine {
+  0%,100% { box-shadow: 0 0 25px rgba(122,0,25,0.4); }
+  50% { box-shadow: 0 0 50px rgba(122,0,25,0.7); }
+}
+
+@keyframes glowPurple {
+  0%,100% { box-shadow: 0 0 25px rgba(123,31,162,0.4); }
+  50% { box-shadow: 0 0 50px rgba(123,31,162,0.7); }
+}
+/* ===============================
+   RESPONSIVE OPTIMIZATION
+================================= */
+
+/* Large Screens (Desktop) */
+@media (min-width: 1024px) {
+  .cta-container {
+    flex-wrap: nowrap;
+    align-items: stretch;
+  }
+
+  .cta-card {
+    max-width: 520px;
+  }
+}
+
+/* Medium Screens (Tablets) */
+@media (max-width: 1023px) {
+  .cta-container {
+    gap: 20px;
+  }
+
+  .cta-card {
+    padding: 40px 25px;
+  }
+
+  .cta-card h2 {
+    font-size: 1.6rem;
+  }
+
+  .cta-card p {
+    font-size: 0.95rem;
+  }
+}
+
+/* Small Screens (Phones) */
+@media (max-width: 768px) {
+  .dual-cta-section {
+    padding: 60px 15px;
+  }
+
+  .cta-container {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .cta-card {
+    width: 100%;
+    max-width: 100%;
+    padding: 30px 20px;
+    border-radius: 18px;
+  }
+
+  .cta-card h2 {
+    font-size: 1.4rem;
+  }
+
+  .cta-card p {
+    font-size: 0.9rem;
+  }
+
+  .cta-btn {
+    width: 100%;
+    padding: 14px;
+  }
+
+  .cta-card .icon {
+    font-size: 32px;
+  }
+}
+
+/* Extra Small Devices */
+@media (max-width: 480px) {
+  .cta-card {
+    padding: 25px 18px;
+  }
+
+  .cta-card h2 {
+    font-size: 1.25rem;
+  }
+
+  .cta-card p {
+    font-size: 0.85rem;
+  }
+
+  .cta-btn {
+    font-size: 0.9rem;
+  }
+}
+
+/* ===============================
+   PERFORMANCE (MOBILE OPTIMIZATION)
+================================= */
+
+/* Reduce heavy animations on mobile */
+@media (max-width: 768px) {
+  .cta-card::before {
+    animation: none; /* stops gradient animation */
+  }
+
+  .primary-card,
+  .selar-card {
+    animation: none; /* stops glow pulse */
+  }
+
+  .cta-card .icon {
+    animation: none;
+  }
+}
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+@media(max-width:768px) {
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
 .close-btn {
   position: absolute;
   top: 10px;
   right: 15px;
   font-size: 22px;
   cursor: pointer;
+}
+#founder {
+  background: url("images/founder.jpg") center/cover no-repeat;
+  position: relative;
+  color: white;
+}
+
+#founder::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+#founder .container {
+  position: relative;
+  z-index: 1;
+}
+
+#founder h2 {
+  color: white;
+}
+#flexible-learning {
+  background: linear-gradient(135deg, #eef4ff, #dfe9ff);
+}
+#consultancy {
+  background: linear-gradient(135deg, #fff5f5, #ffe3e3);
+}
+#prospectus {
+  background: linear-gradient(135deg, #1f6b2d, #15501b);
+  color: white;
+  text-align: center;
+}
+
+#prospectus h2 {
+  color: white;
+}
+
+#prospectus h2::after {
+  background: var(--yellow);
+}
+
+#prospectus .cta-btn {
+  background: white;
+  color: var(--green);
+}
+/* ===============================
+   VISION & MISSION (PREMIUM STYLE)
+================================= */
+.vision-mission {
+  background: linear-gradient(135deg, #0a2a66, #1f6b2d);
+  color: white;
+}
+
+.vision-mission h3 {
+  color: #f4c430;
+}
+
+.vision-mission p,
+.vision-mission li {
+  color: #f1f1f1;
+}
+
+/* Card feel inside */
+.vision-mission .grid-2>div {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 25px;
+  border-radius: 12px;
+  backdrop-filter: blur(6px);
+  transition: 0.3s;
+}
+
+.vision-mission .grid-2>div:hover {
+  transform: translateY(-5px);
+}
+/* ===============================
+   EDUCATIONAL PHILOSOPHY (PREMIUM)
+================================= */
+.philosophy {
+  background: linear-gradient(135deg, #e9f5ec, #dff0e5);
+}
+/* Title Styling */
+.philosophy h2 {
+  color: var(--navy);
+}
+
+/* Text Styling */
+.philosophy p {
   color: #333;
+  font-size: 1.05rem;
+  max-width: 750px;
+  margin: 0 auto 15px;
+  text-align: center;
 }
-.social-links {
-  display: flex;             /* Arrange children in a row */
-  gap: 20px;                 /* Space between icons */
-  justify-content: center;   /* Center them horizontally */
-  align-items: center;       /* Align vertically if icons are different heights */
+
+/* Elegant card feel */
+.philosophy .container {
+  background: white;
+  padding: 40px 25px;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  transition: 0.3s;
+}
+
+/* Subtle hover effect */
+.philosophy .container:hover {
+  transform: translateY(-5px);
+}
+/* ===============================
+   CONTACT SECTION (PREMIUM)
+================================= */
+/* ===============================
+   CONTACT PRO MAX (SAAS STYLE UPGRADE)
+================================= */
+
+.contact-section {
+  background: linear-gradient(135deg, #081f4d, #1f6b2d);
+  color: white;
+  text-align: center;
+}
+
+/* Subtitle */
+.contact-subtitle {
+  max-width: 700px;
+  margin: 10px auto 0;
+  font-size: 0.95rem;
+  opacity: 0.85;
+}
+
+/* GRID */
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 25px;
+  margin-top: 40px;
+}
+
+/* CARD */
+.contact-card {
+  padding: 35px 25px;
+  border-radius: 18px;
+  
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  
+  transition: all 0.35s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+/* CARD HOVER */
+.contact-card:hover {
+  transform: translateY(-10px);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(244, 196, 48, 0.4);
+}
+
+/* ICON */
+.contact-card .icon {
+  font-size: 36px;
+  margin-bottom: 12px;
+}
+
+/* TITLE */
+.contact-card h3 {
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+}
+
+/* TEXT */
+.contact-card p {
+  color: #f4c430;
+  font-weight: 500;
+  margin: 5px 0;
+  transition: 0.3s;
+}
+
+.contact-card p:hover {
+  color: white;
+}
+
+/* SMALL TEXT */
+.contact-card small {
+  display: block;
+  margin-top: 10px;
+  opacity: 0.7;
+  font-size: 0.8rem;
+}
+
+/* ===============================
+   WHATSAPP BUTTON (SAFER LOOK)
+================================= */
+.whatsapp-card a {
+  display: inline-block;
   margin-top: 15px;
-}
-/* ===== CTA SECTION ===== */
-
-.dual-cta-section {
-    padding: 80px 20px;
-    background: linear-gradient(180deg, #f4f8fc, #ffffff);
-}
-
-.cta-container {
-    display: flex;
-    gap: 40px;
-    justify-content: center;
-    align-items: flex-start; 
-    flex-wrap: wrap;
+  padding: 12px 22px;
+  border-radius: 999px;
+  
+  background: #ffffff;
+  color: #25D366;
+  font-weight: 600;
+  text-decoration: none;
+  
+  transition: all 0.3s ease;
 }
 
-/* Base Card Style */
-.cta-card {
-    flex: 1;
-    max-width: 520px;
-    padding: 45px 35px;
-    border-radius: 22px;
-    color: #ffffff;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
-    transition: all 0.4s ease;
+.whatsapp-card a:hover {
+  background: #f1f1f1;
+  transform: scale(1.05);
 }
 
-.cta-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 25px 45px rgba(0, 0, 0, 0.18);
+/* ===============================
+   SOCIAL ICONS (CENTERED + CLEAN)
+================================= */
+.social-links {
+  margin-top: 45px;
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  flex-wrap: wrap;
 }
 
-/* 🎓 Admission Card - Elegant Wine */
-.primary-card {
-    background: linear-gradient(135deg, #7a0019, #b3002d);
+.social-links a img {
+  width: 38px;
+  height: 38px;
+  transition: 0.3s ease;
+  filter: brightness(0.95);
 }
 
-/* 📚 Selar Card - Deep Purple Luxury */
-.selar-card {
-    background: linear-gradient(135deg, #4b0082, #7b1fa2);
+.social-links a img:hover {
+  transform: translateY(-5px) scale(1.15);
+  filter: brightness(1.2);
 }
 
-/* Headings */
-.cta-card h2 {
-    font-size: 1.9rem;
-    margin-bottom: 20px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
+/* ===============================
+   CONTACT SECTION TITLE
+================================= */
+.contact-section h2 {
+  color: white;
+  font-size: 2rem;
+  margin-bottom: 10px;
 }
 
-/* Paragraph */
-.cta-card p {
-    font-size: 1.05rem;
-    line-height: 1.8;
-    margin-bottom: 30px;
-    opacity: 0.95;
+.contact-section h2::after {
+  background: #f4c430;
+}
+/* ===============================
+   PHONE NUMBERS STYLING (PRO MAX)
+================================= */
+.phone-card a {
+  display: block;
+  margin: 10px 0;
+  padding: 10px 14px;
+  border-radius: 10px;
+  
+  background: rgba(244, 196, 48, 0.12);
+  border: 1px solid rgba(244, 196, 48, 0.35);
+  
+  color: #f4c430;
+  font-weight: 600;
+  text-decoration: none;
+  letter-spacing: 0.3px;
+  
+  transition: all 0.3s ease;
 }
 
-/* ===== BUTTON DESIGN ===== */
-
-.cta-btn {
-    display: inline-block;
-    padding: 14px 36px;
-    border-radius: 50px;
-    font-weight: 600;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    letter-spacing: 0.6px;
-    font-size: 0.95rem;
+/* Hover effect */
+.phone-card a:hover {
+  background: rgba(244, 196, 48, 0.25);
+  color: #ffffff;
+  transform: translateX(5px);
+  border-color: rgba(244, 196, 48, 0.7);
+}
+/* ===============================
+   FOOTER BUTTON LINKS
+================================= */
+.footer-links {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
-/* Light Button (Admission) */
-.light-btn {
-    background: #ffffff;
-    color: #7a0019;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+.footer-btn {
+  padding: 10px 18px;
+  border-radius: 999px;
+  
+  background: var(--green-dark);
+  border: 2px solid orange;
+  
+  color: #f4c430;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  
+  transition: all 0.3s ease;
 }
 
-.light-btn:hover {
-    background: #f5e6ea;
-    transform: scale(1.08);
+/* Hover effect */
+.footer-btn:hover {
+  background: #f4c430;
+  color: #081f4d;
+  transform: translateY(-3px) scale(1.05);
+  border-color: #f4c430;
+}
+/* ===============================
+   DIGITAL HUB FEATURED CARD
+================================= */
+.digital-hub-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 15px;
+  background: linear-gradient(135deg, #0a2a66, #1f6b2d);
+  color: white;
+  transform: scale(1.02);
+  border: 2px solid rgba(244, 196, 48, 0.4);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+  transition: all 0.4s ease;
 }
 
-/* Dark Button (Selar) */
-.dark-btn {
-    background: #ffffff;
-    color: #4b0082;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+/* IMAGE STYLE */
+.digital-hub-card img {
+  height: 200px;
+  object-fit: cover;
+  border-radius: 10px;
+  filter: brightness(0.85);
 }
 
-.dark-btn:hover {
-    background: #ede4ff;
-    transform: scale(1.08);
+/* TITLE */
+.digital-hub-card h3 {
+  color: #f4c430;
+  font-size: 1.4rem;
 }
 
-/* Mobile */
-@media (max-width: 768px) {
-    .cta-card {
-        padding: 35px 25px;
-    }
-    
-    .cta-card h2 {
-        font-size: 1.6rem;
-    }
+/* TEXT */
+.digital-hub-card p {
+  color: #f1f1f1;
+}
 
-    .cta-container {
-        flex-direction: column;
-        align-items: center;
-    }
+/* HOVER EFFECT */
+.digital-hub-card:hover {
+  transform: scale(1.05) translateY(-8px);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+}
+
+/* GLOW EFFECT */
+.digital-hub-card::before {
+  content: "FEATURED";
+  position: absolute;
+  top: 15px;
+  right: -40px;
+  background: #f4c430;
+  color: black;
+  padding: 5px 50px;
+  font-size: 0.7rem;
+  font-weight: bold;
+  transform: rotate(45deg);
+}
+
+/* BUTTON STYLE OVERRIDE */
+.digital-hub-card .cta-btn {
+  background: #f4c430;
+  color: #081f4d;
+  border: none;
+}
+
+.digital-hub-card .cta-btn:hover {
+  background: white;
+  color: #081f4d;
 }
