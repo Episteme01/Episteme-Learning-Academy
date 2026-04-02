@@ -209,8 +209,36 @@ document.getElementById('studentID').value
 <option>Pending</option>
 </select>
 <label>Student Photo</label>
-<input type="file" id="studentPhoto">
-<button class="primary" onclick="uploadPhoto()">Upload Photo</button><br><br>
+<div class="card">
+    <h4>Student Photo</h4>
+
+    <!-- PREVIEW -->
+    <img id="photoPreview" 
+         src="https://via.placeholder.com/120" 
+         style="width:120px;height:120px;border-radius:10px;margin-bottom:10px;object-fit:cover;">
+
+    <!-- DRAG & DROP ZONE -->
+    <div id="dropZone" style="
+        border:2px dashed #ccc;
+        padding:20px;
+        text-align:center;
+        border-radius:10px;
+        margin-bottom:10px;
+        cursor:pointer;
+    ">
+        Drag & Drop Image or Click to Select
+        <input type="file" id="studentPhoto" style="display:none;">
+    </div>
+
+    <!-- PROGRESS BAR -->
+    <div style="background:#eee;border-radius:10px;overflow:hidden;margin-bottom:10px;">
+        <div id="uploadProgress" style="height:10px;width:0%;background:#4b3cf0;"></div>
+    </div>
+
+    <!-- ACTION BUTTONS -->
+    <button class="primary" onclick="uploadPhoto()">Upload Photo</button>
+    <button class="primary" onclick="deletePhoto()" style="background:red;">Delete Photo</button>
+</div><br><br>
 <button class="primary" onclick="saveStudent()">Save Student</button>
 </div>
 </div>
