@@ -1118,6 +1118,30 @@ dropZone.addEventListener("drop", (e) => {
     }
 });
    </script>
+    <script>
+
+        window.deletePhoto = async function() {
+
+    const id = document.getElementById("studentID").value.trim();
+
+    if (!id) return alert("Enter Student ID");
+
+    if (!confirm("Delete this photo?")) return;
+
+    try {
+        await update(ref(db, "students/" + id), {
+            photoURL: null
+        });
+
+        document.getElementById("photoPreview").src = "https://via.placeholder.com/120";
+
+        alert("Photo removed");
+
+    } catch (err) {
+        alert("Failed to delete");
+    }
+};
+    </script>
 
 </body>
 </html>
