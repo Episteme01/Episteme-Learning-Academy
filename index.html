@@ -308,9 +308,109 @@ iframe {
     transform: translateY(-6px);
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
 }
+/* NAVBAR PRO */
+.navbar {
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
 
+.nav-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-links {
+    display: flex;
+    gap: 25px;
+    list-style: none;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #1f6b2d;
+    font-weight: 500;
+}
+
+/* MOBILE MENU */
+.menu-btn {
+    display: none;
+    font-size: 1.8rem;
+    cursor: pointer;
+}
+
+/* MOBILE VIEW */
+@media (max-width: 768px) {
+
+    .menu-btn {
+        display: block;
+    }
+
+    .nav-links {
+        position: absolute;
+        top: 70px;
+        right: 0;
+        background: white;
+        flex-direction: column;
+        width: 100%;
+        display: none;
+        padding: 20px;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+
+    .nav-links.active {
+        display: flex;
+    }
+}
+    .fade-in {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.6s ease;
+}
+
+.fade-in.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+    body {
+    font-family: 'Poppins', sans-serif;
+    line-height: 1.6;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.section {
+    padding: 70px 0;
+}
 </style>
+<script>
+const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+        if(entry.isIntersecting){
+            entry.target.classList.add("show");
+        }
+    });
+});
 
+document.querySelectorAll(".section").forEach(section => {
+    section.classList.add("fade-in");
+    observer.observe(section);
+});
+    
+    const menuBtn = document.getElementById("menuBtn");
+const navLinks = document.getElementById("navLinks");
+
+menuBtn.addEventListener("click", () => {
+    navLinks.classList.toggle("active");
+});
+</script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         
@@ -413,20 +513,21 @@ iframe {
 
     <!-- NAVBAR -->
     <nav class="navbar">
-        <div class="container nav-flex">
-            <ul class="nav-links">
-                <li><a href="#about">About</a></li>
-                <li><a href="#programs">Programs</a></li>
-                <li><a href="#philosophy">Philosophy</a></li>
-                <li><a href="#contact">Contact</a></li>
-                <li><a href="islamiyyah.html">Islamiyyah Portal</a></li>
-<li><a href="blog.html">Blog</a></li>
-                <li><a href="parent-dashboard.html">Parent Portal</a> </li>
-<li><a href="admin-panel.html">Admin Portal</a> </li>
-            </ul>
-            <button class="menu-btn" id="menuBtn">☰</button>
-        </div>
-    </nav>
+    <div class="container nav-flex">
+        
+        <div class="logo">Episteme</div>
+
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#about">About</a></li>
+            <li><a href="#programs">Programs</a></li>
+            <li><a href="#philosophy">Philosophy</a></li>
+            <li><a href="#contact">Contact</a></li>
+            <li><a href="blog.html">Blog</a></li>
+        </ul>
+
+        <div class="menu-btn" id="menuBtn">☰</div>
+    </div>
+</nav>
     
 <button onclick="openPopup()" style="margin-top:20px; padding:12px 25px; border:none; border-radius:25px; background:#7a0019; color:white; cursor:pointer;">
     Apply for Admission
