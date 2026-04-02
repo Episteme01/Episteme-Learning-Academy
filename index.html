@@ -1,1094 +1,993 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Episteme Learning Academy</title>
-
-    <!-- CSS -->
-    <link rel="stylesheet" href="style.css">
-
-    <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-<!-- SEO Meta Tags -->
-<meta name="description" content="Episteme Learning Academy - Quality education rooted in knowledge, values, and purpose. Programs for children, teens, and adults.">
-<meta name="keywords" content="Episteme Learning Academy, Education, Islamic Studies, Coding, Academic Programs, Ilorin">
-<meta name="author" content="Salman Abdullateef O.">
-
-<!-- Open Graph / Social Media -->
-<meta property="og:title" content="Episteme Learning Academy">
-<meta property="og:description" content="Quality education rooted in knowledge, values, and purpose.">
-<meta property="og:image" content="images/episteme-logo.png">
-<meta property="og:url" content="https://epistemelearningacademy.com">
-<meta property="og:type" content="website">
-
-<!-- Twitter Card -->
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Episteme Learning Academy">
-<meta name="twitter:description" content="Quality education rooted in knowledge, values, and purpose.">
-<meta name="twitter:image" content="images/episteme-logo.png">
-    
-</head>
-
-<style>
-
-.faq-item {
-margin-bottom: 15px;
-border-radius: 8px;
-overflow: hidden;
-box-shadow: 0 3px 12px rgba(0,0,0,0.08);
-}
-
-.faq-question {
-width: 100%;
-background: #1f6b2d;
-color: #fff;
-padding: 14px 20px;
-text-align: left;
-font-weight: 600;
-border: none;
-outline: none;
-cursor: pointer;
-transition: background 0.3s ease;
-}
-
-.faq-question:hover {
-background: #15501b;
-}
-
-.faq-answer {
-max-height: 0;
-overflow: hidden;
-transition: max-height 0.3s ease;
-background: #f7f9f7;
-padding: 0 20px;
-}
-
-.faq-answer p {
-padding: 12px 0;
-margin: 0;
-}
-/* =====================================
-   HERO CTA BUTTON
-===================================== */
-
-.hero button {
-    margin-top: 25px;
-    padding: 14px 32px;
-    border: none;
-    border-radius: 30px;
-    background: #7a0019;
-    color: #ffffff;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.hero button:hover {
-    background: #5a0013;
-    transform: translateY(-3px);
-}
-
-
-/* =====================================
-   WHY CHOOSE US
-===================================== */
-
-#why-us ul {
-    list-style: none;
-    padding: 0;
-    margin-top: 20px;
-}
-
-#why-us li {
-    background: #f7f9f7;
-    padding: 14px 18px;
-    margin-bottom: 12px;
-    border-left: 5px solid #1f6b2d;
-    border-radius: 6px;
-    font-weight: 500;
-    transition: 0.3s ease;
-}
-
-#why-us li:hover {
-    background: #e9f5ec;
-    transform: translateX(5px);
-}
-
-
-/* =====================================
-   FOUNDER SECTION
-===================================== */
-
-#founder {
-    background: #f9f9f9;
-}
-
-#founder h2 {
-    text-align: center;
-    margin-bottom: 25px;
-}
-
-#founder p {
-    max-width: 800px;
-    margin: 0 auto 15px auto;
-    text-align: center;
-    line-height: 1.8;
-}
-
-
-/* =====================================
-   GALLERY SECTION
-===================================== */
-
-#gallery h2 {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-#gallery div {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-}
-
-#gallery img {
-    width: 100%;
-    height: 220px;
-    object-fit: cover;
-    border-radius: 12px;
-    transition: transform 0.4s ease, box-shadow 0.4s ease;
-}
-
-#gallery img:hover {
-    transform: scale(1.05);
-    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
-}
-
-
-/* =====================================
-   TESTIMONIALS
-===================================== */
-
-#testimonials h2 {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-.testimonial {
-    background: #ffffff;
-    padding: 25px;
-    margin-bottom: 20px;
-    border-radius: 12px;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
-    transition: transform 0.3s ease;
-}
-
-.testimonial:hover {
-    transform: translateY(-5px);
-}
-
-.testimonial p {
-    font-style: italic;
-    margin-bottom: 15px;
-}
-
-.testimonial h4 {
-    color: #1f6b2d;
-    font-weight: 600;
-}
-
-
-/* =====================================
-   FAQ SECTION
-===================================== */
-
-#faq h2 {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-#faq h4 {
-    margin-top: 20px;
-    color: #0a2a66;
-}
-
-#faq p {
-    margin-bottom: 10px;
-    line-height: 1.7;
-}
-
-
-/* =====================================
-   GOOGLE MAP SECTION
-===================================== */
-
-iframe {
-    border-radius: 12px;
-    margin-top: 20px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-}
-
-
-/* =====================================
-   SECTION SPACING ENHANCEMENT
-===================================== */
-
-.section h2 {
-    font-size: 2rem;
-    margin-bottom: 20px;
-    color: #1f6b2d;
-    position: relative;
-}
-
-.section h2::after {
-    content: "";
-    width: 60px;
-    height: 4px;
-    background: #7a0019;
-    display: block;
-    margin: 10px auto 0;
-    border-radius: 4px;
-}
-
-
-/* =====================================
-   RESPONSIVE ADJUSTMENTS
-===================================== */
-
-@media (max-width: 768px) {
-    
-    #gallery img {
-        height: 180px;
-    }
-    
-    .testimonial {
-        padding: 20px;
-    }
-    
-    #why-us li {
-        font-size: 0.95rem;
-    }
-    
-}
-.blog-preview-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 25px;
-}
-
-.blog-preview-card {
-    background: #fff;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-    transition: 0.3s ease;
-    text-align: center;
-}
-
-.blog-preview-card img {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-}
-
-.blog-preview-card h3 {
-    margin: 15px 0 10px;
-    color: #1f6b2d;
-}
-
-.blog-preview-card p {
-    padding: 0 15px 20px;
-    font-size: 0.95rem;
-}
-
-.blog-preview-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
-}
-/* NAVBAR PRO */
-.navbar {
-    position: sticky;
-    top: 0;
-    background: white;
-    z-index: 1000;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-}
-
-.nav-flex {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.nav-links {
-    display: flex;
-    gap: 25px;
-    list-style: none;
-}
-
-.nav-links a {
-    text-decoration: none;
-    color: #1f6b2d;
-    font-weight: 500;
-}
-
-/* MOBILE MENU */
-.menu-btn {
-    display: none;
-    font-size: 1.8rem;
-    cursor: pointer;
-}
-
-/* MOBILE VIEW */
-@media (max-width: 768px) {
-
-    .menu-btn {
-        display: block;
-    }
-
-    .nav-links {
-        position: absolute;
-        top: 70px;
-        right: 0;
-        background: white;
-        flex-direction: column;
-        width: 100%;
-        display: none;
-        padding: 20px;
-        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-    }
-
-    .nav-links.active {
-        display: flex;
-    }
-}
-    .fade-in {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: all 0.6s ease;
-}
-
-.fade-in.show {
-    opacity: 1;
-    transform: translateY(0);
-}
-    body {
-    font-family: 'Poppins', sans-serif;
-    line-height: 1.6;
-}
-
-.container {
-    width: 90%;
-    max-width: 1200px;
-    margin: auto;
-}
-
-.section {
-    padding: 70px 0;
-}
-</style>
-<script>
-const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-        if(entry.isIntersecting){
-            entry.target.classList.add("show");
-        }
-    });
-});
-
-document.querySelectorAll(".section").forEach(section => {
-    section.classList.add("fade-in");
-    observer.observe(section);
-});
-    
-    const menuBtn = document.getElementById("menuBtn");
-const navLinks = document.getElementById("navLinks");
-
-menuBtn.addEventListener("click", () => {
-    navLinks.classList.toggle("active");
-});
-</script>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        
-        const slides = document.querySelectorAll(".slide");
-        let currentIndex = 0;
-        
-        // Only run slider if slides exist
-        if (slides.length > 0) {
-            
-            function showSlide(index) {
-                slides.forEach(slide => slide.classList.remove("active"));
-                slides[index].classList.add("active");
-            }
-            
-            function nextSlide() {
-                currentIndex = (currentIndex + 1) % slides.length;
-                showSlide(currentIndex);
-            }
-            
-            setInterval(nextSlide, 4000);
-            
-            let startX = 0;
-            const slider = document.getElementById("slider");
-            
-            if (slider) {
-                slider.addEventListener("touchstart", e => {
-                    startX = e.touches[0].clientX;
-                });
-                
-                slider.addEventListener("touchend", e => {
-                    let endX = e.changedTouches[0].clientX;
-                    
-                    if (startX - endX > 50) nextSlide();
-                    
-                    if (endX - startX > 50) {
-                        currentIndex = (currentIndex - 1 + slides.length) % slides.length;
-                        showSlide(currentIndex);
-                    }
-                });
-            }
-        }
-        
-        // FAQ Toggle
-        const faqButtons = document.querySelectorAll('.faq-question');
-        
-        faqButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const answer = button.nextElementSibling;
-                
-                button.classList.toggle('active');
-                
-                if (answer.style.maxHeight) {
-                    answer.style.maxHeight = null;
-                } else {
-                    answer.style.maxHeight = answer.scrollHeight + "px";
-                }
-            });
-        });
-        
-    });
-</script>
-
-<body>
-<!-- WHATSAPP FLOATING BUTTON -->
-<a href="https://wa.me/2349131331867" target="_blank" class="whatsapp-float">
-    <img src="images/whatsapp-logo-png-icon_16716480.png" alt="WhatsApp Chat">
-</a>
-    <!-- HEADER -->
-   <header class="header">
-    <div class="container header-flex">
-        <img src="images/episteme logo. png" alt="Episteme Learning Academy Logo" class="logo-img">
-        <div>
-            <h1 class="academy-name">
-    <span class="episteme">EPISTEME</span>
-    <span class="learning">LEARNING</span>
-    <span class="academy">ACADEMY</span>
-</h1>
-            <p class="tagline">Learning, Understanding and Application...</p>
-        </div>
-    </div>
-</header>
-<!-- IMAGE SLIDER -->
-<section class="slider-section">
-    <div class="slider-container" id="slider">
-        
-        <div class="slide active">
-            <img src="images/classroom.jpg" alt="Classroom Learning">
-        </div>
-        
-        <div class="slide">
-            <img src="images/islamic-study.jpg" alt="Islamic Education">
-        </div>
-        
-        <div class="slide">
-            <img src="images/skills.jpg" alt="Skills Development">
-        </div>
-        
-    </div>
-</section>
-
-    <!-- NAVBAR -->
-    <nav class="navbar">
-    <div class="container nav-flex">
-        
-        <div class="logo">Episteme</div>
-
-        <ul class="nav-links" id="navLinks">
-            <li><a href="#about">About</a></li>
-            <li><a href="#programs">Programs</a></li>
-            <li><a href="#philosophy">Philosophy</a></li>
-            <li><a href="#contact">Contact</a></li>
-            <li><a href="blog.html">Blog</a></li>
-        </ul>
-
-        <div class="menu-btn" id="menuBtn">☰</div>
-    </div>
-</nav>
-    
-<button onclick="openPopup()" style="margin-top:20px; padding:12px 25px; border:none; border-radius:25px; background:#7a0019; color:white; cursor:pointer;">
-    Apply for Admission
-</button>
-    
-<section class="hero">
-    <div class="hero-overlay">
-        <h2>Building Minds, Shaping Character</h2>
-        <p>Quality education rooted in knowledge, values, and purpose.</p>
-    </div>
-</section>
-
-    <!-- ABOUT -->
-    <section id="about" class="section">
-        <div class="container">
-            <h2>Who We Are</h2>
-            <p>
-                Episteme Learning Academy is a learning community built on the belief
-                that true education goes beyond textbooks. We exist to nurture the mind,
-                refine character, and guide learners toward purposeful living.
-            </p>
-            <p>
-                Blending academic excellence with moral and spiritual development,
-                we provide a balanced educational experience for children, teenagers,
-                and adults, within a supportive, learner-centered environment.
-            </p>
-        </div>
-    </section>
-    
-<!-- FOUNDER SECTION -->
-<section id="founder" class="section light">
-    <div class="container">
-        <h2>Meet the Founder</h2>
-        
-        <p>
-            Episteme Learning Academy was founded by Salman Abdullateef O.,
-            a graduate of the University of Ilorin and Markazi Nabiyyi Arabic and Islamic Learning Center with a background in Plant Biology
-            and a deep passion for educational development.
-        </p>
-        
-        <p>
-            Driven by the belief that true education shapes both intellect and character,
-            he established Episteme to provide balanced learning rooted in knowledge,
-            discipline, and moral clarity.
-        </p>
-        
-        <p>
-            His vision is to raise learners who are confident, spiritually grounded,
-            intellectually sharp, and socially responsible.
-        </p>
-        
-    </div>
-</section>
-
-    <!-- VISION & MISSION -->
-    <section class="section light">
-        <div class="container grid-2">
-            <div>
-                <h3>Our Vision</h3>
-                <p>
-                    To raise confident, morally grounded, and intellectually curious learners
-                    who are equipped to thrive academically, think critically,
-                    and contribute positively to society.
-                </p>
-            </div>
-            <div>
-                <h3>Our Mission</h3>
-                <ul>
-                    <li>Deliver quality, flexible, and engaging education</li>
-                    <li>Integrate academic learning with values and character development</li>
-                    <li>Support learners at their own pace</li>
-                    <li>Make education accessible, practical, and meaningful</li>
-                </ul>
-            </div>
-        </div>
-    </section>
-    
-<!-- WHY CHOOSE US -->
-<section id="why-us" class="section">
-    <div class="container">
-        <h2>Why Choose Episteme?</h2>
-        
-        <ul>
-            <li>✔ Small, focused learning groups</li>
-            <li>✔ Integration of academic excellence and moral development</li>
-            <li>✔ Flexible learning options (Physical, Online & Hybrid)</li>
-            <li>✔ Personalized mentorship and academic guidance</li>
-            <li>✔ Safe, value-driven learning environment</li>
-            <li>✔ Modern digital skills training for the future</li>
-        </ul>
-        
-    </div>
-</section>
-
-    <!-- PHILOSOPHY -->
-    <section id="philosophy" class="section">
-        <div class="container">
-            <h2>Our Educational Philosophy</h2>
-            <p>
-                At Episteme, learning is holistic. Education should develop the mind,
-                shape character, and prepare learners for real-life challenges—not just exams.
-            </p>
-            <p>
-                We teach with patience, clarity, and intention—meeting learners where they are
-                and guiding them toward growth.
-            </p>
-        </div>
-    </section>
-   
-    <!-- PROGRAMS -->
-    <section id="programs" class="section light">
-        <div class="container">
-            <h2>Our Programs & Services</h2>
-             <div class="program-card">
-     <img src="images/digital-hub.jpg" alt="Episteme Digital Learning Hub">
-     <h3>Episteme Digital Learning Hub</h3>
-     <p>Step into our interactive digital hub! Access lessons, resources, and fun learning activities anytime, anywhere. Your child’s learning adventure starts here!</p>
-     <a href="hub-index.html" class="cta-btn dark-btn" target="_blank">
-         Explore the Hub
-     </a>
- </div>
-    
-    <div class="program-card">
-        <img src="images/consultation.jpg" alt="Educational Consultation">
-        <h3>Educational Consultation</h3>
-        <p>Professional guidance for parents, learners, and institutions.</p>
-        <ul>
-            <li>Academic planning and guidance</li>
-            <li>Learning challenges assessment</li>
-            <li>Study structure and improvement strategies</li>
-        </ul>
-    </div>
-    
-    <div class="program-card">
-        <img src="images/mentorship.png" alt="Mentorship & Counseling">
-        <h3>Mentorship & Counseling (Ages 7–15)</h3>
-        <p>Holistic mentorship focused on emotional, moral, and academic growth.</p>
-        <ul>
-            <li>Character and value development</li>
-            <li>Confidence and self-discipline building</li>
-            <li>Academic motivation and guidance</li>
-        </ul>
-    </div>
-    
-    <div class="program-card">
-     <img src="images/classroom.jpg" alt="Academic Programs">
-        <h3>Academic Programs</h3>
-        <p>Structured academic learning tailored to each educational level.</p>
-        <ul>
-            <li>Early Childhood Education</li>
-            <li>Primary School Education</li>
-            <li>Junior Secondary School Education</li>
-        </ul>
-    </div>
-    
-    <div class="program-card">
-        <img src="images/islamic-study.jpg" alt="Islamic Education">
-        <h3>Islamic Studies</h3>
-        <p>Comprehensive Islamic education that nurtures knowledge and character.</p>
-        <ul>
-            <li>Qur’an Memorization and Recitation with Tajweed</li>
-            <li>Tawheed</li>
-            <li>Hadith</li>
-            <li>Fiqh</li>
-            <li>Arabic Language</li>
-            <li>Seerah</li>
-            <li>Tafseer</li>
-            <li>Adab and Islamic manners</li>
-        </ul>
-    </div>
-    
-    
-    <div class="program-card">
-        <img src="images/skills.jpg" alt="Skills Training">
-        <h3>Coding & Programming (Beginner Level)</h3>
-        <p>An introduction to modern coding and logical thinking.</p>
-        <ul>
-            <li>HTML (Web Structure)</li>
-            <li>CSS (Web Styling)</li>
-            <li>JavaScript (Interactivity)</li>
-            <li>Python (Beginner Programming)</li>
-        </ul>
-    </div>
-    
-    <div class="program-card">
-        <img src="images/ielts.jpg" alt="Skills & Capacity Development">
-        
-        <h3>Skills & Capacity Development</h3>
-        <p>Practical training to improve communication and academic skills.</p>
-        <ul>
-            <li>IELTS Preparation</li>
-            <li>English Proficiency Training</li>
-            <li>Nelson Handwriting Training</li>
-        </ul>
-    </div>
-    
-    <div class="program-card">
-<img src="images/graphics.png" alt="Graphics Design & Computer Appreciation">
-        <h3>Graphics Design & Computer Appreciation</h3>
-        <p>Hands-on digital skills for modern learning and creativity.</p>
-        <ul>
-            <li>Computer Basics and Operations</li>
-            <li>Introduction to Graphic Design</li>
-            <li>Practical digital creativity</li>
-        </ul>
-    </div>
-    
-    <div class="program-card">
-<img src="images/curriculum.jpg" alt="Curriculum Development">
-        <h3>Curriculum Development</h3>
-        <p>Structured curriculum design for effective teaching and learning.</p>
-        <ul>
-            <li>Lesson planning support</li>
-            <li>Curriculum structuring</li>
-            <li>Educational content development</li>
-        </ul>
-    </div>
-    
-    <div class="program-card">
-<img src="images/learning.jpg" alt="Learning Materials & Worksheets">
-        <h3>Learning Materials & Worksheets</h3>
-        <p>Supportive resources for classroom and home learning.</p>
-        <ul>
-            <li>Printed learning materials</li>
-            <li>Practice worksheets</li>
-            <li>Student support resources</li>
-        </ul>
-    </div>
-    </section>
-<!-- GALLERY -->
-<section id="gallery" class="section">
-    <div class="container">
-        <h2>Life at Episteme</h2>
-        
-        <div>
-            <img src="images/classroom.jpg" width="100%" alt="Classroom Session">
-            <img src="images/coding.jpg" width="100%" alt="Coding Class">
-            <img src="images/islamic-study.jpg" width="100%" alt="Islamic Studies Session">
-        </div>
-        
-    </div>
-</section>
-    
-<!-- TESTIMONIALS -->
-<section id="testimonials" class="section light">
-    <div class="container">
-        <h2>What Parents Say</h2>
-        
-        <div class="testimonial">
-            <p>
-                "Since enrolling my daughter at Episteme Learning Academy, her confidence
-                and discipline have improved greatly. The balance between academics
-                and moral training is truly commendable."
-            </p>
-            <h4>— Mrs. Abdulrahman, Ilorin</h4>
-        </div>
-        
-        <div class="testimonial">
-            <p>
-                "The coding class opened my son's mind to logical thinking.
-                He now builds small web pages at home confidently."
-            </p>
-            <h4>— Mr. Bello, Parent</h4>
-        </div>
-        
-    </div>
-</section>
-
-<section id="admission-cta" class="dual-cta-section">
-  <div class="cta-container">
-
-    <!-- Admission Card -->
-    <div class="cta-card primary-card">
-      <h2>Admissions Now Open</h2>
-      <p>
-        Give your child a balanced education that nurtures knowledge,
-        character, and confidence. Enroll today and become part of a
-        learning community where every learner matters.
-      </p>
-
-    <a href="#" class="cta-btn light-btn" onclick="openPopup()">
-    Apply Now
-</a>
-    </div>
-
-    <!-- Selar Courses Card -->
-    <div class="cta-card selar-card">
-      <h2>Explore Our Courses</h2>
-      <p>
-        Visit our Selar store to view detailed course descriptions,
-        pricing, and enrollment options. Whether you're a parent
-        enrolling a child or an adult seeking personal development,
-        our courses are structured for flexible learning.
-      </p>
-
-      <a href="https://selar.com/m/epistemelearningacademy1?page=2"
-         target="_blank"
-         class="cta-btn dark-btn">
-         View Courses on Selar
-      </a>
-    </div>
-
-  </div>
-</section>
-
-<section class="section light">
-    <div class="container">
-        <h2>Download Our Prospectus</h2>
-        <p>Get detailed information about our programs, fees, schedules, and values-based learning.</p>
-        
-        <a href="docs/episteme-prospectus.pdf" download class="cta-btn dark-btn">
-            Download Prospectus PDF
-        </a>
-    </div>
-</section>
-
-<!-- Admission Popup -->
-<div id="admissionPopup" class="popup-overlay">
-    <div class="popup-box">
-        <span class="close-btn" onclick="closePopup()">×</span>
-        
-        <h2>Admission Inquiry</h2>
-        <p>Please fill the form below and we’ll get back to you shortly.</p>
-        
-        <form id="admissionForm">
-            <input type="text" name="parent_name" placeholder="Parent's Full Name" required>
-            <input type="email" name="email" placeholder="Parent's Email Address" required>
-            <input type="text" name="child_name" placeholder="Child's Full Name" required>
-            
-            <select id="program" name="program" required>
-                <option value="">Select Program</option>
-                <option>Islamiyyah Academic Program</option>
-                <option>Conventional Academic Program</option>
-                <option>Conventional and Islamiyyah Academic Programs</option>
-                <option>Coding & Programming</option>
-                <option>IELTS and English Proficiency</option>
-                <option>Graphics Design</option>
-                <option>Computer Appreciation</option>
-                <option>Graphics Design and Computer Appreciation</option>
-                <option>Nelson Handwriting Training</option>
-            </select>
-            
-            <input type="tel" name="phone" placeholder="Phone Number" required>
-            <input type="number" name="child_age" placeholder="Child's Age" required>
-            
-            <button type="submit">Submit Inquiry</button>
-            
-            <p id="successMsg" style="display:none; color:green; margin-top:10px;">
-                Thank you! Your admission inquiry has been received.
-            </p>
-        </form>
-    </div>
-</div>
-    <!-- FLEXIBLE LEARNING -->
-    <section class="section">
-        <div class="container">
-            <h2>Flexible Learning Options</h2>
-            <p>
-                We offer physical (in-person), online, and hybrid learning models,
-                allowing learners to choose what works best for them without compromising quality.
-            </p>
-        </div>
-    </section>
-
-    <!-- CONSULTANCY -->
-    <section class="section light">
-        <div class="container">
-            <h2>Educational Consultancy</h2>
-            <p>
-                We provide guidance for parents, schools, educators, and individuals
-                seeking academic or skill-based direction—focused on clarity,
-                structure, and sustainable improvement.
-            </p>
-        </div>
-    </section>
-    
-    <!-- BLOG PREVIEW SECTION -->
-<section class="section light">
-    <div class="container">
-        <h2>From Our Blog</h2>
-        <p style="text-align:center; max-width:700px; margin:0 auto 40px;">
-            Explore insights on education, character development, flexible learning,
-            and raising purpose-driven learners.
-        </p>
-        
-        <div class="blog-preview-grid">
-            
-            <div class="blog-preview-card">
-                <img src="assets/images/holistic.jpg" alt="Holistic Education">
-                <h3>Benefits of Holistic Education</h3>
-                <p>How education shapes both intellect and character.</p>
-            </div>
-            
-            <div class="blog-preview-card">
-                <img src="assets/images/flexible.jpg" alt="Flexible Learning">
-                <h3>Flexible Learning in Modern Times</h3>
-                <p>Empowering families through online and hybrid education.</p>
-            </div>
-            
-            <div class="blog-preview-card">
-                <img src="assets/images/integrating.png" alt="Islamic Studies">
-                <h3>Integrating Islamic Studies</h3>
-                <p>Balancing faith, academics, and moral growth.</p>
-            </div>
-            
-        </div>
-        
-        <div style="text-align:center; margin-top:30px;">
-            <a href="blog.html" class="cta-btn dark-btn">
-                Visit Our Blog
-            </a>
-        </div>
-        
-    </div>
-</section>
-
-<section id="faq" class="section light">
-    <div class="container">
-        <h2>Frequently Asked Questions</h2>
-        
-        <div class="faq-item">
-            <button class="faq-question">What age groups do you admit?</button>
-            <div class="faq-answer">
-                <p>We admit learners from Early Childhood through Junior Secondary level.</p>
-            </div>
-        </div>
-        
-        <div class="faq-item">
-            <button class="faq-question">Do you offer online classes?</button>
-            <div class="faq-answer">
-                <p>Yes. We provide physical, online, and hybrid learning options.</p>
-            </div>
-        </div>
-        
-        <div class="faq-item">
-            <button class="faq-question">Is Islamic Studies compulsory?</button>
-            <div class="faq-answer">
-                <p>Islamic Studies is available for families who desire moral and spiritual training alongside academics.</p>
-            </div>
-        </div>
-        
-        <div class="faq-item">
-            <button class="faq-question">How can I apply?</button>
-            <div class="faq-answer">
-                <p>You can apply using the “Apply for Admission” button on this website.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-    <!-- CONTACT -->
- <section id="contact">
-  <center><h3>Contact Us</h3></center>
-
-  <center><p>
-    <a href="mailto:epistemelearninghub@gmail.com?subject=Inquiry%20from%20Episteme%20Learning%20Academy"
-       class="email-link">
-      epistemelearninghub@gmail.com
-    </a>
-  </p></center>
-
-  <p><center>
-    📞 
-    <a href="tel:+2349131331867" class="phone-link">+234 913 133 1867</a> |
-    <a href="tel:+2349128732396" class="phone-link">+234 912 873 2396</a>
-  </center></p>
-
-  <!-- Social media links in horizontal row -->
-  <div class="social-links">
-    <a href="https://youtube.com/@epistemelearningacademy?si=0qJWMJ1FO4sBANBG" target="_blank">
-      <img src="/assets/images/youtube-icon.png" alt="YouTube" width="80" height="80">
-    </a>
-    <a href="https://www.facebook.com/epistemelearningacademy01" target="_blank">
-      <img src="/assets/images/facebook-icon.png" alt="Facebook" width="60" height="60">
-    </a>
-    <a href="https://www.instagram.com/episteme_la?igsh=MW9sb2lqNjdleWx1MQ==" target="_blank">
-      <img src="/assets/images/instagram-icon.png" alt="Instagram" width="60" height="60">
-    </a>
-    <a href="https://www.tiktok.com/@episteme_learning_acad?_r=1&_t=ZS-93qwdgUHLzW" target="_blank">
-      <img src="/assets/images/tikok-app-logo.png" alt="TikTok" width="60" height="60">
-    </a>
-  </div>
-</section>
-
-<!-- LOCATION MAP -->
-<section class="section">
-  <div class="container">
-    <h2>Our Location</h2>
-    <iframe 
-      src="https://www.google.com/maps/embed?pb=YOUR_GOOGLE_MAP_LINK_HERE"
-      width="100%" 
-      height="300" 
-      style="border:0;" 
-      allowfullscreen="" 
-      loading="lazy">
-    </iframe>
-  </div>
-</section>
-
-           <center><p><b>Location: Ilorin, Kwara State, Nigeria</b></p>
-            </center>
-            
-            <center><p><b>Working Hours: Flexible (Determined by Time Zone</b></p></center>
-        </div>
-    </section>
-
-    <!-- FOOTER -->
-    
-    <footer class="footer">
-        <div class="container">
-            <p><a href="blog.html" style="color:#fff;">Visit Our Blog</a></p>
-            <p>
-                At Episteme Learning Academy, every learner matters.
-                Knowledge combined with character transforms lives.
-<br><i><u><b>This is Where Learning Meets Morality...</b></u></i>
-            </p>
-            <p>&copy; 2023 Episteme Learning Academy</p>
-        </div>
-    </footer>
-
-    <!-- JS -->
-   <script src="main.js"></script>
-
-<script src="https://cdn.emailjs.com/dist/email.min.js"></script>
-
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-
-    emailjs.init("HRzpdij9ek-FzGhux");
-
-    window.openPopup = function () {
-        document.getElementById("admissionPopup").style.display = "flex";
-    };
-
-    window.closePopup = function () {
-        document.getElementById("admissionPopup").style.display = "none";
-    };
-
-    const form = document.getElementById("admissionForm");
-    const successMsg = document.getElementById("successMsg");
-
-    form.addEventListener("submit", function (e) {
-        e.preventDefault();
-
-        emailjs.sendForm(
-            "service_q5c4ig3",
-            "template_ob4ht5e",
-            this
-        ).then(() => {
-            successMsg.style.display = "block";
-            form.reset();
-
-            setTimeout(() => {
-                closePopup();
-                successMsg.style.display = "none";
-            }, 3000);
-        });
-    });
-
-});
-</script>
-
-</body>
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>Episteme Learning Academy</title>  
+  
+    <!-- CSS -->  
+    <link rel="stylesheet" href="style.css">  
+  
+    <!-- Google Font -->  
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">  
+      
+<!-- SEO Meta Tags -->  
+<meta name="description" content="Episteme Learning Academy - Quality education rooted in knowledge, values, and purpose. Programs for children, teens, and adults.">  
+<meta name="keywords" content="Episteme Learning Academy, Education, Islamic Studies, Coding, Academic Programs, Ilorin">  
+<meta name="author" content="Salman Abdullateef O.">  
+  
+<!-- Open Graph / Social Media -->  
+<meta property="og:title" content="Episteme Learning Academy">  
+<meta property="og:description" content="Quality education rooted in knowledge, values, and purpose.">  
+<meta property="og:image" content="images/episteme-logo.png">  
+<meta property="og:url" content="https://epistemelearningacademy.com">  
+<meta property="og:type" content="website">  
+  
+<!-- Twitter Card -->  
+<meta name="twitter:card" content="summary_large_image">  
+<meta name="twitter:title" content="Episteme Learning Academy">  
+<meta name="twitter:description" content="Quality education rooted in knowledge, values, and purpose.">  
+<meta name="twitter:image" content="images/episteme-logo.png">  
+      
+</head>  
+  
+<style>  
+  
+.faq-item {  
+margin-bottom: 15px;  
+border-radius: 8px;  
+overflow: hidden;  
+box-shadow: 0 3px 12px rgba(0,0,0,0.08);  
+}  
+  
+.faq-question {  
+width: 100%;  
+background: #1f6b2d;  
+color: #fff;  
+padding: 14px 20px;  
+text-align: left;  
+font-weight: 600;  
+border: none;  
+outline: none;  
+cursor: pointer;  
+transition: background 0.3s ease;  
+}  
+  
+.faq-question:hover {  
+background: #15501b;  
+}  
+  
+.faq-answer {  
+max-height: 0;  
+overflow: hidden;  
+transition: max-height 0.3s ease;  
+background: #f7f9f7;  
+padding: 0 20px;  
+}  
+  
+.faq-answer p {  
+padding: 12px 0;  
+margin: 0;  
+}  
+/* =====================================  
+   HERO CTA BUTTON  
+===================================== */  
+  
+.hero button {  
+    margin-top: 25px;  
+    padding: 14px 32px;  
+    border: none;  
+    border-radius: 30px;  
+    background: #7a0019;  
+    color: #ffffff;  
+    font-size: 1rem;  
+    font-weight: 600;  
+    cursor: pointer;  
+    transition: all 0.3s ease;  
+}  
+  
+.hero button:hover {  
+    background: #5a0013;  
+    transform: translateY(-3px);  
+}  
+  
+  
+/* =====================================  
+   WHY CHOOSE US  
+===================================== */  
+  
+#why-us ul {  
+    list-style: none;  
+    padding: 0;  
+    margin-top: 20px;  
+}  
+  
+#why-us li {  
+    background: #f7f9f7;  
+    padding: 14px 18px;  
+    margin-bottom: 12px;  
+    border-left: 5px solid #1f6b2d;  
+    border-radius: 6px;  
+    font-weight: 500;  
+    transition: 0.3s ease;  
+}  
+  
+#why-us li:hover {  
+    background: #e9f5ec;  
+    transform: translateX(5px);  
+}  
+  
+  
+/* =====================================  
+   FOUNDER SECTION  
+===================================== */  
+  
+#founder {  
+    background: #f9f9f9;  
+}  
+  
+#founder h2 {  
+    text-align: center;  
+    margin-bottom: 25px;  
+}  
+  
+#founder p {  
+    max-width: 800px;  
+    margin: 0 auto 15px auto;  
+    text-align: center;  
+    line-height: 1.8;  
+}  
+  
+  
+/* =====================================  
+   GALLERY SECTION  
+===================================== */  
+  
+#gallery h2 {  
+    text-align: center;  
+    margin-bottom: 30px;  
+}  
+  
+#gallery div {  
+    display: grid;  
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));  
+    gap: 20px;  
+}  
+  
+#gallery img {  
+    width: 100%;  
+    height: 220px;  
+    object-fit: cover;  
+    border-radius: 12px;  
+    transition: transform 0.4s ease, box-shadow 0.4s ease;  
+}  
+  
+#gallery img:hover {  
+    transform: scale(1.05);  
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);  
+}  
+  
+  
+/* =====================================  
+   TESTIMONIALS  
+===================================== */  
+  
+#testimonials h2 {  
+    text-align: center;  
+    margin-bottom: 30px;  
+}  
+  
+.testimonial {  
+    background: #ffffff;  
+    padding: 25px;  
+    margin-bottom: 20px;  
+    border-radius: 12px;  
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);  
+    transition: transform 0.3s ease;  
+}  
+  
+.testimonial:hover {  
+    transform: translateY(-5px);  
+}  
+  
+.testimonial p {  
+    font-style: italic;  
+    margin-bottom: 15px;  
+}  
+  
+.testimonial h4 {  
+    color: #1f6b2d;  
+    font-weight: 600;  
+}  
+  
+  
+/* =====================================  
+   FAQ SECTION  
+===================================== */  
+  
+#faq h2 {  
+    text-align: center;  
+    margin-bottom: 30px;  
+}  
+  
+#faq h4 {  
+    margin-top: 20px;  
+    color: #0a2a66;  
+}  
+  
+#faq p {  
+    margin-bottom: 10px;  
+    line-height: 1.7;  
+}  
+  
+  
+/* =====================================  
+   GOOGLE MAP SECTION  
+===================================== */  
+  
+iframe {  
+    border-radius: 12px;  
+    margin-top: 20px;  
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);  
+}  
+  
+  
+/* =====================================  
+   SECTION SPACING ENHANCEMENT  
+===================================== */  
+  
+.section h2 {  
+    font-size: 2rem;  
+    margin-bottom: 20px;  
+    color: #1f6b2d;  
+    position: relative;  
+}  
+  
+.section h2::after {  
+    content: "";  
+    width: 60px;  
+    height: 4px;  
+    background: #7a0019;  
+    display: block;  
+    margin: 10px auto 0;  
+    border-radius: 4px;  
+}  
+  
+  
+/* =====================================  
+   RESPONSIVE ADJUSTMENTS  
+===================================== */  
+  
+@media (max-width: 768px) {  
+      
+    #gallery img {  
+        height: 180px;  
+    }  
+      
+    .testimonial {  
+        padding: 20px;  
+    }  
+      
+    #why-us li {  
+        font-size: 0.95rem;  
+    }  
+      
+}  
+.blog-preview-grid {  
+    display: grid;  
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));  
+    gap: 25px;  
+}  
+  
+.blog-preview-card {  
+    background: #fff;  
+    border-radius: 12px;  
+    overflow: hidden;  
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);  
+    transition: 0.3s ease;  
+    text-align: center;  
+}  
+  
+.blog-preview-card img {  
+    width: 100%;  
+    height: 180px;  
+    object-fit: cover;  
+}  
+  
+.blog-preview-card h3 {  
+    margin: 15px 0 10px;  
+    color: #1f6b2d;  
+}  
+  
+.blog-preview-card p {  
+    padding: 0 15px 20px;  
+    font-size: 0.95rem;  
+}  
+  
+.blog-preview-card:hover {  
+    transform: translateY(-6px);  
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);  
+}  
+  
+</style>  
+  
+<script>  
+    document.addEventListener("DOMContentLoaded", function() {  
+          
+        const slides = document.querySelectorAll(".slide");  
+        let currentIndex = 0;  
+          
+        // Only run slider if slides exist  
+        if (slides.length > 0) {  
+              
+            function showSlide(index) {  
+                slides.forEach(slide => slide.classList.remove("active"));  
+                slides[index].classList.add("active");  
+            }  
+              
+            function nextSlide() {  
+                currentIndex = (currentIndex + 1) % slides.length;  
+                showSlide(currentIndex);  
+            }  
+              
+            setInterval(nextSlide, 4000);  
+              
+            let startX = 0;  
+            const slider = document.getElementById("slider");  
+              
+            if (slider) {  
+                slider.addEventListener("touchstart", e => {  
+                    startX = e.touches[0].clientX;  
+                });  
+                  
+                slider.addEventListener("touchend", e => {  
+                    let endX = e.changedTouches[0].clientX;  
+                      
+                    if (startX - endX > 50) nextSlide();  
+                      
+                    if (endX - startX > 50) {  
+                        currentIndex = (currentIndex - 1 + slides.length) % slides.length;  
+                        showSlide(currentIndex);  
+                    }  
+                });  
+            }  
+        }  
+          
+        // FAQ Toggle  
+        const faqButtons = document.querySelectorAll('.faq-question');  
+          
+        faqButtons.forEach(button => {  
+            button.addEventListener('click', () => {  
+                const answer = button.nextElementSibling;  
+                  
+                button.classList.toggle('active');  
+                  
+                if (answer.style.maxHeight) {  
+                    answer.style.maxHeight = null;  
+                } else {  
+                    answer.style.maxHeight = answer.scrollHeight + "px";  
+                }  
+            });  
+        });  
+          
+    });  
+</script>  
+  
+<body>  
+<!-- WHATSAPP FLOATING BUTTON -->  
+<a href="https://wa.me/2349131331867" target="_blank" class="whatsapp-float">  
+    <img src="images/whatsapp-logo-png-icon_16716480.png" alt="WhatsApp Chat">  
+</a>  
+    <!-- HEADER -->  
+   <header class="header">  
+    <div class="container header-flex">  
+        <img src="images/episteme logo. png" alt="Episteme Learning Academy Logo" class="logo-img">  
+        <div>  
+            <h1 class="academy-name">  
+    <span class="episteme">EPISTEME</span>  
+    <span class="learning">LEARNING</span>  
+    <span class="academy">ACADEMY</span>  
+</h1>  
+            <p class="tagline">Learning, Understanding and Application...</p>  
+        </div>  
+    </div>  
+</header>  
+<!-- IMAGE SLIDER -->  
+<section class="slider-section">  
+    <div class="slider-container" id="slider">  
+          
+        <div class="slide active">  
+            <img src="images/classroom.jpg" alt="Classroom Learning">  
+        </div>  
+          
+        <div class="slide">  
+            <img src="images/islamic-study.jpg" alt="Islamic Education">  
+        </div>  
+          
+        <div class="slide">  
+            <img src="images/skills.jpg" alt="Skills Development">  
+        </div>  
+          
+    </div>  
+</section>  
+  
+    <!-- NAVBAR -->  
+    <nav class="navbar">  
+        <div class="container nav-flex">  
+            <ul class="nav-links">  
+                <li><a href="#about">About</a></li>  
+                <li><a href="#programs">Programs</a></li>  
+                <li><a href="#philosophy">Philosophy</a></li>  
+                <li><a href="#contact">Contact</a></li>  
+                <li><a href="islamiyyah.html">Islamiyyah Portal</a></li>  
+<li><a href="blog.html">Blog</a></li>  
+                <li><a href="parent-dashboard.html">Parent Portal</a> </li>  
+<li><a href="admin-panel.html">Admin Portal</a> </li>  
+            </ul>  
+            <button class="menu-btn" id="menuBtn">☰</button>  
+        </div>  
+    </nav>  
+      
+<button onclick="openPopup()" style="margin-top:20px; padding:12px 25px; border:none; border-radius:25px; background:#7a0019; color:white; cursor:pointer;">  
+    Apply for Admission  
+</button>  
+      
+<section class="hero">  
+    <div class="hero-overlay">  
+        <h2>Building Minds, Shaping Character</h2>  
+        <p>Quality education rooted in knowledge, values, and purpose.</p>  
+    </div>  
+</section>  
+  
+    <!-- ABOUT -->  
+    <section id="about" class="section">  
+        <div class="container">  
+            <h2>Who We Are</h2>  
+            <p>  
+                Episteme Learning Academy is a learning community built on the belief  
+                that true education goes beyond textbooks. We exist to nurture the mind,  
+                refine character, and guide learners toward purposeful living.  
+            </p>  
+            <p>  
+                Blending academic excellence with moral and spiritual development,  
+                we provide a balanced educational experience for children, teenagers,  
+                and adults, within a supportive, learner-centered environment.  
+            </p>  
+        </div>  
+    </section>  
+      
+<!-- FOUNDER SECTION -->  
+<section id="founder" class="section light">  
+    <div class="container">  
+        <h2>Meet the Founder</h2>  
+          
+        <p>  
+            Episteme Learning Academy was founded by Salman Abdullateef O.,  
+            a graduate of the University of Ilorin and Markazi Nabiyyi Arabic and Islamic Learning Center with a background in Plant Biology  
+            and a deep passion for educational development.  
+        </p>  
+          
+        <p>  
+            Driven by the belief that true education shapes both intellect and character,  
+            he established Episteme to provide balanced learning rooted in knowledge,  
+            discipline, and moral clarity.  
+        </p>  
+          
+        <p>  
+            His vision is to raise learners who are confident, spiritually grounded,  
+            intellectually sharp, and socially responsible.  
+        </p>  
+          
+    </div>  
+</section>  
+  
+    <!-- VISION & MISSION -->  
+    <section class="section light">  
+        <div class="container grid-2">  
+            <div>  
+                <h3>Our Vision</h3>  
+                <p>  
+                    To raise confident, morally grounded, and intellectually curious learners  
+                    who are equipped to thrive academically, think critically,  
+                    and contribute positively to society.  
+                </p>  
+            </div>  
+            <div>  
+                <h3>Our Mission</h3>  
+                <ul>  
+                    <li>Deliver quality, flexible, and engaging education</li>  
+                    <li>Integrate academic learning with values and character development</li>  
+                    <li>Support learners at their own pace</li>  
+                    <li>Make education accessible, practical, and meaningful</li>  
+                </ul>  
+            </div>  
+        </div>  
+    </section>  
+      
+<!-- WHY CHOOSE US -->  
+<section id="why-us" class="section">  
+    <div class="container">  
+        <h2>Why Choose Episteme?</h2>  
+          
+        <ul>  
+            <li>✔ Small, focused learning groups</li>  
+            <li>✔ Integration of academic excellence and moral development</li>  
+            <li>✔ Flexible learning options (Physical, Online & Hybrid)</li>  
+            <li>✔ Personalized mentorship and academic guidance</li>  
+            <li>✔ Safe, value-driven learning environment</li>  
+            <li>✔ Modern digital skills training for the future</li>  
+        </ul>  
+          
+    </div>  
+</section>  
+  
+    <!-- PHILOSOPHY -->  
+    <section id="philosophy" class="section">  
+        <div class="container">  
+            <h2>Our Educational Philosophy</h2>  
+            <p>  
+                At Episteme, learning is holistic. Education should develop the mind,  
+                shape character, and prepare learners for real-life challenges—not just exams.  
+            </p>  
+            <p>  
+                We teach with patience, clarity, and intention—meeting learners where they are  
+                and guiding them toward growth.  
+            </p>  
+        </div>  
+    </section>  
+     
+    <!-- PROGRAMS -->  
+    <section id="programs" class="section light">  
+        <div class="container">  
+            <h2>Our Programs & Services</h2>  
+             <div class="program-card">  
+     <img src="images/digital-hub.jpg" alt="Episteme Digital Learning Hub">  
+     <h3>Episteme Digital Learning Hub</h3>  
+     <p>Step into our interactive digital hub! Access lessons, resources, and fun learning activities anytime, anywhere. Your child’s learning adventure starts here!</p>  
+     <a href="hub-index.html" class="cta-btn dark-btn" target="_blank">  
+         Explore the Hub  
+     </a>  
+ </div>  
+      
+    <div class="program-card">  
+        <img src="images/consultation.jpg" alt="Educational Consultation">  
+        <h3>Educational Consultation</h3>  
+        <p>Professional guidance for parents, learners, and institutions.</p>  
+        <ul>  
+            <li>Academic planning and guidance</li>  
+            <li>Learning challenges assessment</li>  
+            <li>Study structure and improvement strategies</li>  
+        </ul>  
+    </div>  
+      
+    <div class="program-card">  
+        <img src="images/mentorship.png" alt="Mentorship & Counseling">  
+        <h3>Mentorship & Counseling (Ages 7–15)</h3>  
+        <p>Holistic mentorship focused on emotional, moral, and academic growth.</p>  
+        <ul>  
+            <li>Character and value development</li>  
+            <li>Confidence and self-discipline building</li>  
+            <li>Academic motivation and guidance</li>  
+        </ul>  
+    </div>  
+      
+    <div class="program-card">  
+     <img src="images/classroom.jpg" alt="Academic Programs">  
+        <h3>Academic Programs</h3>  
+        <p>Structured academic learning tailored to each educational level.</p>  
+        <ul>  
+            <li>Early Childhood Education</li>  
+            <li>Primary School Education</li>  
+            <li>Junior Secondary School Education</li>  
+        </ul>  
+    </div>  
+      
+    <div class="program-card">  
+        <img src="images/islamic-study.jpg" alt="Islamic Education">  
+        <h3>Islamic Studies</h3>  
+        <p>Comprehensive Islamic education that nurtures knowledge and character.</p>  
+        <ul>  
+            <li>Qur’an Memorization and Recitation with Tajweed</li>  
+            <li>Tawheed</li>  
+            <li>Hadith</li>  
+            <li>Fiqh</li>  
+            <li>Arabic Language</li>  
+            <li>Seerah</li>  
+            <li>Tafseer</li>  
+            <li>Adab and Islamic manners</li>  
+        </ul>  
+    </div>  
+      
+      
+    <div class="program-card">  
+        <img src="images/skills.jpg" alt="Skills Training">  
+        <h3>Coding & Programming (Beginner Level)</h3>  
+        <p>An introduction to modern coding and logical thinking.</p>  
+        <ul>  
+            <li>HTML (Web Structure)</li>  
+            <li>CSS (Web Styling)</li>  
+            <li>JavaScript (Interactivity)</li>  
+            <li>Python (Beginner Programming)</li>  
+        </ul>  
+    </div>  
+      
+    <div class="program-card">  
+        <img src="images/ielts.jpg" alt="Skills & Capacity Development">  
+          
+        <h3>Skills & Capacity Development</h3>  
+        <p>Practical training to improve communication and academic skills.</p>  
+        <ul>  
+            <li>IELTS Preparation</li>  
+            <li>English Proficiency Training</li>  
+            <li>Nelson Handwriting Training</li>  
+        </ul>  
+    </div>  
+      
+    <div class="program-card">  
+<img src="images/graphics.png" alt="Graphics Design & Computer Appreciation">  
+        <h3>Graphics Design & Computer Appreciation</h3>  
+        <p>Hands-on digital skills for modern learning and creativity.</p>  
+        <ul>  
+            <li>Computer Basics and Operations</li>  
+            <li>Introduction to Graphic Design</li>  
+            <li>Practical digital creativity</li>  
+        </ul>  
+    </div>  
+      
+    <div class="program-card">  
+<img src="images/curriculum.jpg" alt="Curriculum Development">  
+        <h3>Curriculum Development</h3>  
+        <p>Structured curriculum design for effective teaching and learning.</p>  
+        <ul>  
+            <li>Lesson planning support</li>  
+            <li>Curriculum structuring</li>  
+            <li>Educational content development</li>  
+        </ul>  
+    </div>  
+      
+    <div class="program-card">  
+<img src="images/learning.jpg" alt="Learning Materials & Worksheets">  
+        <h3>Learning Materials & Worksheets</h3>  
+        <p>Supportive resources for classroom and home learning.</p>  
+        <ul>  
+            <li>Printed learning materials</li>  
+            <li>Practice worksheets</li>  
+            <li>Student support resources</li>  
+        </ul>  
+    </div>  
+    </section>  
+<!-- GALLERY -->  
+<section id="gallery" class="section">  
+    <div class="container">  
+        <h2>Life at Episteme</h2>  
+          
+        <div>  
+            <img src="images/classroom.jpg" width="100%" alt="Classroom Session">  
+            <img src="images/coding.jpg" width="100%" alt="Coding Class">  
+            <img src="images/islamic-study.jpg" width="100%" alt="Islamic Studies Session">  
+        </div>  
+          
+    </div>  
+</section>  
+      
+<!-- TESTIMONIALS -->  
+<section id="testimonials" class="section light">  
+    <div class="container">  
+        <h2>What Parents Say</h2>  
+          
+        <div class="testimonial">  
+            <p>  
+                "Since enrolling my daughter at Episteme Learning Academy, her confidence  
+                and discipline have improved greatly. The balance between academics  
+                and moral training is truly commendable."  
+            </p>  
+            <h4>— Mrs. Abdulrahman, Ilorin</h4>  
+        </div>  
+          
+        <div class="testimonial">  
+            <p>  
+                "The coding class opened my son's mind to logical thinking.  
+                He now builds small web pages at home confidently."  
+            </p>  
+            <h4>— Mr. Bello, Parent</h4>  
+        </div>  
+          
+    </div>  
+</section>  
+  
+<section id="admission-cta" class="dual-cta-section">  
+  <div class="cta-container">  
+  
+    <!-- Admission Card -->  
+    <div class="cta-card primary-card">  
+      <h2>Admissions Now Open</h2>  
+      <p>  
+        Give your child a balanced education that nurtures knowledge,  
+        character, and confidence. Enroll today and become part of a  
+        learning community where every learner matters.  
+      </p>  
+  
+    <a href="#" class="cta-btn light-btn" onclick="openPopup()">  
+    Apply Now  
+</a>  
+    </div>  
+  
+    <!-- Selar Courses Card -->  
+    <div class="cta-card selar-card">  
+      <h2>Explore Our Courses</h2>  
+      <p>  
+        Visit our Selar store to view detailed course descriptions,  
+        pricing, and enrollment options. Whether you're a parent  
+        enrolling a child or an adult seeking personal development,  
+        our courses are structured for flexible learning.  
+      </p>  
+  
+      <a href="https://selar.com/m/epistemelearningacademy1?page=2"  
+         target="_blank"  
+         class="cta-btn dark-btn">  
+         View Courses on Selar  
+      </a>  
+    </div>  
+  
+  </div>  
+</section>  
+  
+<section class="section light">  
+    <div class="container">  
+        <h2>Download Our Prospectus</h2>  
+        <p>Get detailed information about our programs, fees, schedules, and values-based learning.</p>  
+          
+        <a href="docs/episteme-prospectus.pdf" download class="cta-btn dark-btn">  
+            Download Prospectus PDF  
+        </a>  
+    </div>  
+</section>  
+  
+<!-- Admission Popup -->  
+<div id="admissionPopup" class="popup-overlay">  
+    <div class="popup-box">  
+        <span class="close-btn" onclick="closePopup()">×</span>  
+          
+        <h2>Admission Inquiry</h2>  
+        <p>Please fill the form below and we’ll get back to you shortly.</p>  
+          
+        <form id="admissionForm">  
+            <input type="text" name="parent_name" placeholder="Parent's Full Name" required>  
+            <input type="email" name="email" placeholder="Parent's Email Address" required>  
+            <input type="text" name="child_name" placeholder="Child's Full Name" required>  
+              
+            <select id="program" name="program" required>  
+                <option value="">Select Program</option>  
+                <option>Islamiyyah Academic Program</option>  
+                <option>Conventional Academic Program</option>  
+                <option>Conventional and Islamiyyah Academic Programs</option>  
+                <option>Coding & Programming</option>  
+                <option>IELTS and English Proficiency</option>  
+                <option>Graphics Design</option>  
+                <option>Computer Appreciation</option>  
+                <option>Graphics Design and Computer Appreciation</option>  
+                <option>Nelson Handwriting Training</option>  
+            </select>  
+              
+            <input type="tel" name="phone" placeholder="Phone Number" required>  
+            <input type="number" name="child_age" placeholder="Child's Age" required>  
+              
+            <button type="submit">Submit Inquiry</button>  
+              
+            <p id="successMsg" style="display:none; color:green; margin-top:10px;">  
+                Thank you! Your admission inquiry has been received.  
+            </p>  
+        </form>  
+    </div>  
+</div>  
+    <!-- FLEXIBLE LEARNING -->  
+    <section class="section">  
+        <div class="container">  
+            <h2>Flexible Learning Options</h2>  
+            <p>  
+                We offer physical (in-person), online, and hybrid learning models,  
+                allowing learners to choose what works best for them without compromising quality.  
+            </p>  
+        </div>  
+    </section>  
+  
+    <!-- CONSULTANCY -->  
+    <section class="section light">  
+        <div class="container">  
+            <h2>Educational Consultancy</h2>  
+            <p>  
+                We provide guidance for parents, schools, educators, and individuals  
+                seeking academic or skill-based direction—focused on clarity,  
+                structure, and sustainable improvement.  
+            </p>  
+        </div>  
+    </section>  
+      
+    <!-- BLOG PREVIEW SECTION -->  
+<section class="section light">  
+    <div class="container">  
+        <h2>From Our Blog</h2>  
+        <p style="text-align:center; max-width:700px; margin:0 auto 40px;">  
+            Explore insights on education, character development, flexible learning,  
+            and raising purpose-driven learners.  
+        </p>  
+          
+        <div class="blog-preview-grid">  
+              
+            <div class="blog-preview-card">  
+                <img src="assets/images/holistic.jpg" alt="Holistic Education">  
+                <h3>Benefits of Holistic Education</h3>  
+                <p>How education shapes both intellect and character.</p>  
+            </div>  
+              
+            <div class="blog-preview-card">  
+                <img src="assets/images/flexible.jpg" alt="Flexible Learning">  
+                <h3>Flexible Learning in Modern Times</h3>  
+                <p>Empowering families through online and hybrid education.</p>  
+            </div>  
+              
+            <div class="blog-preview-card">  
+                <img src="assets/images/integrating.png" alt="Islamic Studies">  
+                <h3>Integrating Islamic Studies</h3>  
+                <p>Balancing faith, academics, and moral growth.</p>  
+            </div>  
+              
+        </div>  
+          
+        <div style="text-align:center; margin-top:30px;">  
+            <a href="blog.html" class="cta-btn dark-btn">  
+                Visit Our Blog  
+            </a>  
+        </div>  
+          
+    </div>  
+</section>  
+  
+<section id="faq" class="section light">  
+    <div class="container">  
+        <h2>Frequently Asked Questions</h2>  
+          
+        <div class="faq-item">  
+            <button class="faq-question">What age groups do you admit?</button>  
+            <div class="faq-answer">  
+                <p>We admit learners from Early Childhood through Junior Secondary level.</p>  
+            </div>  
+        </div>  
+          
+        <div class="faq-item">  
+            <button class="faq-question">Do you offer online classes?</button>  
+            <div class="faq-answer">  
+                <p>Yes. We provide physical, online, and hybrid learning options.</p>  
+            </div>  
+        </div>  
+          
+        <div class="faq-item">  
+            <button class="faq-question">Is Islamic Studies compulsory?</button>  
+            <div class="faq-answer">  
+                <p>Islamic Studies is available for families who desire moral and spiritual training alongside academics.</p>  
+            </div>  
+        </div>  
+          
+        <div class="faq-item">  
+            <button class="faq-question">How can I apply?</button>  
+            <div class="faq-answer">  
+                <p>You can apply using the “Apply for Admission” button on this website.</p>  
+            </div>  
+        </div>  
+    </div>  
+</section>  
+  
+    <!-- CONTACT -->  
+ <section id="contact">  
+  <center><h3>Contact Us</h3></center>  
+  
+  <center><p>  
+    <a href="mailto:epistemelearninghub@gmail.com?subject=Inquiry%20from%20Episteme%20Learning%20Academy"  
+       class="email-link">  
+      epistemelearninghub@gmail.com  
+    </a>  
+  </p></center>  
+  
+  <p><center>  
+    📞   
+    <a href="tel:+2349131331867" class="phone-link">+234 913 133 1867</a> |  
+    <a href="tel:+2349128732396" class="phone-link">+234 912 873 2396</a>  
+  </center></p>  
+  
+  <!-- Social media links in horizontal row -->  
+  <div class="social-links">  
+    <a href="https://youtube.com/@epistemelearningacademy?si=0qJWMJ1FO4sBANBG" target="_blank">  
+      <img src="/assets/images/youtube-icon.png" alt="YouTube" width="80" height="80">  
+    </a>  
+    <a href="https://www.facebook.com/epistemelearningacademy01" target="_blank">  
+      <img src="/assets/images/facebook-icon.png" alt="Facebook" width="60" height="60">  
+    </a>  
+    <a href="https://www.instagram.com/episteme_la?igsh=MW9sb2lqNjdleWx1MQ==" target="_blank">  
+      <img src="/assets/images/instagram-icon.png" alt="Instagram" width="60" height="60">  
+    </a>  
+    <a href="https://www.tiktok.com/@episteme_learning_acad?_r=1&_t=ZS-93qwdgUHLzW" target="_blank">  
+      <img src="/assets/images/tikok-app-logo.png" alt="TikTok" width="60" height="60">  
+    </a>  
+  </div>  
+</section>  
+  
+<!-- LOCATION MAP -->  
+<section class="section">  
+  <div class="container">  
+    <h2>Our Location</h2>  
+    <iframe   
+      src="https://www.google.com/maps/embed?pb=YOUR_GOOGLE_MAP_LINK_HERE"  
+      width="100%"   
+      height="300"   
+      style="border:0;"   
+      allowfullscreen=""   
+      loading="lazy">  
+    </iframe>  
+  </div>  
+</section>  
+  
+           <center><p><b>Location: Ilorin, Kwara State, Nigeria</b></p>  
+            </center>  
+              
+            <center><p><b>Working Hours: Flexible (Determined by Time Zone</b></p></center>  
+        </div>  
+    </section>  
+  
+    <!-- FOOTER -->  
+      
+    <footer class="footer">  
+        <div class="container">  
+            <p><a href="blog.html" style="color:#fff;">Visit Our Blog</a></p>  
+            <p>  
+                At Episteme Learning Academy, every learner matters.  
+                Knowledge combined with character transforms lives.  
+<br><i><u><b>This is Where Learning Meets Morality...</b></u></i>  
+            </p>  
+            <p>&copy; 2023 Episteme Learning Academy</p>  
+        </div>  
+    </footer>  
+  
+    <!-- JS -->  
+   <script src="main.js"></script>  
+  
+<script src="https://cdn.emailjs.com/dist/email.min.js"></script>  
+  
+<script>  
+document.addEventListener("DOMContentLoaded", function () {  
+  
+    emailjs.init("HRzpdij9ek-FzGhux");  
+  
+    window.openPopup = function () {  
+        document.getElementById("admissionPopup").style.display = "flex";  
+    };  
+  
+    window.closePopup = function () {  
+        document.getElementById("admissionPopup").style.display = "none";  
+    };  
+  
+    const form = document.getElementById("admissionForm");  
+    const successMsg = document.getElementById("successMsg");  
+  
+    form.addEventListener("submit", function (e) {  
+        e.preventDefault();  
+  
+        emailjs.sendForm(  
+            "service_q5c4ig3",  
+            "template_ob4ht5e",  
+            this  
+        ).then(() => {  
+            successMsg.style.display = "block";  
+            form.reset();  
+  
+            setTimeout(() => {  
+                closePopup();  
+                successMsg.style.display = "none";  
+            }, 3000);  
+        });  
+    });  
+  
+});  
+</script>  
+  
+</body>  
 </html>
