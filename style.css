@@ -173,8 +173,9 @@ p, li {
 ================================= */
 .hero {
   background: url("images/hero.png") center/cover no-repeat;
-  height: 70vh;
+  height: 50vh;
   position: relative;
+   color: white;
 }
 
 .hero-overlay {
