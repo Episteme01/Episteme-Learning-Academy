@@ -941,57 +941,65 @@ window.uploadPhoto = async function() {
     
     const id = document.getElementById("studentID").value.trim();
     const input = document.getElementById("studentPhoto");
-    
-    if (!id) {
-        alert("Enter Student ID first");
-        return;
-    }
-    
-    if (!input.files.length) {
-        alert("Choose photo");
-        return;
-    }
-    
+    const progressBar = document.getElementById("uploadProgress");
+
+    if (!id) return alert("Enter Student ID first");
+    if (!input.files.length) return alert("Choose photo");
+
     const file = input.files[0];
-    
+
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("upload_preset", "episteme_upload"); // ✅ FIXED
-    
+    formData.append("upload_preset", "episteme_upload");
+
     try {
-        
-        const res = await fetch(
-            "https://api.cloudinary.com/v1_1/du3egqkxh/image/upload",
-            {
-                method: "POST",
-                body: formData
+
+        const xhr = new XMLHttpRequest();
+
+        xhr.open("POST", "https://api.cloudinary.com/v1_1/du3egqkxh/image/upload");
+
+        // 🔥 PROGRESS BAR
+        xhr.upload.onprogress = function(e) {
+            if (e.lengthComputable) {
+                const percent = (e.loaded / e.total) * 100;
+                progressBar.style.width = percent + "%";
             }
-        );
-        
-        const data = await res.json();
-        
-        // ✅ DEBUG (VERY IMPORTANT)
-        console.log("Cloudinary response:", data);
-        
-        // ❌ HANDLE ERROR PROPERLY
-        if (!data.secure_url) {
-            throw new Error(data.error?.message || "Upload failed");
-        }
-        
-        const imageUrl = data.secure_url;
-        
-        // ✅ SAVE TO FIREBASE
-        await update(ref(db, "students/" + id), {
-            photoURL: imageUrl
-        });
-        
-        alert("Photo uploaded successfully");
-        
-        loadStudentDropdowns();
-        
+        };
+
+        xhr.onload = async function() {
+            const data = JSON.parse(xhr.responseText);
+
+            console.log("Cloudinary:", data);
+
+            if (!data.secure_url) {
+                throw new Error(data.error?.message || "Upload failed");
+            }
+
+            // 🔥 OPTIMIZED IMAGE (Auto resize)
+            const optimizedUrl = data.secure_url.replace(
+                "/upload/",
+                "/upload/w_300,h_300,c_fill,q_auto/"
+            );
+
+            await update(ref(db, "students/" + id), {
+                photoURL: optimizedUrl
+            });
+
+            progressBar.style.width = "100%";
+
+            alert("Photo uploaded successfully");
+
+        };
+
+        xhr.onerror = () => {
+            alert("Upload failed");
+        };
+
+        xhr.send(formData);
+
     } catch (err) {
-        console.error("Upload error:", err);
-        alert(err.message || "Upload failed");
+        console.error(err);
+        alert(err.message);
     }
 };
 
@@ -1071,6 +1079,45 @@ window.uploadPhoto = async function() {
 }
 
 </script>
+   <script>
+
+       const dropZone = document.getElementById("dropZone");
+const fileInput = document.getElementById("studentPhoto");
+const preview = document.getElementById("photoPreview");
+
+// Click to open file picker
+dropZone.addEventListener("click", () => fileInput.click());
+
+// Preview image
+fileInput.addEventListener("change", () => {
+    const file = fileInput.files[0];
+    if (file) {
+        preview.src = URL.createObjectURL(file);
+    }
+});
+
+// Drag & Drop
+dropZone.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    dropZone.style.borderColor = "#4b3cf0";
+});
+
+dropZone.addEventListener("dragleave", () => {
+    dropZone.style.borderColor = "#ccc";
+});
+
+dropZone.addEventListener("drop", (e) => {
+    e.preventDefault();
+    dropZone.style.borderColor = "#ccc";
+
+    const file = e.dataTransfer.files[0];
+    fileInput.files = e.dataTransfer.files;
+
+    if (file) {
+        preview.src = URL.createObjectURL(file);
+    }
+});
+   </script>
 
 </body>
 </html>
