@@ -253,6 +253,22 @@ window.changePassword = async function() {
 <link rel="manifest" href="manifest.json">
 
     <style>  
+        /* Hide sidebar on mobile */
+@media (max-width: 900px) {
+    .sidebar {
+        display: none;
+    }
+
+    .sidebar.show {
+        display: flex;
+    }
+}
+        button {
+    min-height: 40px;
+}
+        td, th {
+    word-wrap: break-word;
+}
         /* ====== GLOBAL STYLES ====== */  
         body {  
             margin: 0; 
@@ -567,12 +583,88 @@ window.changePassword = async function() {
     display: inline-block;
     margin-top: 5px;
 }
+
+       /* ============================= */
+/* 🔥 MOBILE RESPONSIVENESS PRO */
+/* ============================= */
+
+@media (max-width: 900px) {
+
+    .dashboard-wrapper {
+        flex-direction: column;
+    }
+
+    /* Sidebar becomes TOP NAV */
+    .sidebar {
+        width: 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        padding: 10px;
+        gap: 5px;
+    }
+
+    .sidebar button {
+        flex: 1 1 45%;
+        text-align: center;
+        font-size: 13px;
+        padding: 8px;
+    }
+
+    .sidebar .submenu {
+        width: 100%;
+        padding-left: 0;
+    }
+
+    /* Main content spacing */
+    .main-content {
+        padding: 10px;
+    }
+
+    /* Cards */
+    .card {
+        padding: 15px;
+    }
+
+    /* Student Info Image */
+    #studentPhoto {
+        width: 90px;
+        height: 90px;
+    }
+
+    /* Tables scrollable */
+    .table-card {
+        overflow-x: auto;
+    }
+
+    .assessment-table {
+        min-width: 500px;
+    }
+
+    /* Schedule table scroll */
+    .schedule-grid {
+        min-width: 500px;
+    }
+
+    /* Header */
+    .header {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+
+    /* Buttons */
+    button {
+        font-size: 13px;
+    }
+} 
     </style>  
 </head>  
 <body>  
   
 <div class="header">  
     <h2>Episteme Learning Academy</h2>  
+    <button onclick="toggleSidebar()" class="logout-btn">☰ Menu</button>
     <button class="logout-btn" onclick="logout()">Logout</button>
 </div>  
   
@@ -1244,6 +1336,12 @@ window.payFees = function() {
     handler.openIframe();
 };
 </script>
+    <script>
+        window.toggleSidebar = function () {
+    const sidebar = document.querySelector(".sidebar");
+    sidebar.classList.toggle("show");
+};
+    </script>
     
     </body>  
 </html>  
