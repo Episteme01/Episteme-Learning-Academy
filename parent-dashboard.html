@@ -702,7 +702,11 @@ window.changePassword = async function() {
                 <p><strong>Age:</strong> <span id="studentAge"></span></p>  
                 <p><strong>Date of Birth:</strong> <span id="studentDOB"></span></p>  
                 <p><strong>Program:</strong> <span id="studentProgram"></span></p>  
-                <p><strong>Additional Info:</strong> <span id="studentInformation"></span></p>   <p><strong>Fee Status:</strong> <span id="feeStatus"></span></p>
+                <p><strong>Additional Info:</strong> <span id="studentInformation"></span></p> <button class="primary" onclick="downloadAdmissionLetter()">
+    Download Admission Letter
+</button>
+
+                <p><strong>Fee Status:</strong> <span id="feeStatus"></span></p>
  <button onclick="payFees()">Pay School Fees</button>
             </div>  
         </div>  
@@ -1295,6 +1299,106 @@ if (!data) {
     );
     
 }
+    
+  window.downloadAdmissionLetter = async function() {
+    
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    let y = 15;
+    
+    // ===== LOAD LOGO =====
+    const img = new Image();
+    img.src = "images/episteme-logo.png";
+    
+    img.onload = function() {
+        
+        // ===== LOGO =====
+        doc.addImage(img, "PNG", 85, y, 40, 40);
+        
+        y += 50;
+        
+        // ===== SCHOOL NAME =====
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(18);
+        doc.text("EPISTEME LEARNING ACADEMY", 35, y);
+        
+        y += 8;
+        
+        // ===== MOTTO =====
+        doc.setFont("helvetica", "italic");
+        doc.setFontSize(11);
+        doc.text("Learning, Understanding and Application", 50, y);
+        
+        y += 12;
+        
+        // ===== LINE =====
+        doc.setDrawColor(0, 102, 204);
+        doc.line(20, y, 190, y);
+        
+        y += 12;
+        
+        // ===== REFERENCE NUMBER =====
+        const refNo = "ELA/" + new Date().getFullYear() + "/" + Math.floor(Math.random() * 10000);
+        
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(11);
+        doc.text("Ref No: " + refNo, 20, y);
+        
+        const today = new Date().toLocaleDateString();
+        doc.text("Date: " + today, 140, y);
+        
+        y += 15;
+        
+        // ===== TITLE =====
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(14);
+        doc.text("LETTER OF ADMISSION", 60, y);
+        
+        y += 15;
+        
+        // ===== BODY =====
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(12);
+        
+        const content = `
+We are pleased to inform you that your child, ${currentStudent.studentName}, 
+has been successfully offered admission into Episteme Learning Academy.
+
+STUDENT DETAILS:
+Student ID: ${currentStudent.studentID}
+Class: ${currentStudent.studentClass}
+Program: ${currentStudent.studentProgram}
+
+This admission is granted based on the successful completion of all required procedures.
+
+You are expected to ensure compliance with school rules, punctuality, and dedication to learning.
+
+We look forward to nurturing excellence and building a bright future together.
+`;
+        
+        const splitText = doc.splitTextToSize(content, 170);
+        doc.text(splitText, 20, y);
+        
+        y += splitText.length * 7 + 20;
+        
+        // ===== SIGNATURE =====
+        doc.text("__________________________", 20, y);
+        y += 7;
+        doc.text("Principal", 20, y);
+        
+        // ===== FOOTER =====
+        doc.setFontSize(10);
+        doc.text(
+            "Episteme Learning Academy | Where Learning Meets Morality",
+            40,
+            285
+        );
+        
+        // ===== SAVE =====
+        doc.save(currentStudent.studentName + "_Admission_Letter.pdf");
+    };
+};
     
 window.showHistorical = function(btn) {
     showSection('historical', btn);
