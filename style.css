@@ -168,7 +168,7 @@ p, li {
    HERO
 ================================= */
 .hero {
-  background: url("images/hero.png"); /* adjust path if needed */
+  background-image: url("images/hero.png"); 
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
