@@ -105,10 +105,6 @@ p, li {
    NAVBAR (DESKTOP + MOBILE)
 ================================= */
 
-.nav-links.active {
-  display: block;
-}
-
 .navbar {
   background: white;
   border-bottom: 1px solid #ddd;
@@ -172,9 +168,11 @@ p, li {
    HERO
 ================================= */
 .hero {
-  background: url("images/hero.png") center/cover no-repeat;
+  background-image: url("../images/hero.png"); /* adjust path if needed */
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
   height: 70vh;
-  position: relative;
 }
 
 .hero-overlay {
@@ -1321,4 +1319,10 @@ form button {
 form button:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+.nav-links {
+  display: none;
+  flex-direction: column;
+  width: 100%;
+  animation: slideDown 0.3s ease;
 }
