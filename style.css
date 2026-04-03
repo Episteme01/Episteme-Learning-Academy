@@ -172,10 +172,9 @@ p, li {
    HERO
 ================================= */
 .hero {
-  background: url("images/hero.png") center/cover no-repeat;
-  height: 50vh;
+  background: url("images/hero.jpg") center/cover no-repeat;
+  height: 70vh;
   position: relative;
-   color: white;
 }
 
 .hero-overlay {
@@ -372,25 +371,84 @@ p, li {
 /* ===============================
    POPUP
 ================================= */
+/* OVERLAY (smooth fade) */
 .popup-overlay {
   position: fixed;
-  width: 100%;
-  height: 100%;
-  display: none;
-  background: rgba(0,0,0,0.6);
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 9999;
+  
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.4s ease;
 }
 
+.popup-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* POPUP BOX */
 .popup-box {
-  background: white;
+  width: 95%;
+  max-width: 750px;
+  max-height: 90vh;
+  overflow-y: auto;
+  
+  background: #ffffff;
+  border-radius: 20px;
   padding: 25px;
-  border-radius: 10px;
-  width: 90%;
-  max-width: 400px;
+  
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4);
+  
+  transform: translateY(40px) scale(0.95);
+  transition: 0.4s ease;
 }
 
+/* animation */
+.popup-overlay.active .popup-box {
+  transform: translateY(0) scale(1);
+}
 
+/* HEADER */
+.popup-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.popup-header h2 {
+  color: var(--green);
+}
+
+.popup-header p {
+  font-size: 0.9rem;
+  opacity: 0.7;
+}
+
+/* CLOSE BUTTON */
+.close-btn {
+  position: absolute;
+  top: 15px;
+  right: 18px;
+  font-size: 22px;
+  cursor: pointer;
+  background: #eee;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.3s;
+}
+
+.close-btn:hover {
+  background: var(--wine);
+  color: white;
+}
 /* ===============================
    FOOTER
 ================================= */
@@ -1170,4 +1228,97 @@ p, li {
 .digital-hub-card .cta-btn:hover {
   background: white;
   color: #081f4d;
+}
+/* FORM SECTIONS */
+.form-section {
+  background: #f9f9f9;
+  padding: 18px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  border-left: 4px solid var(--green);
+}
+
+.form-section h3 {
+  margin-bottom: 10px;
+  color: var(--green);
+}
+
+/* GRID (2 columns desktop, 1 mobile) */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media(max-width:768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* INPUTS */
+form input,
+form select,
+form textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  outline: none;
+  font-size: 0.9rem;
+  transition: 0.3s;
+  background: #fff;
+}
+
+/* FOCUS EFFECT */
+form input:focus,
+form select:focus,
+form textarea:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(31, 107, 45, 0.15);
+}
+
+/* TEXTAREA */
+form textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.checkbox-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.checkbox-group label {
+  background: #fff;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #eee;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.checkbox-group label:hover {
+  background: #f1f7f3;
+}
+
+form button {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--green), var(--green-dark));
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 15px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+form button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
