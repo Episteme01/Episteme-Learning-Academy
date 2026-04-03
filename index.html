@@ -93,7 +93,7 @@
         </div>  
     </nav>  
       
-<button onclick="openPopup()" style="margin-top:20px; padding:12px 25px; border:none; border-radius:25px; background:#7a0019; color:white; cursor:pointer;">  
+<button id="admission" class="apply-btn" onclick="openPopup()" style="margin-top:20px; padding:12px 25px; border:none; border-radius:25px; background:#7a0019; color:white; cursor:pointer;">  
     Apply for Admission  
 </button>  
       
@@ -372,9 +372,7 @@
     character, and confidence.
   </p>
   
-  <a href="#" class="cta-btn" onclick="openPopup()">
-    Apply Now
-  </a>
+<a href="javascript:void(0)" onclick="openPopup()" class="cta-btn apply-btn">Apply Now</a>
 </div>
 
 <!-- Selar Card -->
@@ -406,44 +404,215 @@
         </a>  
     </div>  
 </section>  
-  
+  <input type="hidden" name="student_id" id="student_id">
 <!-- Admission Popup -->  
-<div id="admissionPopup" class="popup-overlay">  
-    <div class="popup-box">  
-        <span class="close-btn" onclick="closePopup()">×</span>  
-          
-        <h2>Admission Inquiry</h2>  
-        <p>Please fill the form below and we’ll get back to you shortly.</p>  
-          
-        <form id="admissionForm">  
-            <input type="text" name="parent_name" placeholder="Parent's Full Name" required>  
-            <input type="email" name="email" placeholder="Parent's Email Address" required>  
-            <input type="text" name="child_name" placeholder="Child's Full Name" required>  
-              
-            <select id="program" name="program" required>  
-                <option value="">Select Program</option>  
-                <option>Islamiyyah Academic Program</option>  
-                <option>Conventional Academic Program</option>  
-                <option>Conventional and Islamiyyah Academic Programs</option>  
-                <option>Coding & Programming</option>  
-                <option>IELTS and English Proficiency</option>  
-                <option>Graphics Design</option>  
-                <option>Computer Appreciation</option>  
-                <option>Graphics Design and Computer Appreciation</option>  
-                <option>Nelson Handwriting Training</option>  
-            </select>  
-              
-            <input type="tel" name="phone" placeholder="Phone Number" required>  
-            <input type="number" name="child_age" placeholder="Child's Age" required>  
-              
-            <button type="submit">Submit Inquiry</button>  
-              
-            <p id="successMsg" style="display:none; color:green; margin-top:10px;">  
-                Thank you! Your admission inquiry has been received.  
-            </p>  
-        </form>  
-    </div>  
-</div>  
+<div id="admissionPopup" class="popup-overlay">
+    <div class="popup-box large">
+        <span class="close-btn" onclick="closePopup()">×</span>
+        
+              <div class="popup-header">
+    <h2>🎓 Admission Enrolment</h2>
+    <p>Please fill in accurate details for proper processing.</p>
+</div>
+        
+        <form id="admissionForm">
+            <input type="hidden" name="to_email" value="epistemelearninghub@gmail.com">
+            <!-- STUDENT INFO -->
+           <div class="form-section"> <h3>👤 Student Information</h3>
+            
+            <input type="date" name="registration_date" required>
+            
+            <input type="text" name="student_name" placeholder="Student Full Name" required>
+            
+            <select name="gender" required>
+                <option value="">Gender</option>
+                <option>Male</option>
+                <option>Female</option>
+            </select>
+            
+            <input type="date" name="dob" required>
+            
+            <textarea name="address" placeholder="Contact Address" required></textarea>
+            
+            <input type="text" name="nationality" placeholder="Nationality" required>
+            
+            <input type="text" name="state_origin" placeholder="State / Region" required>
+            
+            <input type="text" name="languages" placeholder="Spoken Language(s)" required>
+            
+            <input type="tel" name="student_phone" placeholder="Student Phone (Optional)">
+            </div>
+            <!-- PARENT -->
+           <div class="form-section"> <h3>👪 Parent / Guardian</h3>
+            
+            <input type="text" name="parent_name" placeholder="Parent/Guardian Name" required>
+            
+            <input type="tel" name="parent_phone" placeholder="Phone Number" required>
+            
+            <input type="text" name="parent_address" placeholder="Address" required>
+            
+            <input type="email" name="parent_email" placeholder="Email" required>
+            </div>
+           <!-- ACADEMIC -->
+<div class="form-section">
+<h3>📚 Academic Preferences</h3>
+
+<label><b>Student Subjects of Interest (Select all that apply):</b></label><br>
+
+<div class="checkbox-group">
+    <label><input type="checkbox" name="subjects" value="Quran"> Qur’an</label>
+    <label><input type="checkbox" name="subjects" value="Islamiyyah"> All Basic Islamiyyah Subjects</label>
+    <label><input type="checkbox" name="subjects" value="Western"> All Basic Western Subjects</label>
+    <label><input type="checkbox" name="subjects" value="Mathematics"> Mathematics / Numeracy</label>
+    <label><input type="checkbox" name="subjects" value="English"> English / Literacy</label>
+    <label><input type="checkbox" name="subjects" value="Science"> Science (Basic)</label>
+    <label><input type="checkbox" name="subjects" value="General Knowledge"> General Knowledge</label>
+    <label><input type="checkbox" name="subjects" value="Health">Social Habits</label>
+    <label><input type="checkbox" name="subjects" value="Counseling"> Counseling / Mentorship</label>
+    <label><input type="checkbox" name="subjects" value="Graphics"> Graphics Design</label>
+    <label><input type="checkbox" name="subjects" value="ICT"> Computer Appreciation / ICT</label>
+    <label><input type="checkbox" name="subjects" value="Biology"> Biology</label>
+    <label><input type="checkbox" name="subjects" value="Chemistry"> Chemistry</label>
+    <label><input type="checkbox" name="subjects" value="Physics"> Physics</label>
+    <label><input type="checkbox" name="subjects" value="Coding"> Coding and Programming</label>
+    <label><input type="checkbox" name="subjects" value="Others"> Others</label>
+</div>
+</div>
+            
+            <!-- CLASS STRUCTURE -->
+          <div class="form-section">
+            <h3>⏰ Class Structure</h3>
+            
+            <select name="schedule" required>
+                <option value="">Preferred Schedule</option>
+                <option>Morning</option>
+                <option>Afternoon</option>
+                <option>Evening</option>
+                <option>Flexible</option>
+            </select>
+            
+            <select name="frequency" required>
+                <option value="">Days per Week</option>
+                <option>1 day/week</option>
+                <option>2 days/week</option>
+                <option>3 days/week</option>
+                <option>4 days/week</option>
+            </select>
+            
+            <select name="duration" required>
+                <option value="">Session Duration</option>
+                <option>30 minutes</option>
+                <option>1 hour</option>
+                <option>1.5 hours</option>
+                <option>2 hours</option>
+                <option>2.5 hours</option>
+            </select>
+            
+           <p>Total Fee: ₦<span id="totalFee">0</span></p> 
+            
+            <select name="class_mode" required>
+                <option value="">Class Mode</option>
+                <option>Online</option>
+                <option>On-site</option>
+                <option>Hybrid</option>
+            </select>
+            
+            <select name="channel" required>
+                <option value="">Preferred Channel</option>
+                <option>WhatsApp</option>
+                <option>Google Meet</option>
+                <option>Zoom</option>
+                <option>Indifferent</option>
+            </select>
+            
+            <textarea name="focus_area" placeholder="Exam or Special Focus Area"></textarea>
+            
+            <select name="tutor_gender">
+                <option value="">Preferred Tutor Gender</option>
+                <option>Male</option>
+                <option>Female</option>
+                <option>Any</option>
+            </select>
+            
+            <select name="class_level" required>
+                <option value="">Class Level</option>
+                <option>Preschool</option>
+                <option>Kindergarten</option>
+                <option>Primary</option>
+                <option>Junior Secondary</option>
+                <option>Senior Secondary</option>
+                <option>Adult</option>
+            </select>
+            
+            <textarea name="medical" placeholder="Medical Conditions (if any)"></textarea>
+            </div>
+            
+            <!-- EMERGENCY -->
+       <div class="form-section">     
+            <h3>🚨 Emergency</h3>
+            
+            <input type="tel" name="emergency_contact" placeholder="Emergency Contact Number" required>
+            
+            <select name="referral" id="referral">
+                <option value="">Referred?</option>
+                <option>Yes</option>
+                <option>No</option>
+            </select>
+            
+            <input type="text" name="referrer_name" placeholder="Referrer Name">
+            
+            <input type="text" name="referrer_relation" placeholder="Relationship">
+            </div>
+            
+            <!-- COMMUNICATION -->
+        <div class="form-section">
+            <h3>📢 Communication</h3>
+            
+            <select name="communication">
+                <option>WhatsApp</option>
+                <option>Phone Call</option>
+                <option>Email</option>
+                <option>SMS</option>
+                <option>Indifferent</option>
+            </select>
+            </div>
+            <!-- AGREEMENT -->
+<!-- POLICIES & AGREEMENT -->
+<div class="form-section">
+<h3>📜 Policies & Agreement</h3>
+
+<label><b>Refund & Cancellation Policy</b></label>
+<textarea readonly>
+I understand that Episteme Learning Academy requires a minimum of 2 weeks to 1 month notice for cancellation of classes.
+
+I also understand that any eligible refunds will be processed within 2 to 4 weeks after approval.
+</textarea>
+
+<label><b>Agreement</b></label>
+<input type="text" name="agreement_name" placeholder="Type your full name & date to agree" required>
+
+<label><b>Attestation</b></label>
+<textarea readonly>
+I understand and agree to the terms and conditions of Episteme Learning Academy. I commit to abide by all rules and regulations, follow academy protocols, and ensure timely payment of fees as required.
+</textarea>
+<input type="text" name="attestation_name" placeholder="Type your full name & date to attest" required>
+
+<label><b>Certification</b></label>
+<textarea readonly>
+I hereby certify that the information provided in this form is true and accurate to the best of my knowledge.
+</textarea>
+<input type="text" name="certification_name" placeholder="Type your full name & date to certify" required>
+            </div>
+            <!-- SUBMIT -->
+            <button type="submit">Submit Application</button>
+            
+           <p id="successMsg" style="display:none; color:green; font-weight:bold; text-align:center;">
+    ✅ Application submitted successfully! Redirecting to WhatsApp...
+</p>
+            
+        </form>
+    </div>
+</div>
     <!-- FLEXIBLE LEARNING -->  
    <section id="flexible-learning" class="section">  
         <div class="container">  
@@ -663,130 +832,188 @@
 </footer>
   
     <!-- JS -->  
-   <script src="script.js"></script>  
   
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        
-        // INIT EMAILJS
-        (function() {
-            emailjs.init("HRzpdij9ek-FzGhux");
-        })();
-        
-        // MOBILE NAV
-        var menuBtn = document.getElementById("menuBtn");
-        var navLinks = document.querySelector(".nav-links");
-        
-        if (menuBtn && navLinks) {
-            menuBtn.addEventListener("click", function() {
-                navLinks.classList.toggle("active");
-            });
+console.log("Script loaded");
+
+// POPUP FUNCTIONS
+function openPopup() {
+    const popup = document.getElementById("admissionPopup");
+    popup.classList.add("active");
+
+    setTimeout(() => {
+        const firstInput = popup.querySelector("input, select, textarea");
+        if (firstInput) firstInput.focus();
+    }, 200);
+}
+
+function closePopup() {
+    const popup = document.getElementById("admissionPopup");
+    popup.classList.remove("active");
+}
+
+document.getElementById("admissionPopup").addEventListener("click", function(e) {
+    if (e.target === this) closePopup();
+});
+
+// FORM LOGIC
+document.addEventListener("DOMContentLoaded", function() {
+    const form = document.getElementById("admissionForm");
+    const successMsg = document.getElementById("successMsg");
+    const studentIDInput = document.getElementById("student_id");
+    const totalFeeDisplay = document.getElementById("totalFee");
+
+    function generateStudentID() {
+        const timestamp = Date.now().toString().slice(-6);
+        const random = Math.floor(Math.random() * 100).toString().padStart(2, '0');
+        return `EPI${timestamp}${random}`;
+    }
+
+    function calculatePayment(form) {
+        let subjects = [...form.querySelectorAll("input[name='subjects']:checked")];
+
+        let duration = form.querySelector("select[name='duration']")?.value || "1 hour";
+        let frequency = form.querySelector("select[name='frequency']")?.value || "1 day/week";
+
+        // Duration to hours
+        let hours = 1;
+        if (duration.includes("30")) hours = 0.5;
+        else if (duration.includes("1.5")) hours = 1.5;
+        else if (duration.includes("2.5")) hours = 2.5;
+        else if (duration.includes("2")) hours = 2;
+
+        // Frequency to days
+        let days = 1;
+        if (frequency.includes("2 days")) days = 2;
+        else if (frequency.includes("3 days")) days = 3;
+        else if (frequency.includes("4 days")) days = 4;
+
+        const rates = {
+            "Quran": 2000, "Islamiyyah": 2000, "Western": 2000,
+            "Mathematics": 2500, "English": 2500, "Science": 2500,
+            "General Knowledge": 2000, "Health": 2000, "Counseling": 2500,
+            "Graphics": 2000, "ICT": 2500, "Biology": 3000,
+            "Chemistry": 3000, "Physics": 3000, "Coding": 3500, "Others": 2000
+        };
+
+        let total = 0;
+        subjects.forEach(sub => total += (rates[sub.value] || 2000) * hours * days);
+
+        if (subjects.length >= 3) total *= 0.9; // 10% discount
+        return total;
+    }
+
+    function updateFeeDisplay() {
+        totalFeeDisplay.textContent = calculatePayment(form);
+    }
+
+    // Initialize fee and student ID
+    updateFeeDisplay();
+    studentIDInput.value = generateStudentID();
+
+    // Recalculate on change
+    form.querySelectorAll("input[name='subjects'], select[name='duration'], select[name='frequency']")
+        .forEach(el => el.addEventListener("change", updateFeeDisplay));
+
+    // Form submission
+    // Initialize EmailJS
+emailjs.init("HRzpdij9ek-FzGhux"); // <-- Replace with your actual public key
+    for (let pair of new FormData(form).entries()) {
+    console.log(pair[0] + ": " + pair[1]);
+}
+
+    form.addEventListener("submit", function(e) {
+    e.preventDefault();
+    
+   const studentID = studentIDInput.value;
+ 
+    
+    const subjects = getSelectedSubjects();
+    const totalFee = calculatePayment(form);
+    
+    // 📦 PACKAGE DATA
+    const data = {
+        parent_name: form.parent_name.value,
+        student_name: form.student_name.value,
+        parent_email: form.parent_email.value,
+        student_id: studentID,
+        subjects: subjects,
+        class_mode: form.class_mode.value,
+        total_fee: totalFee
+    };
+    
+    // 📧 SEND EMAIL
+    emailjs.send("service_q5c4ig3", "template_ob4ht5e", {
+            ...data,
+            whatsapp_link: generateWhatsAppLink(data)
+        })
             
-            var links = document.querySelectorAll(".nav-links a");
-            links.forEach(function(link) {
-                link.addEventListener("click", function() {
-                    navLinks.classList.remove("active");
-                });
-            });
-        }
-        
-        // SLIDER
-        var slides = document.querySelectorAll(".slide");
-        var currentIndex = 0;
-        
-        function showSlide(index) {
-            slides.forEach(function(slide) {
-                slide.classList.remove("active");
-            });
-            slides[index].classList.add("active");
-        }
-        
-        function nextSlide() {
-            currentIndex = (currentIndex + 1) % slides.length;
-            showSlide(currentIndex);
-        }
-        
-        if (slides.length > 0) {
-            setInterval(nextSlide, 4000);
-            
-            var startX = 0;
-            var slider = document.getElementById("slider");
-            
-            if (slider) {
-                slider.addEventListener("touchstart", function(e) {
-                    startX = e.touches[0].clientX;
-                });
-                
-                slider.addEventListener("touchend", function(e) {
-                    var endX = e.changedTouches[0].clientX;
-                    
-                    if (startX - endX > 50) nextSlide();
-                    
-                    if (endX - startX > 50) {
-                        currentIndex = (currentIndex - 1 + slides.length) % slides.length;
-                        showSlide(currentIndex);
-                    }
-                });
-            }
-        }
-        
-        // FAQ
-        var faqButtons = document.querySelectorAll('.faq-question');
-        
-        faqButtons.forEach(function(button) {
-            button.addEventListener('click', function() {
-                var answer = button.nextElementSibling;
-                
-                button.classList.toggle('active');
-                
-                if (answer.style.maxHeight) {
-                    answer.style.maxHeight = null;
-                } else {
-                    answer.style.maxHeight = answer.scrollHeight + "px";
-                }
-            });
+.then(() => {
+    
+    // ✅ Show success message
+    successMsg.style.display = "block";
+    
+    // Optional: make it more visible
+    successMsg.scrollIntoView({ behavior: "smooth" });
+    
+    // 📱 Open WhatsApp
+    window.open(generateWhatsAppLink(data), "_blank");
+    
+    // 🔄 Reset form AFTER showing success
+    setTimeout(() => {
+        form.reset();
+        updateFeeDisplay();
+    }, 500);
+    
+    // ❌ Close popup AFTER a short delay
+    setTimeout(() => {
+        closePopup();
+        successMsg.style.display = "none";
+    }, 3000);
+    
+})
+        .catch(error => {
+            console.error("Email Error:", error);
         });
-        
-        // POPUP
-        window.openPopup = function() {
-            document.getElementById("admissionPopup").style.display = "flex";
-        };
-        
-        window.closePopup = function() {
-            document.getElementById("admissionPopup").style.display = "none";
-        };
-        
-        // FORM
-        var form = document.getElementById("admissionForm");
-        var successMsg = document.getElementById("successMsg");
-        
-        if (form) {
-            form.addEventListener("submit", function(e) {
-                e.preventDefault();
-                
-                emailjs.sendForm(
-                    "service_q5c4ig3",
-                    "template_ob4ht5e",
-                    this
-                ).then(function() {
-                    successMsg.style.display = "block";
-                    form.reset();
-                    
-                    setTimeout(function() {
-                        closePopup();
-                        successMsg.style.display = "none";
-                    }, 3000);
-                    
-                }).catch(function(error) {
-                    console.error("EmailJS Error:", error);
-                });
-            });
-        }
-        
-    });
+});
+
+function getSelectedSubjects() {
+    let selected = [];
+    document.querySelectorAll("input[name='subjects']:checked")
+        .forEach(cb => selected.push(cb.value));
+    return selected.join(", ");
+}
+
+function generateWhatsAppLink(data) {
+    const message = `Hello Episteme Learning Academy,
+
+I just submitted an admission application.
+
+🎓 Student ID: ${data.student_id}
+👤 Parent Name: ${data.parent_name}
+👦 Student Name: ${data.student_name}
+📚 Subjects: ${data.subjects}
+💻 Class Mode: ${data.class_mode}
+💰 Estimated Fee: ₦${data.total_fee}
+
+Kindly guide me on the next step. Thank you.`;
+    
+    return "https://wa.me/2349131331867?text=" + encodeURIComponent(message);
+}
+
+    // Referral logic
+    const referral = document.getElementById("referral");
+    if (referral) {
+        referral.addEventListener("change", function() {
+            const show = this.value === "Yes";
+            document.querySelector("[name='referrer_name']").style.display = show ? "block" : "none";
+            document.querySelector("[name='referrer_relation']").style.display = show ? "block" : "none";
+        });
+    }
+});
+
 </script>
-  
+
 </body>  
 </html>
