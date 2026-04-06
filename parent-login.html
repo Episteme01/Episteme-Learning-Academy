@@ -187,24 +187,25 @@ window.togglePassword = function() {
 
 // Real Login
 window.loginParent = async function() {
-
-    const email = document.getElementById("parentEmail").value;
-    const password = document.getElementById("parentPassword").value;
+    
+    const email = document.getElementById("parentEmail").value.trim().toLowerCase();
+    const password = document.getElementById("parentPassword").value.trim();
     const remember = document.getElementById("rememberMe").checked;
-
+    
     try {
-
-        // Handle Remember Me
-        await setPersistence(auth, 
+        
+        await setPersistence(auth,
             remember ? browserLocalPersistence : browserSessionPersistence
         );
-
+        
         await signInWithEmailAndPassword(auth, email, password);
-
+        
         window.location.href = "parent-dashboard.html";
-
+        
     } catch (error) {
-        document.getElementById("errorMessage").textContent = "Invalid email or password";
+        console.error(error);
+        
+        document.getElementById("errorMessage").textContent = error.message;
     }
 };
 
