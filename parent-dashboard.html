@@ -692,6 +692,10 @@ window.changePassword = async function() {
     <div class="main-content">  
   
         <!-- DASHBOARD SECTION -->  
+        <div class="card">
+    <h3>Select Child</h3>
+    <select id="childSelector" onchange="switchChild()"></select>
+</div>
         <div id="dashboard" class="section">  
             <div class="card">  
                 <h3>Student Information</h3>  
@@ -883,23 +887,53 @@ if (!children) {
     return;
 }
 
-const studentID = Object.keys(children)[0];
+const studentIDs = Object.keys(children);
+window.parentChildren = studentIDs;
+
+const selector = document.getElementById("childSelector");
+selector.innerHTML = "";
+
+// Load all children into dropdown
+for (let id of studentIDs) {
+    const snap = await get(ref(db, "students/" + id));
+    
+    if (snap.exists()) {
+        const student = snap.val();
         
-        const studentSnap = await get(ref(db, "students/" + studentID));
+        const option = document.createElement("option");
+        option.value = id;
+        option.textContent = student.studentName + " (" + id + ")";
         
-        if (!studentSnap.exists()) {
-            alert("Student record not found.");
-            return;
-        }
-        
-        initializeDashboard(studentSnap.val());
+        selector.appendChild(option);
+    }
+}
+
+// Load first child by default
+if (studentIDs.length > 0) {
+    loadStudent(studentIDs[0]);
+}
         
     } catch (error) {
         console.error(error);
     }
 });
   
- 
+ async function loadStudent(studentID) {
+    try {
+        const studentSnap = await get(ref(db, "students/" + studentID));
+        
+        if (!studentSnap.exists()) {
+            alert("Student not found");
+            return;
+        }
+        
+        const studentData = studentSnap.val();
+        initializeDashboard(studentData);
+        
+    } catch (error) {
+        console.error(error);
+    }
+}
 // ========== INITIALIZE DASHBOARD ==========  
 
 function initializeDashboard(studentData) {
@@ -981,6 +1015,10 @@ if (studentData.photoURL) {
 window.changeTerm = function() {
     const term = document.getElementById("termSelector").value;
     updateTermData(term);
+};
+window.switchChild = function() {
+    const selectedID = document.getElementById("childSelector").value;
+    loadStudent(selectedID);
 };
 
   const islamiyyahSubjects = [
