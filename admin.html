@@ -208,6 +208,8 @@ document.getElementById('studentID').value
 <option>Paid</option>
 <option>Pending</option>
 </select>
+<input id="feeAmount" placeholder="Total School Fees (₦)">
+<input id="amountPaid" placeholder="Amount Paid (₦)">
 <button class="primary" onclick="generateAdmissionLetter()">
     Download Admission Letter
 </button>
@@ -341,7 +343,7 @@ const firebaseConfig = {
     apiKey: "AIzaSyC4psvU8WSR1QQQsRlZ8HkHO57Dznbb9TA",
     authDomain: "episteme-learning-academy.firebaseapp.com",
     projectId: "episteme-learning-academy",
-    storageBucket: "episteme-learning-academy.firebasestorage.app",
+    storageBucket: "episteme-learning-academy.appspot.com",
     messagingSenderId: "476274489231",
     appId: "1:476274489231:web:fb67e5fde8a5d26328bdfa",
     measurementId: "G-PKPLKXMWSX",
@@ -454,21 +456,29 @@ window.saveStudent = async function() {
     const snapshot = await get(ref(db, "students/" + id));
     const existingStudent = snapshot.val();
     
-    const studentData = {
-        studentID: id,
-        studentName: name,
-        studentClass: studentClassVal,
-        studentAge: age,
-        studentDOB: dob,
-        studentProgram: program,
-        studentInformation: info,
-        attendance: Number(attendanceVal) || 0,
-        feeStatus: fee,
-        
-        // ✅ ONLY SET IF NEW STUDENT
-        admissionDate: existingStudent?.admissionDate || new Date().toISOString(),
-        admissionStatus: existingStudent?.admissionStatus || "Admitted"
-    };
+   const feeAmount = Number(document.getElementById("feeAmount").value) || 0;
+const amountPaid = Number(document.getElementById("amountPaid").value) || 0;
+
+const studentData = {
+    studentID: id,
+    studentName: name,
+    studentClass: studentClassVal,
+    studentAge: age,
+    studentDOB: dob,
+    studentProgram: program,
+    studentInformation: info,
+    attendance: Number(attendanceVal) || 0,
+    
+    // 🔥 NEW PAYMENT SYSTEM
+    feeAmount: feeAmount,
+    amountPaid: amountPaid,
+    balance: feeAmount - amountPaid,
+    feeStatus: (feeAmount - amountPaid) <= 0 ? "Paid" : "Pending",
+    
+    admissionDate: existingStudent?.admissionDate || new Date().toISOString(),
+    admissionStatus: existingStudent?.admissionStatus || "Admitted"
+};
+
     if (studentData.admissionStatus !== "Admitted") {
     return alert("Student not officially admitted yet");
 }
@@ -536,7 +546,8 @@ function displayStudentList(data) {
             
             document.getElementById("feeStatus").value =
                 stu.feeStatus || "Paid";
-            
+            document.getElementById("feeAmount").value = stu.feeAmount || "";
+document.getElementById("amountPaid").value = stu.amountPaid || "";
         };
         
         listDiv.appendChild(div);
@@ -1010,7 +1021,15 @@ window.uploadPhoto = async function() {
     if (!id) return alert("Enter Student ID first");
     if (!input.files.length) return alert("Choose photo");
 
-    const file = window.selectedFile || input.files[0];
+   let file = null;
+
+if (window.selectedFile) {
+    file = window.selectedFile;
+} else if (input.files.length > 0) {
+    file = input.files[0];
+}
+
+if (!file) return alert("Choose photo");
 
     const formData = new FormData();
     formData.append("file", file);
