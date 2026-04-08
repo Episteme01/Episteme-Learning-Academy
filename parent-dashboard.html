@@ -248,7 +248,7 @@ window.changePassword = async function() {
     }
 };
 </script>
-<script src="https://js.paystack.co/v1/inline.js"></script>
+
 
 <link rel="manifest" href="manifest.json">
 
@@ -683,7 +683,7 @@ window.changePassword = async function() {
         </div>  
   
 <button onclick="showSchedule(this)">My Schedule</button>  
-<button onclick="showSection('fees', this)">Fee History</button>
+<button onclick="showFees(this)">Fee History</button>
 
        <button onclick="showSection('accountPreferences', this)">Account Preferences</button>
     </div>  
@@ -710,8 +710,16 @@ window.changePassword = async function() {
     Download Admission Letter
 </button>
 
-                <p><strong>Fee Status:</strong> <span id="feeStatus"></span></p>
- <button onclick="payFees()">Pay School Fees</button>
+             <p><strong>Fee Status:</strong> <span id="feeStatus"></span></p>
+
+<label><strong>Select Term for Payment:</strong></label>
+<select id="feeTermSelector">
+    <option value="term1">1st Term</option>
+    <option value="term2">2nd Term</option>
+    <option value="term3">3rd Term</option>
+</select>
+
+<button onclick="payFees()">Pay School Fees</button>
             </div>  
         </div>  
   
@@ -818,7 +826,7 @@ window.changePassword = async function() {
 <div class="footer">  
     © 2026 Episteme Learning Academy | Parent Portal  
 </div>
-  
+<script src="https://js.paystack.co/v1/inline.js"></script>  
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
@@ -918,7 +926,7 @@ if (studentIDs.length > 0) {
     }
 });
   
- async function loadStudent(studentID) {
+async function loadStudent(studentID) {
     try {
         const studentSnap = await get(ref(db, "students/" + studentID));
         
@@ -928,6 +936,10 @@ if (studentIDs.length > 0) {
         }
         
         const studentData = studentSnap.val();
+        
+        // ✅ Inject ID manually from Firebase key
+        studentData.studentID = studentID;
+        
         initializeDashboard(studentData);
         
     } catch (error) {
@@ -938,7 +950,10 @@ if (studentIDs.length > 0) {
 
 function initializeDashboard(studentData) {
     
-    currentStudent = studentData || {};
+    currentStudent = {
+    ...studentData,
+    studentID: studentData.studentID // 🔥 FORCE ID
+};
     
     const photo = document.getElementById("studentPhoto");
 
@@ -953,8 +968,17 @@ if (studentData.photoURL) {
     
     document.getElementById("studentName").textContent =
         studentData.studentName || "N/A";
+    const termEl = document.getElementById("feeTermSelector");
+const term = termEl ? termEl.value : "term1";
+
+const feeData = studentData.fees?.[term];
+
+if (feeData) {
     document.getElementById("feeStatus").textContent =
-    studentData.feeStatus || "N/A";
+        `${feeData.status} (₦${feeData.paid} / ₦${feeData.total})`;
+} else {
+    document.getElementById("feeStatus").textContent = "No fee record";
+}
     document.getElementById("studentClass").textContent =
         studentData.studentClass || "N/A";
     
@@ -1020,6 +1044,8 @@ window.switchChild = function() {
     const selectedID = document.getElementById("childSelector").value;
     loadStudent(selectedID);
 };
+
+initializeDashboard(currentStudent);
 
   const islamiyyahSubjects = [
     "Qur'an",
@@ -1515,34 +1541,192 @@ window.logout = async function() {
     }
 };
 
+
+// ==Pay fees==
+
+
 window.payFees = function() {
-    
-    const handler = PaystackPop.setup({
-        key: "pk_live_64158b7b329777c76a9f71c8afea298fc5ff2452", // replace this
-        email: auth.currentUser.email,
-        amount: 30000 * 100, // ₦30,000 (Paystack uses kobo)
         
-        callback: function(response) {
-            alert("Payment successful! Ref: " + response.reference);
-            
-            // OPTIONAL: update database
-        },
-        
-        onClose: function() {
-            alert("Payment window closed.");
+        if (!window.PaystackPop) {
+            alert("Payment system not ready. Refresh page.");
+            return;
         }
+        
+        console.log("Paystack is ready ✅");
+    
+    const user = auth.currentUser;
+    
+    if (!user || !user.email) {
+        alert("User not ready. Please wait or login again.");
+        return;
+    }
+    
+    const termEl = document.getElementById("feeTermSelector");
+    if (!termEl) {
+        alert("Term selector missing");
+        return;
+    }
+    
+    const term = termEl.value;
+    
+    if (!currentStudent || !currentStudent.fees) {
+        alert("Student fee data not loaded yet.");
+        return;
+    }
+    
+    const feeData = currentStudent.fees[term];
+    
+    if (!feeData) {
+        alert("No fee record for this term.");
+        return;
+    }
+    
+    // ✅ STRICT VALIDATION
+    const balance = Number(feeData.balance);
+    
+    if (isNaN(balance) || balance <= 0) {
+        alert("Invalid or already paid fee.");
+        console.error("Invalid balance:", feeData.balance);
+        return;
+    }
+    
+    const studentID = currentStudent.studentID;
+    
+    if (!studentID) {
+        alert("Student ID missing.");
+        return;
+    }
+    
+    console.log("Launching Paystack with:", {
+        email: user.email,
+        amount: balance * 100,
+        studentID
     });
     
+    if (!window.PaystackPop || !PaystackPop.setup) {
+    console.error("Paystack not loaded properly");
+    alert("Payment library failed to load.");
+    return;
+}
+    
+   let handler;
+
+try {
+    handler = PaystackPop.setup({
+    key: "pk_live_64158b7b329777c76a9f71c8afea298fc5ff2452",
+    email: user.email,
+    amount: Math.round(balance * 100),
+    
+    // ✅ ADD THIS
+    reference: "ELA_" + Date.now(),
+    
+    callback: async function(response) {
+        try {
+            alert("Payment successful! Ref: " + response.reference);
+            
+            const studentRef = ref(db, "students/" + studentID + "/fees/" + term);
+            
+            await update(studentRef, {
+                paid: feeData.total,
+                balance: 0,
+                status: "Paid"
+            });
+            
+            const freshSnap = await get(ref(db, "students/" + studentID));
+            initializeDashboard(freshSnap.val());
+            
+        } catch (err) {
+            console.error("Payment update error:", err);
+            alert("Payment save failed");
+        }
+    },
+    
+    onClose: function() {
+        console.log("Payment closed");
+    }
+});
+    
+    console.log("Handler created:", handler);
+    
+    if (!handler) {
+        alert("Payment initialization failed.");
+        return;
+    }
+    
     handler.openIframe();
-};
+    
+} catch (err) {
+    console.error("Paystack setup error:", err);
+    alert("Payment failed to initialize.");
+}
+
+}; 
 </script>
+
     <script>
+    function renderFeeHistory() {
+    
+    const container = document.getElementById("feeTable");
+    container.innerHTML = "";
+    
+    const fees = currentStudent.fees;
+    
+    if (!fees) {
+        container.innerHTML = "<p>No fee records available.</p>";
+        return;
+    }
+    
+    const table = document.createElement("table");
+    table.className = "assessment-table";
+    
+    table.innerHTML = `
+        <thead>
+            <tr>
+                <th>Term</th>
+                <th>Total (₦)</th>
+                <th>Paid (₦)</th>
+                <th>Balance (₦)</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    `;
+    
+    const tbody = table.querySelector("tbody");
+    
+    Object.entries(fees).forEach(([term, data]) => {
+        
+        const tr = document.createElement("tr");
+        
+        tr.innerHTML = `
+            <td>${term.toUpperCase()}</td>
+            <td>${data.total}</td>
+            <td>${data.paid}</td>
+            <td>${data.balance}</td>
+            <td>
+                <span class="score-badge">${data.status}</span>
+            </td>
+        `;
+        
+        tbody.appendChild(tr);
+    });
+    
+    container.appendChild(table);
+}
+
+window.showFees = function(btn) {
+    showSection('fees', btn);
+    renderFeeHistory();
+};
+
+
         window.toggleSidebar = function () {
     const sidebar = document.querySelector(".sidebar");
     sidebar.classList.toggle("show");
 };
+
     </script>
-    
+  
     </body>  
 </html>  
   
