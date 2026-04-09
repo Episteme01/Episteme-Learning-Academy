@@ -1409,11 +1409,14 @@ renderReceipts(studentReceipts);
         const tr = document.createElement("tr");
         
         tr.innerHTML = `
-            <td>${new Date(item.date).toLocaleString()}</td>
+            <td>${new Date(item.paidAt || item.date).toLocaleString()}</td>
             <td>₦${item.amount}</td>
             <td>${item.reference}</td>
             <td>
-                <button onclick='downloadReceiptAgain(${JSON.stringify(item)})'>
+                <button onclick="downloadReceiptAgain(this)"
+        data-receipt='${JSON.stringify(item)}'>
+    Download
+</button>
                     Download
                 </button>
             </td>
@@ -1425,8 +1428,10 @@ renderReceipts(studentReceipts);
     container.appendChild(table);
 } 
 
-window.downloadReceiptAgain = async function(data) {
-    await generateReceipt({
+window.downloadReceiptAgain = function(btn) {
+    const data = JSON.parse(btn.dataset.receipt);
+    
+    generateReceipt({
         name: data.name,
         amount: data.amount,
         ref: data.reference
