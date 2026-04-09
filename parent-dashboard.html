@@ -191,9 +191,9 @@ window.showAssignments = function(btn) {
     showSection('assignments', btn);
 };
 
-window.showExams = function(btn) {
-    renderTable('exams', currentStudent.exams || [], "Exam Results");
-    showSection('exams', btn);
+window.showEvaluations = function(btn) {
+    renderTable('evaluations', currentStudent.evaluations || [], "Evaluations");
+    showSection('evaluations', btn);
 };
 
 // Toggle submenu
@@ -679,12 +679,12 @@ window.changePassword = async function() {
         <div id="assessmentSubmenu" class="submenu">  
             <button onclick="showClasswork(this)">Classwork</button>  
             <button onclick="showAssignments(this)">Assignments</button>  
-            <button onclick="showExams(this)">Exam Results</button>  
+            <button onclick="showEvaluations(this)">Evaluations</button>  
         </div>  
   
 <button onclick="showSchedule(this)">My Schedule</button>  
 <button onclick="showSection('fees', this)">Fee History</button>
-
+<button onclick="showReceipts(this)">Receipts</button>
        <button onclick="showSection('accountPreferences', this)">Account Preferences</button>
     </div>  
   
@@ -758,6 +758,12 @@ window.changePassword = async function() {
         <div id="feeTable"></div>
     </div>
 </div>
+<div id="receipts" class="section" style="display:none;">
+    <div class="card">
+        <h3>Payment Receipts</h3>
+        <div id="receiptTable"></div>
+    </div>
+</div>.
         <!-- HISTORICAL GRADES SECTION -->  
         <div id="historical" class="section" style="display:none;">  
     <div class="card">  
@@ -778,7 +784,7 @@ window.changePassword = async function() {
         <div id="assignments" class="section" style="display:none;"></div>  
   
         <!-- EXAMS TABLE -->  
-        <div id="exams" class="section" style="display:none;"></div>  
+        <div id="evaluations" class="section" style="display:none;"></div>  
   
         <!-- SCHEDULE SECTION -->  
         <div id="schedule" class="section" style="display:none;">  
@@ -821,6 +827,8 @@ window.changePassword = async function() {
   
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFunctions, httpsCallable }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-functions.js";
 
 // Auth imports
 import {
@@ -853,6 +861,7 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+const functions = getFunctions(app);
 const auth = getAuth(app);
 window.auth = auth;
 window.updateProfile = updateProfile;
@@ -1346,6 +1355,85 @@ if (!data) {
     
 }
     
+    window.showReceipts = async function(btn) {
+    showSection('receipts', btn);
+    
+    const container = document.getElementById("receiptTable");
+    container.innerHTML = "Loading receipts...";
+    
+    try {
+        const snap = await get(ref(db, "receipts/" + currentStudent.studentID));
+        
+        if (!snap.exists()) {
+            container.innerHTML = "<p>No receipts found.</p>";
+            return;
+        }
+        
+     const studentReceipts = Object.values(snap.val());
+
+renderReceipts(studentReceipts);
+        
+    } catch (err) {
+        console.error(err);
+        container.innerHTML = "<p>Error loading receipts.</p>";
+    }
+};
+    
+   function renderReceipts(data) {
+    const container = document.getElementById("receiptTable");
+    container.innerHTML = "";
+    
+    if (!data.length) {
+        container.innerHTML = "<p>No receipts available.</p>";
+        return;
+    }
+    
+    const table = document.createElement("table");
+    table.className = "assessment-table";
+    
+    table.innerHTML = `
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Reference</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    `;
+    
+    const tbody = table.querySelector("tbody");
+    
+    data.forEach(item => {
+        const tr = document.createElement("tr");
+        
+        tr.innerHTML = `
+            <td>${new Date(item.date).toLocaleString()}</td>
+            <td>₦${item.amount}</td>
+            <td>${item.reference}</td>
+            <td>
+                <button onclick='downloadReceiptAgain(${JSON.stringify(item)})'>
+                    Download
+                </button>
+            </td>
+        `;
+        
+        tbody.appendChild(tr);
+    });
+    
+    container.appendChild(table);
+} 
+
+window.downloadReceiptAgain = async function(data) {
+    await generateReceipt({
+        name: data.name,
+        amount: data.amount,
+        ref: data.reference
+    });
+};
+
+    
  window.downloadAdmissionLetter = async function() {
     try {
         console.log("Starting Admission Letter...");
@@ -1523,10 +1611,12 @@ window.logout = async function() {
     }
 };
 
+
 window.payFees = function() {
     
     setTimeout(() => {
         
+       
         if (typeof PaystackPop === "undefined") {
             alert("Paystack failed to load.");
             return;
@@ -1568,10 +1658,36 @@ window.payFees = function() {
                     name: student.studentName
                 },
                 
-                callback: function(response) {
-                    console.log("SUCCESS:", response);
-                    alert("Payment successful! Ref: " + response.reference);
-                },
+                callback: async function(response) {
+    
+    const verifyPayment = httpsCallable(functions, "verifyPaystack");
+    
+    try {
+        const res = await verifyPayment({
+            reference: response.reference
+        });
+        
+        if (res.data.success) {
+            
+            const paymentData = {
+                name: currentStudent.studentName,
+                amount: currentStudent.balance,
+                ref: response.reference
+            };
+            
+            await generateReceipt(paymentData); // ✅ ONLY THIS
+            
+            alert("Payment verified & receipt generated!");
+            
+        } else {
+            alert("Payment verification failed.");
+        }
+        
+    } catch (err) {
+        console.error(err);
+        alert("Server verification error.");
+    }
+},
                 
                 onClose: function() {
                     console.log("CLOSED");
@@ -1586,7 +1702,78 @@ window.payFees = function() {
         }
         
     }, 500); // 👈 THIS solves timing issues
+    
 };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+  
+   async function generateReceipt(data) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    // ===== LOAD IMAGES =====
+    const loadImage = async (url) => {
+        try {
+            const res = await fetch(url);
+            const blob = await res.blob();
+            return await new Promise(resolve => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result);
+                reader.readAsDataURL(blob);
+            });
+        } catch {
+            return null;
+        }
+    };
+    
+    const logo = await loadImage("images/episteme-logo.png");
+    const signature = await loadImage("https://episteme01.github.io/Episteme-Learning-Academy/images/signature.png");
+    const stamp = await loadImage("https://episteme01.github.io/Episteme-Learning-Academy/images/stamp.png");
+    
+    // ===== WATERMARK =====
+    doc.setFontSize(40);
+    doc.setTextColor(230, 230, 230);
+    doc.text("Episteme Learning Academy", 105, 150, { align: "center", angle: 45 });
+    doc.setTextColor(0, 0, 0);
+    
+    // ===== HEADER =====
+    if (logo) doc.addImage(logo, "PNG", 150, 10, 40, 20);
+    
+    doc.setFontSize(16);
+    doc.text("EPISTEME LEARNING ACADEMY", 20, 20);
+    
+    doc.setFontSize(10);
+    doc.text("Ilorin, Kwara State", 20, 26);
+    doc.text("Contacts: +2349131331867 | +2349128732396", 20, 32);
+    
+    doc.line(20, 35, 190, 35);
+    
+    // ===== TITLE =====
+    doc.setFontSize(14);
+    doc.text("OFFICIAL PAYMENT RECEIPT", 60, 45);
+    
+    // ===== BODY =====
+    doc.setFontSize(11);
+    doc.text(`Student: ${data.name}`, 20, 60);
+    doc.text(`Amount Paid: ₦${data.amount}`, 20, 70);
+    doc.text(`Reference: ${data.ref}`, 20, 80);
+    doc.text(`Date: ${new Date().toLocaleString()}`, 20, 90);
+    
+    // ===== SIGNATURE =====
+    if (signature) {
+        doc.addImage(signature, "PNG", 20, 110, 50, 20);
+        doc.text("Authorized Signature", 20, 135);
+    }
+    
+    // ===== STAMP =====
+    if (stamp) {
+        doc.addImage(stamp, "PNG", 140, 105, 45, 45);
+    }
+    
+    // ===== SAVE =====
+    doc.save(`Receipt_${data.name}.pdf`);
+}
 </script>
     <script>
         window.toggleSidebar = function () {
