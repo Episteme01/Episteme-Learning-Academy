@@ -712,6 +712,9 @@ window.changePassword = async function() {
 
                 <p><strong>Fee Status:</strong> <span id="feeStatus"></span></p>
  <button onclick="payFees()">Pay School Fees</button>
+ <button class="download-btn" onclick="downloadReceiptNow()">
+    ⬇ Download Receipt
+</button>
             </div>  
         </div>  
   
@@ -1363,6 +1366,7 @@ if (!data) {
     
     try {
         const snap = await get(ref(db, "receipts/" + currentStudent.studentID));
+        console.log("Receipts:", snap.val());
         
         if (!snap.exists()) {
             container.innerHTML = "<p>No receipts found.</p>";
@@ -1383,7 +1387,7 @@ renderReceipts(studentReceipts);
     const container = document.getElementById("receiptTable");
     container.innerHTML = "";
     
-    if (!data.length) {
+    if (!data || !data.length) {
         container.innerHTML = "<p>No receipts available.</p>";
         return;
     }
@@ -1409,14 +1413,14 @@ renderReceipts(studentReceipts);
         const tr = document.createElement("tr");
         
         tr.innerHTML = `
-            <td>${new Date(item.paidAt || item.date).toLocaleString()}</td>
-            <td>₦${item.amount}</td>
-            <td>${item.reference}</td>
+            <td>${new Date(item.paidAt || item.date || Date.now()).toLocaleString()}</td>
+            <td>₦${item.amount || 0}</td>
+            <td>${item.reference || "-"}</td>
             <td>
-                <button onclick="downloadReceiptAgain(this)"
-        data-receipt='${JSON.stringify(item)}'>
-    Download
-</button>
+                <button 
+                    class="download-btn"
+                    onclick="downloadReceiptAgain(this)"
+data-receipt='${JSON.stringify(item)}'>
                     Download
                 </button>
             </td>
@@ -1426,15 +1430,18 @@ renderReceipts(studentReceipts);
     });
     
     container.appendChild(table);
-} 
+}
 
 window.downloadReceiptAgain = function(btn) {
+    
     const data = JSON.parse(btn.dataset.receipt);
     
+    console.log("Downloading receipt:", data); // 🔥 DEBUG
+    
     generateReceipt({
-        name: data.name,
-        amount: data.amount,
-        ref: data.reference
+        name: data.name || "Unknown",
+        amount: data.amount || 0,
+        ref: data.reference || "N/A"
     });
 };
 
@@ -1680,7 +1687,8 @@ window.payFees = function() {
                 ref: response.reference
             };
             
-            await generateReceipt(paymentData); // ✅ ONLY THIS
+           await saveReceiptToFirebase(paymentData); // 🔥 SAVE FIRST
+await generateReceipt(paymentData); // 🔥 THEN DOWNLOAD // ✅ ONLY THIS
             
             alert("Payment verified & receipt generated!");
             
@@ -1709,6 +1717,18 @@ window.payFees = function() {
     }, 500); // 👈 THIS solves timing issues
     
 };
+async function saveReceiptToFirebase(data) {
+    const refPath = ref(db, "receipts/" + currentStudent.studentID);
+    const newRef = push(refPath);
+    
+    await update(newRef, {
+        studentID: currentStudent.studentID,
+        name: data.name,
+        amount: data.amount,
+        reference: data.ref,
+        paidAt: new Date().toISOString()
+    });
+}
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
@@ -1777,7 +1797,22 @@ window.payFees = function() {
     }
     
     // ===== SAVE =====
-    doc.save(`Receipt_${data.name}.pdf`);
+   const blob = doc.output("blob");
+
+// 🔥 FORCE DOWNLOAD (MOBILE SAFE)
+const fileReader = new FileReader();
+
+fileReader.onload = function() {
+    const link = document.createElement("a");
+    link.href = fileReader.result;
+    link.download = `Receipt_${data.name}.pdf`;
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+};
+
+fileReader.readAsDataURL(blob);
 }
 </script>
     <script>
@@ -1785,8 +1820,102 @@ window.payFees = function() {
     const sidebar = document.querySelector(".sidebar");
     sidebar.classList.toggle("show");
 };
+
+
+let previewReceiptData = null;
+
+window.downloadReceiptNow = function() {
+    
+    if (!currentStudent || !currentStudent.studentName) {
+        alert("Student not loaded yet.");
+        return;
+    }
+    
+    const amountPaid = currentStudent.amountPaid || 0;
+    
+    if (amountPaid <= 0) {
+        alert("No payment has been made yet.");
+        return;
+    }
+    
+    previewReceiptData = {
+        name: currentStudent.studentName,
+        amount: amountPaid,
+        ref: "ELA-" + Date.now()
+    };
+    
+    // Fill preview
+    document.getElementById("r_name").textContent = previewReceiptData.name;
+    document.getElementById("r_amount").textContent = previewReceiptData.amount;
+    document.getElementById("r_ref").textContent = previewReceiptData.ref;
+    document.getElementById("r_date").textContent = new Date().toLocaleString();
+    
+    // Show modal
+    document.getElementById("receiptModal").style.display = "flex";
+};
+
+window.closeReceipt = function() {
+    document.getElementById("receiptModal").style.display = "none";
+};
+
+window.confirmDownload = function() {
+    
+    if (!previewReceiptData) return;
+    
+    // ⚠️ NO await here (important!)
+    generateReceipt(previewReceiptData);
+    
+    closeReceipt();
+};
     </script>
     
+    <div id="receiptModal" style="
+display:none;
+position:fixed;
+top:0;left:0;
+width:100%;height:100%;
+background:rgba(0,0,0,0.7);
+z-index:9999;
+justify-content:center;
+align-items:center;
+">
+    
+    <div style="
+background:white;
+color:#000;
+width:90%;
+max-width:400px;
+padding:20px;
+border-radius:12px;
+">
+        
+        <h3 style="text-align:center;">EPISTEME LEARNING ACADEMY</h3>
+        <p style="text-align:center;font-size:12px;">
+            Ilorin, Kwara State<br>
+            +2349131331867 | +2349128732396
+        </p>
+        
+        <hr>
+        
+        <p><strong>Student:</strong> <span id="r_name"></span></p>
+        <p><strong>Amount:</strong> ₦<span id="r_amount"></span></p>
+        <p><strong>Reference:</strong> <span id="r_ref"></span></p>
+        <p><strong>Date:</strong> <span id="r_date"></span></p>
+        
+        <hr>
+        
+        <div style="text-align:center;">
+            <button onclick="confirmDownload()" class="download-btn">
+                ⬇ Download PDF
+            </button>
+            
+            <button onclick="closeReceipt()" style="margin-left:10px;">
+                Close
+            </button>
+        </div>
+        
+    </div>
+</div>
     </body>  
 </html>  
   
