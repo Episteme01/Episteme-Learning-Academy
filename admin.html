@@ -290,7 +290,7 @@ document.getElementById('studentID').value
 <select id="assessmentType">
 <option value="classworks">Classwork</option>
 <option value="assignments">Assignment</option>
-<option value="evaluations">Evaluation</option>
+<option value="exams">Exam</option>
 </select>
 
 <input id="assessmentTitle" placeholder="Title">
@@ -485,19 +485,7 @@ const studentData = {
     
     try {
         await update(ref(db, "students/" + id), studentData);
-
-// 🔥 ADD THIS BLOCK
-if (studentData.feeStatus === "Paid") {
-    
-    const receiptCheckRef = ref(db, "receipts/" + id);
-    const snap = await get(receiptCheckRef);
-    
-    if (!snap.exists()) {
-        await createManualReceipt(studentData);
-    }
-}
-
-alert("Student saved successfully");
+        alert("Student saved successfully");
     } catch (error) {
         alert(error.message);
         console.error(error);
@@ -558,7 +546,6 @@ function displayStudentList(data) {
             
             document.getElementById("feeStatus").value =
                 stu.feeStatus || "Paid";
-               
             document.getElementById("feeAmount").value = stu.feeAmount || "";
 document.getElementById("amountPaid").value = stu.amountPaid || "";
         };
@@ -567,27 +554,6 @@ document.getElementById("amountPaid").value = stu.amountPaid || "";
         
     });
     
-}
-
-async function createManualReceipt(student) {
-    
-    const refCode = "MANUAL-" + Date.now();
-    
-    const receiptData = {
-        studentID: student.studentID,
-        name: student.studentName,
-        amount: student.amountPaid || student.feeAmount,
-        reference: refCode,
-        status: "success",
-        paidAt: new Date().toISOString(),
-        channel: "manual", // 🔥 KEY DIFFERENCE
-        currency: "NGN"
-    };
-    
-    const receiptRef = push(ref(db, "receipts/" + student.studentID));
-   await set(receiptRef, receiptData);
-    
-    alert("Manual receipt created successfully");
 }
 
 window.searchStudent = async function() {
