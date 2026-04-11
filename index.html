@@ -85,6 +85,7 @@
                 <li><a href="#philosophy">Philosophy</a></li>  
                 <li><a href="#contact">Contact</a></li>  
                 <li><a href="islamiyyah.html">Islamiyyah Portal</a></li>  
+                
 <li><a href="blog.html">Blog</a></li>  
                 <li><a href="parent-dashboard.html">Parent Portal</a> </li>  
 <li><a href="admin-panel.html">Admin Portal</a> </li>  
@@ -431,12 +432,35 @@
             </select>
             
             <input type="date" name="dob" required>
-            
+            <select name="class_section" required>
+    <option value="">Class Section</option>
+    <option>Preschool</option>
+    <option>Kindergarten</option>
+    <option>Grade 1</option>
+    <option>Grade 2</option>
+    <option>Grade 3</option>
+    <option>Grade 4</option>
+    <option>Grade 5</option>
+    <option>JSS 1</option>
+    <option>JSS 2</option>
+    <option>JSS 3</option>
+    <option>SS 1</option>
+    <option>SS 2</option>
+    <option>SS 3</option>
+</select>
             <textarea name="address" placeholder="Contact Address" required></textarea>
             
-            <input type="text" name="nationality" placeholder="Nationality" required>
-            
-            <input type="text" name="state_origin" placeholder="State / Region" required>
+            <select id="nationality" name="nationality" required onchange="loadStates()">
+    <option value="">Select Country</option>
+</select>
+
+<select id="state" name="state_origin" required onchange="loadCities()">
+    <option value="">Select State</option>
+</select>
+
+<select id="city" name="city" required>
+    <option value="">Select City</option>
+</select>
             
             <input type="text" name="languages" placeholder="Spoken Language(s)" required>
             
@@ -458,26 +482,78 @@
 <h3>📚 Academic Preferences</h3>
 
 <label><b>Student Subjects of Interest (Select all that apply):</b></label><br>
-
+<button type="button" onclick="autoSelectSubjects()" class="ai-btn">
+    🤖 Auto Select Subjects (AI)
+</button>
 <div class="checkbox-group">
-    <label><input type="checkbox" name="subjects" value="Quran"> Qur’an</label>
-    <label><input type="checkbox" name="subjects" value="Islamiyyah"> All Basic Islamiyyah Subjects</label>
+    <label class="premium">
+    <input type="checkbox" name="subjects" value="Islamiyyah Full">
+    🕌 Full Islamiyyah Package 🔥 (All Core Subjects)
+</label>
     <label><input type="checkbox" name="subjects" value="Western"> All Basic Western Subjects</label>
     <label><input type="checkbox" name="subjects" value="Mathematics"> Mathematics / Numeracy</label>
     <label><input type="checkbox" name="subjects" value="English"> English / Literacy</label>
     <label><input type="checkbox" name="subjects" value="Science"> Science (Basic)</label>
     <label><input type="checkbox" name="subjects" value="General Knowledge"> General Knowledge</label>
     <label><input type="checkbox" name="subjects" value="Health">Social Habits</label>
-    <label><input type="checkbox" name="subjects" value="Counseling"> Counseling / Mentorship</label>
-    <label><input type="checkbox" name="subjects" value="Graphics"> Graphics Design</label>
-    <label><input type="checkbox" name="subjects" value="ICT"> Computer Appreciation / ICT</label>
     <label><input type="checkbox" name="subjects" value="Biology"> Biology</label>
     <label><input type="checkbox" name="subjects" value="Chemistry"> Chemistry</label>
     <label><input type="checkbox" name="subjects" value="Physics"> Physics</label>
-    <label><input type="checkbox" name="subjects" value="Coding"> Coding and Programming</label>
+    <label><input type="checkbox" name="subjects" value="Quran"> 📖 Qur’an</label>
+<label><input type="checkbox" name="subjects" value="Recitation"> 🎙 Recitation</label>
+<label><input type="checkbox" name="subjects" value="Tajweed"> 🧠 Tajweed</label>
+<label><input type="checkbox" name="subjects" value="Hadith"> 📜 Hadith</label>
+<label><input type="checkbox" name="subjects" value="Fiqh"> ⚖ Fiqh</label>
+<label><input type="checkbox" name="subjects" value="Arabiyyah"> 🗣 Arabiyyah</label>
+<label><input type="checkbox" name="subjects" value="Sirah"> 🕌 Sīrah</label>
+<label><input type="checkbox" name="subjects" value="Mutun"> 📘 Mutūn</label>
+<label><input type="checkbox" name="subjects" value="Kitabah"> ✍ Kitābah</label>
+<label><input type="checkbox" name="subjects" value="Nahw"> 🔤 Nahw</label>
+<label><input type="checkbox" name="subjects" value="Sarf"> 🔁 Sarf</label>
+<label><input type="checkbox" name="subjects" value="Tawhid"> ☝ Tawhīd</label>
+     <label><input type="checkbox" name="subjects" value="Counseling"> Counseling / Mentorship</label>
+<label class="premium">
+    <input type="checkbox" name="subjects" value="Coding">
+    💻 Coding & Programming 🔥
+</label>
+
+<label class="premium">
+    <input type="checkbox" name="subjects" value="Graphics">
+    🎨 Graphics Design 🔥
+</label>
+
+<label class="premium">
+    <input type="checkbox" name="subjects" value="ICT">
+    🖥 Computer Appreciation🔥
+</label>
     <label><input type="checkbox" name="subjects" value="Others"> Others</label>
 </div>
 </div>
+<div class="pricing-box">
+    
+    <h3>💰 Fee Breakdown</h3>
+    
+    <div id="selectedSubjects"></div>
+    
+    <div class="price-row">
+        <span>Base Cost:</span>
+        <span>₦<span id="baseCost">0</span></span>
+    </div>
+    
+    <div class="price-row discount" id="discountRow" style="display:none;">
+        <span>Discount:</span>
+        <span>-₦<span id="discountAmount">0</span></span>
+    </div>
+    
+    <div class="price-row total">
+        <strong>Total Fee:</strong>
+        <strong>₦<span id="totalFee">0</span></strong>
+    </div>
+    
+</div>
+
+<!-- SMART SUGGESTION -->
+<div id="smartSuggestion" class="smart-box"></div>
             
             <!-- CLASS STRUCTURE -->
           <div class="form-section">
@@ -507,8 +583,6 @@
                 <option>2 hours</option>
                 <option>2.5 hours</option>
             </select>
-            
-           <p>Total Fee: ₦<span id="totalFee">0</span></p> 
             
             <select name="class_mode" required>
                 <option value="">Class Mode</option>
@@ -859,6 +933,8 @@ document.getElementById("admissionPopup").addEventListener("click", function(e) 
 
 // FORM LOGIC
 document.addEventListener("DOMContentLoaded", function() {
+    getExchangeRate();
+    loadCountries(); // ✅ ADD THIS LINE
     const form = document.getElementById("admissionForm");
     const successMsg = document.getElementById("successMsg");
     const studentIDInput = document.getElementById("student_id");
@@ -869,44 +945,271 @@ document.addEventListener("DOMContentLoaded", function() {
         const random = Math.floor(Math.random() * 100).toString().padStart(2, '0');
         return `EPI${timestamp}${random}`;
     }
+    
 
-    function calculatePayment(form) {
-        let subjects = [...form.querySelectorAll("input[name='subjects']:checked")];
-
-        let duration = form.querySelector("select[name='duration']")?.value || "1 hour";
-        let frequency = form.querySelector("select[name='frequency']")?.value || "1 day/week";
-
-        // Duration to hours
-        let hours = 1;
-        if (duration.includes("30")) hours = 0.5;
-        else if (duration.includes("1.5")) hours = 1.5;
-        else if (duration.includes("2.5")) hours = 2.5;
-        else if (duration.includes("2")) hours = 2;
-
-        // Frequency to days
-        let days = 1;
-        if (frequency.includes("2 days")) days = 2;
-        else if (frequency.includes("3 days")) days = 3;
-        else if (frequency.includes("4 days")) days = 4;
-
-        const rates = {
-            "Quran": 2000, "Islamiyyah": 2000, "Western": 2000,
-            "Mathematics": 2500, "English": 2500, "Science": 2500,
-            "General Knowledge": 2000, "Health": 2000, "Counseling": 2500,
-            "Graphics": 2000, "ICT": 2500, "Biology": 3000,
-            "Chemistry": 3000, "Physics": 3000, "Coding": 3500, "Others": 2000
-        };
-
-        let total = 0;
-        subjects.forEach(sub => total += (rates[sub.value] || 2000) * hours * days);
-
-        if (subjects.length >= 3) total *= 0.9; // 10% discount
-        return total;
+   function calculatePayment(form) {
+    let selected = [...form.querySelectorAll("input[name='subjects']:checked")]
+        .map(el => el.value);
+    
+    let duration = form.querySelector("select[name='duration']").value;
+    let frequency = form.querySelector("select[name='frequency']").value;
+    
+    let hours = duration.includes("30") ? 0.5 :
+        duration.includes("1.5") ? 1.5 :
+        duration.includes("2.5") ? 2.5 :
+        duration.includes("2") ? 2 : 1;
+    
+    let days = frequency.includes("2") ? 2 :
+        frequency.includes("3") ? 3 :
+        frequency.includes("4") ? 4 : 1;
+    
+    const rates = {
+    "Mathematics": 2500,
+    "English": 2500,
+    "Science": 2500,
+    "General Knowledge": 2500,
+    "Health": 2500,
+    "Counseling": 2500,
+    
+    // Islamiyyah Subjects
+    "Quran": 2500,
+    "Recitation": 2500,
+    "Tajweed": 2500,
+    "Hadith": 2500,
+    "Fiqh": 2500,
+    "Arabiyyah": 2500,
+    "Sirah": 2500,
+    "Mutun": 2500,
+    "Kitabah": 2500,
+    "Nahw": 2500,
+    "Sarf": 2500,
+    "Tawhid": 2500,
+    
+    // Premium (optional: keep higher or normalize)
+    "Coding": 5000,
+    "Graphics": 4000,
+    "ICT": 3500
+};
+    
+    let total = 0;
+    
+    // ✅ Bundle logic
+    if (selected.includes("Western")) {
+        total += 7000 * hours * days;
+        selected = selected.filter(s => !["Mathematics", "English", "Science"].includes(s));
     }
+    
+    if (selected.includes("Islamiyyah")) {
+        total += 6000 * hours * days;
+        selected = selected.filter(s => s !== "Quran");
+    }
+    
+    // ✅ Add remaining subjects
+    selected.forEach(sub => {
+        total += (rates[sub] || 2000) * hours * days;
+    });
+    
+    // ✅ Discount only for NON-premium
+    let premiumSubjects = ["Coding", "Graphics", "ICT"];
+    let hasPremium = selected.some(s => premiumSubjects.includes(s));
+    
+    if (!hasPremium && selected.length >= 3) {
+        total *= 0.9;
+    }
+    
+    return total;
+}
+
+function animateValue(id, start, end, duration) {
+    let range = end - start;
+    let startTime = null;
+    
+    function step(timestamp) {
+        if (!startTime) startTime = timestamp;
+        let progress = timestamp - startTime;
+        let value = Math.floor(start + (range * (progress / duration)));
+        
+        document.getElementById(id).textContent = value;
+        
+        if (progress < duration) {
+            requestAnimationFrame(step);
+        } else {
+            document.getElementById(id).textContent = end;
+        }
+    }
+    
+    requestAnimationFrame(step);
+}
+
+let exchangeRate = 1500; // fallback (₦ to $)
+
+async function getExchangeRate() {
+    try {
+        const res = await fetch("https://api.exchangerate-api.com/v4/latest/USD");
+        const data = await res.json();
+        
+        exchangeRate = data.rates.NGN; // USD → NGN
+        console.log("Live Rate:", exchangeRate);
+        
+    } catch (err) {
+        console.warn("Using fallback rate:", exchangeRate);
+    }
+}
 
     function updateFeeDisplay() {
-        totalFeeDisplay.textContent = calculatePayment(form);
+    const form = document.getElementById("admissionForm");
+    
+    let selected = [...form.querySelectorAll("input[name='subjects']:checked")]
+        .map(el => el.value);
+    
+    let subjectListHTML = "";
+    let baseCost = 0;
+    
+    const rates = {
+        "Mathematics": 2500,
+        "English": 2500,
+        "Science": 2500,
+        "General Knowledge": 2000,
+        "Health": 2000,
+        "Counseling": 2500,
+        
+        "Coding": 5000,
+        "Graphics": 4000,
+        "ICT": 3500,
+        
+        "Quran": 2000
+    };
+    
+    let duration = form.querySelector("select[name='duration']").value;
+let frequency = form.querySelector("select[name='frequency']").value;
+
+let hours = duration.includes("30") ? 0.5 :
+    duration.includes("1.5") ? 1.5 :
+    duration.includes("2.5") ? 2.5 :
+    duration.includes("2") ? 2 : 1;
+
+let days = frequency.includes("2") ? 2 :
+    frequency.includes("3") ? 3 :
+    frequency.includes("4") ? 4 : 1;
+
+selected.forEach(sub => {
+    let unitPrice = rates[sub] || 2000;
+    let price = unitPrice * hours * days;
+    
+    baseCost += price;
+    
+    subjectListHTML += `
+        <div class="price-row">
+            <span>${sub} (${hours}hr × ${days}days)</span>
+            <span>₦${price}</span>
+        </div>
+    `;
+});
+    
+    document.getElementById("selectedSubjects").innerHTML = subjectListHTML;
+    
+    let discount = 0;
+    let premiumSubjects = ["Coding", "Graphics", "ICT"];
+    let hasPremium = selected.some(s => premiumSubjects.includes(s));
+    
+    if (!hasPremium && selected.length >= 3) {
+        discount = baseCost * 0.1;
+        document.getElementById("discountRow").style.display = "flex";
+        document.getElementById("discountAmount").textContent = discount;
+    } else {
+        document.getElementById("discountRow").style.display = "none";
     }
+    
+   let total = baseCost - discount;
+
+// 🌍 NATIONALITY PRICING
+const nationality = document.querySelector("select[name='nationality']").value;
+
+// Currency + Multiplier
+let currency = "₦";
+
+if (nationality !== "Nigeria") {
+    currency = "$";
+    
+    // Convert Naira → Dollar
+    total = total / exchangeRate;
+    baseCost = baseCost / exchangeRate;
+    discount = discount / exchangeRate;
+}
+// Pricing Note
+let pricingNote = nationality === "Nigeria" ?
+    "🇳🇬 Local Student Rate Applied" :
+    "🌍 International Student Rate Applied";
+  
+    
+    let formattedBase = nationality === "Nigeria" ?
+    Math.floor(baseCost) :
+    baseCost.toFixed(2);
+
+let formattedTotal = nationality === "Nigeria" ?
+    Math.floor(total) :
+    total.toFixed(2);
+
+document.getElementById("baseCost").textContent = formattedBase;
+document.getElementById("totalFee").textContent = formattedTotal;
+
+// Add currency symbol
+document.getElementById("baseCost").previousSibling.textContent = currency;
+document.getElementById("totalFee").previousSibling.textContent = currency;
+    // 📅 MONTHLY ESTIMATE (4 weeks standard)
+const oldMonthly = document.querySelector(".monthly");
+if (oldMonthly) oldMonthly.remove();
+
+let monthlyTotal = total * 4;
+
+let monthlyHTML = `
+    <div class="price-row monthly">
+        <strong>Estimated Monthly:</strong>
+        <strong>${currency}${monthlyTotal.toFixed(2)}</strong>
+    </div>
+`;
+
+document.getElementById("totalFee").insertAdjacentHTML("afterend", monthlyHTML);
+    
+    function showSmartSuggestion(selected, total) {
+    const box = document.getElementById("smartSuggestion");
+    
+    let suggestion = "";
+    let newPrice = total;
+    
+    if (selected.includes("Coding") && !selected.includes("Graphics")) {
+        newPrice += 4000;
+        suggestion = `🚀 Add Graphics Design (+₦4000) to become a full digital creator!`;
+    }
+    else if (selected.includes("Western") && selected.length < 3) {
+        newPrice += 3000;
+        suggestion = `📚 Upgrade to Full Academic Package for better results (+₦3000)`;
+    }
+    else if (selected.includes("Quran") && !selected.includes("Islamiyyah")) {
+        newPrice += 4000;
+        suggestion = `🕌 Upgrade to full Islamiyyah package (+₦4000)`;
+    }
+    else if (selected.length >= 3) {
+        suggestion = `🔥 You unlocked a smart bundle discount. Great choice!`;
+    }
+    else {
+        suggestion = `✅ Good selection. You can optimize further.`;
+    }
+    
+    box.innerHTML = `
+        <div>${suggestion}</div>
+        <small>Estimated with upgrade: ₦${newPrice}</small>
+    `;
+}
+showSmartSuggestion(selected, total);
+// 🔔 Show pricing note
+const oldNote = document.querySelector(".pricing-note");
+if (oldNote) oldNote.remove();
+
+document.getElementById("totalFee").insertAdjacentHTML("afterend", `
+    <small class="pricing-note" style="color:#555;">${pricingNote}</small>
+`);
+} // ✅ THIS WAS MISSING
 
     // Initialize fee and student ID
     updateFeeDisplay();
@@ -923,6 +1226,8 @@ emailjs.init("HRzpdij9ek-FzGhux"); // <-- Replace with your actual public key
     console.log(pair[0] + ": " + pair[1]);
 }
 
+form.querySelector("select[name='nationality']")
+    .addEventListener("change", updateFeeDisplay);
     form.addEventListener("submit", function(e) {
     e.preventDefault();
     
@@ -1011,6 +1316,8 @@ Kindly guide me on the next step. Thank you.`;
             document.querySelector("[name='referrer_relation']").style.display = show ? "block" : "none";
         });
     }
+    document.querySelector("input[name='dob']").addEventListener("change", autoSelectSubjects);
+document.querySelector("select[name='class_level']").addEventListener("change", autoSelectSubjects);
 });
 
 const menuBtn = document.getElementById("menuBtn");
@@ -1025,6 +1332,165 @@ document.querySelectorAll(".nav-links a").forEach(link => {
         navLinks.classList.remove("active");
     });
 });
+
+
+function autoSelectSubjects() {
+    const dob = document.querySelector("input[name='dob']").value;
+    const classLevel = document.querySelector("select[name='class_level']").value;
+    
+    if (!dob || !classLevel) return;
+    
+    const age = new Date().getFullYear() - new Date(dob).getFullYear();
+    
+    let recommended = [];
+    
+    if (age <= 5 || classLevel === "Preschool" || classLevel === "Kindergarten") {
+        recommended = ["Quran", "Recitation", "General Knowledge", "Health"];
+    }
+    else if (classLevel === "Primary") {
+        recommended = ["Quran", "Tajweed", "Mathematics", "English", "Science"];
+    }
+    else if (classLevel === "Junior Secondary") {
+        recommended = ["Quran", "Tajweed", "Hadith", "Fiqh", "English", "Mathematics"];
+    }
+    else if (classLevel === "Senior Secondary") {
+        recommended = ["Hadith", "Fiqh", "Biology", "Chemistry", "Physics"];
+    }
+    else if (classLevel === "Adult") {
+        recommended = ["Quran", "Tajweed", "Fiqh", "Tawhid", "Arabiyyah"];
+    }
+    
+    // 🔥 Reset first
+    document.querySelectorAll("input[name='subjects']").forEach(cb => {
+        cb.checked = false;
+    });
+    
+    // 🔥 Apply selection
+    document.querySelectorAll("input[name='subjects']").forEach(cb => {
+        if (recommended.includes(cb.value)) {
+            cb.checked = true;
+        }
+    });
+    
+    showAISuggestion(recommended, age, classLevel);
+    updateFeeDisplay();
+}
+
+function showAISuggestion(subjects, age, level) {
+    const box = document.getElementById("smartSuggestion");
+    
+    box.innerHTML = `
+        <div>🤖 AI Recommendation</div>
+        <small>
+        Based on Age (${age}) and Level (${level}), we selected:
+        <br><b>${subjects.join(", ")}</b>
+        </small>
+    `;
+}
+const locationData = {
+    Nigeria: {
+        "Lagos": ["Ikeja", "Lekki", "Yaba"],
+        "Kwara": ["Ilorin"],
+        "Oyo": ["Ibadan", "Ogbomosho"]
+    },
+    Ghana: {
+        "Accra": ["Accra"],
+        "Kumasi": ["Kumasi"]
+    },
+    "United Kingdom": {
+        "England": ["London", "Manchester"],
+        "Scotland": ["Edinburgh"]
+    },
+    "United States": {
+        "California": ["Los Angeles", "San Francisco"],
+        "Texas": ["Houston"]
+    }
+};
+
+async function loadCountries() {
+    const nationalitySelect = document.getElementById("nationality");
+    
+    nationalitySelect.innerHTML = '<option>Loading countries...</option>';
+    
+    try {
+        const res = await fetch("https://countriesnow.space/api/v0.1/countries/positions");
+        const data = await res.json();
+        
+        nationalitySelect.innerHTML = '<option value="">Select Country</option>';
+        
+        data.data.forEach(country => {
+            nationalitySelect.innerHTML += `<option value="${country.name}">${country.name}</option>`;
+        });
+        
+    } catch (err) {
+        nationalitySelect.innerHTML = '<option>Error loading countries</option>';
+        console.error(err);
+    }
+}
+
+
+async function loadStates() {
+    const country = document.getElementById("nationality").value;
+    const stateSelect = document.getElementById("state");
+    
+    stateSelect.innerHTML = '<option>Loading...</option>';
+    
+    try {
+        const res = await fetch("https://countriesnow.space/api/v0.1/countries/states", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ country })
+        });
+        
+        const data = await res.json();
+        
+        stateSelect.innerHTML = '<option value="">Select State</option>';
+        
+        if (data.data && data.data.states) {
+            data.data.states.forEach(s => {
+                stateSelect.innerHTML += `<option value="${s.name}">${s.name}</option>`;
+            });
+        } else {
+            stateSelect.innerHTML = '<option>No states found</option>';
+        }
+        
+    } catch (err) {
+        stateSelect.innerHTML = '<option>Error loading states</option>';
+        console.error(err);
+    }
+}
+
+async function loadCities() {
+    const country = document.getElementById("nationality").value;
+    const state = document.getElementById("state").value;
+    const citySelect = document.getElementById("city");
+    
+    citySelect.innerHTML = '<option>Loading...</option>';
+    
+    try {
+        const res = await fetch("https://countriesnow.space/api/v0.1/countries/state/cities", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ country, state })
+        });
+        
+        const data = await res.json();
+        
+        citySelect.innerHTML = '<option value="">Select City</option>';
+        
+        if (data.data) {
+            data.data.forEach(city => {
+                citySelect.innerHTML += `<option value="${city}">${city}</option>`;
+            });
+        } else {
+            citySelect.innerHTML = '<option>No cities found</option>';
+        }
+        
+    } catch (err) {
+        citySelect.innerHTML = '<option>Error loading cities</option>';
+        console.error(err);
+    }
+}
 </script>
 
 </body>  
